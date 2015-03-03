@@ -11,4 +11,4 @@ orderbp = Blueprint(
         # static_folder='static'.
         )
 
-from . import views, orderbp
+from . import views, models 

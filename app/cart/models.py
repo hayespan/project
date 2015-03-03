@@ -4,9 +4,9 @@ from .. import db
 
 class Cart(db.Model):
     __tablename__ = 'cart'
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, primary_key=True)
-    building_id = db.Column(db.Integer, db.ForeignKey('building.id'), nullable=False, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
+    building_id = db.Column(db.Integer, db.ForeignKey('building.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     is_valid = db.Column(db.Boolean, nullable=False, default=True)
 

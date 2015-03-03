@@ -33,7 +33,7 @@ class App(object):
             from .cart.models import Cart
             from .category.models import Cat1, Cat2
             from .location.models import School, Building
-            from .order.models import Order, Order_product
+            from .order.models import Order, Snapshot, Order_snapshot
             from .product.models import Product, File, Product_building, Promotion 
             
             from .user.models import User
@@ -46,7 +46,8 @@ class App(object):
                     School=School,
                     Building=Building,
                     Order=Order,
-                    Order_product=Order_product,
+                    Snapshot=Snapshot,
+                    Order_snapshot=Order_snapshot,
                     Product=Product,
                     File=File,
                     Product_building=Product_building,

@@ -6,7 +6,7 @@ class School(db.Model):
     __tablename__ = 'school'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False)
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
 
     admin = db.relationship('Admin', backref=db.backref('schools', lazy='dynamic'))
 
@@ -17,8 +17,8 @@ class Building(db.Model):
     __tablename__ = 'building'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False)
-    school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey('school.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
 
     school = db.relationship('School', backref=db.backref('buildings', lazy='dynamic'))
     admin = db.relationship('Building', backref=db.backref('buildings', lazy='dynamic'))

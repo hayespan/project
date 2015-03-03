@@ -30,7 +30,7 @@ class Product_building(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
     building_id = db.Column(db.Integer, db.ForeignKey('building.id'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=0)
-    eta = db.Column(db.Float, nullable=False)
+    timedelta = db.Column(db.Float, nullable=False)
 
     product = db.relationship('Product', backref=db.backref('product_buildings', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('product_buildings', lazy='dynamic'))
