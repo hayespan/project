@@ -1,4 +1,4 @@
-Admin module
+1. Admin module
 ----
 #### admin
 ```
@@ -10,11 +10,9 @@ name
 contact_info
 ```
 
-
-Location Module
+2. Location Module
 ----
 #### school
-
 ```
 id
 name
@@ -29,15 +27,15 @@ school_id -> school.id
 admin_id -> admin.id
 ```
 
-User Module
+3. User Module
 ----
 #### user
 ```
 id
-```
 (use `session` to store default location information)
+```
 
-Category Module
+4. Category Module
 ----
 #### cat1
 ```
@@ -45,7 +43,6 @@ id
 name
 ```
 
-----
 #### cat2
 ```
 id
@@ -53,7 +50,7 @@ name
 cat1_id -> cat1.id
 ```
 
-Product Module
+5. Product Module
 ----
 #### file
 ```
@@ -61,7 +58,6 @@ id
 filename
 ```
 
-----
 #### product
 ```
 id
@@ -72,13 +68,12 @@ description
 price
 ```
 
-----
 #### product_building
 ```
 product_id -> product.id
 building_id -> building.id
 quantity
-eta(a default value for each order)
+timedelta // a default value for each order
 ```
 
 ----
@@ -88,8 +83,7 @@ id
 pic_id -> file.id
 ```
 
-
-Cart Module
+6. Cart Module
 ----
 #### cart
 ```
@@ -100,7 +94,7 @@ is_valid
 quantity
 ```
 
-Order Module
+7. Order Module
 ----
 #### order
 ```
@@ -113,14 +107,27 @@ receiver
 phone
 status
 released_time
-eta
+timedelta
 password
+school_name_rd // 'rd' means 'redundancy'
+building_name_rd
+```
+#### snapshot
+```
+id
+product_id -> product.id
+name
+pic_id
+cat1_rd
+cat2_rd
+description
+price
+released_time
 ```
 
----
-#### order_product
+#### order_snapshot
 ```
 order_id -> order.id
-product_id -> product.id
+snapshot_id -> snapshot.id
 quantity
 ```
