@@ -12,8 +12,10 @@ class Order(db.Model):
     receiver = db.Column(db.String(15), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     status = db.Column(db.Enum('uncommited', 'uncompleted', 'completed', 'cancelled'), nullable=False, default='uncommited')
+    released_time = db.Column(db.DateTime)
     eta = db.Column(db.Float, nullable=False)
     password = db.Column(db.String(5), nullable=False, default=lambda: ''.join([str(random.choice(range(10))) for i in range(4)]))
+
     user = db.relationship('User', backref=db.backref('orders', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('orders', lazy='dynamic'))
 
@@ -25,7 +27,9 @@ class Order_product(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=1)
+
     order = db.relationship('Order', backref=db.backref('order_products', lazy='dynamic'))
     product = db.relationship('Order', backref=db.backref('order_products', lazy='dynamic'))
+
     def __repr__(self):
         return '<Order_product %d order_id:%d product_id:%d quantity:%d' % (self.id, self.order_id, self.product_id, self.quantity)

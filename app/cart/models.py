@@ -9,6 +9,7 @@ class Cart(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     is_valid = db.Column(db.Boolean, nullable=False, default=True)
+
     user = db.relationship('User', backref=db.backref('carts', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('carts', lazy='dynamic'))
     product = db.relationship('Product', backref=db.backref('carts', lazy='dynamic'))
