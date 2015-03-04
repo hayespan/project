@@ -8,8 +8,8 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticketid = db.Column(db.String(21), nullable=False, default=lambda:datetime.now().strftime('%Y%m%d%H%M%S%f'), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
-    building_id = db.Column(db.Integer, db.ForeignKey('building.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True) #
-    room = db.Column(db.String(100), nullable=False)
+    building_id = db.Column(db.Integer, db.ForeignKey('building.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
+    addr = db.Column(db.String(100), nullable=False)
     receiver = db.Column(db.String(15), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     status = db.Column(db.Enum('uncompleted', 'completed', 'cancelled'), nullable=False, default='uncommited')
