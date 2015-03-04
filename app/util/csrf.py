@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from hashlib import md5
+from functools import wraps
 from flask import session
 from flask.ext.wtf import Form
 from wtforms.fields import TextAreaField, StringField, BooleanField, DateField, IntegerField
