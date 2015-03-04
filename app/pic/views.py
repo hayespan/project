@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import request
+from flask.ext.login import login_required
 
 from . import picbp
 from .. import db
