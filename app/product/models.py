@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from datetime import datetime
 from .. import db
 
 class Product(db.Model):
@@ -17,14 +17,6 @@ class Product(db.Model):
     def __repr__(self):
         return '<Product %d %s>' % (self.id, self.name)
 
-class File(db.Model):
-    __tablename__ = 'file'
-    id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(40), nullable=False, index=True)
-
-    def __repr__(self):
-        return '<File %d %s>' % (self.id, self.filename)
-
 class Product_building(db.Model):
     __tablename__ = 'product_building'
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
@@ -38,13 +30,20 @@ class Product_building(db.Model):
     def __repr__(self):
         return '<Product_building %d %d %d>' % (self.product_id, self.building_id, self.quantity)
 
-class Promotion(db.Model):
-    __tablename__ = 'promotion'
+class Snapshot(db.Model):
+    __tablename__ = 'snapshot'
     id = db.Column(db.Integer, primary_key=True)
-    pic_id =  db.Column(db.Integer, db.ForeignKey('file.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
+    name = db.Column(db.String(50), nullable=False)
+    pic_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
+    cat1_rd = db.Column(db.String(32), nullable=False)
+    cat2_rd = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.Text(), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    released_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
-    pic = db.relationship('File', backref=db.backref('promotion', uselist=False))
+    pic = db.relationship('File', backref=db.backref('snapshot', uselist=False))
+    product = db.relationship('Product', backref=db.backref('snapshots', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Promotion %d pic_id:%d' % (self.id, self.pic_id)
-
+        return '<Snapshot %d product_id:%d name:%s released_time:%s>' % (self.id, self.product_id or -1, self.name, self.released_time)

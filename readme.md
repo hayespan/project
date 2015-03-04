@@ -1,4 +1,4 @@
-目前后端分为7个模块，分别是管理员、位置、用户、分类、商品、购物车、订单。接下来会随着编码进行更新。
+目前后端分为8个模块，分别是管理员、位置、用户、分类、商品、购物车、订单、文件。接下来会随着编码进行更新。
 每个模块文档格式如下：
 
 1. 模块名
@@ -25,12 +25,14 @@ contact_info
 `POST /admin/create`
 
 ----
+```
 input:
 csrf_token: str
 username: str
 password: str
 name: str // real name (optional)
 contact_info: str // phone num, etc (optional)
+```
 ----
 ouput:
 ```
@@ -40,11 +42,12 @@ ouput:
 }
 ```
 ----
+```
 local errno:
 0
 1
 -1 username exists.
-
+```
 
 
 
@@ -90,11 +93,6 @@ cat1_id -> cat1.id
 
 5. Product Module
 ----
-#### file
-```
-id
-filename
-```
 
 #### product
 ```
@@ -113,13 +111,19 @@ building_id -> building.id
 quantity
 timedelta // a default value for each order
 ```
-
-----
-#### promotion
+#### snapshot
 ```
 id
-pic_id -> file.id
+product_id -> product.id
+name
+pic_id
+cat1_rd
+cat2_rd
+description
+price
+released_time
 ```
+
 
 6. Cart Module
 ----
@@ -128,6 +132,7 @@ pic_id -> file.id
 user_id -> user.id
 product_id -> product.id
 building_id -> building.id
+last_viewed_time
 is_valid
 quantity
 ```
@@ -150,24 +155,27 @@ password
 school_name_rd // 'rd' means 'redundancy'
 building_name_rd
 ```
-#### snapshot
-```
-id
-product_id -> product.id
-name
-pic_id
-cat1_rd
-cat2_rd
-description
-price
-released_time
-```
+
 
 #### order_snapshot
 ```
 order_id -> order.id
 snapshot_id -> snapshot.id
 quantity
+```
+
+8. File Module
+----
+#### file
+```
+id
+filename
+```
+----
+#### promotion
+```
+id
+pic_id -> file.id
 ```
 
 ----

@@ -12,7 +12,7 @@ class Order(db.Model):
     room = db.Column(db.String(100), nullable=False)
     receiver = db.Column(db.String(15), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
-    status = db.Column(db.Enum('uncommited', 'uncompleted', 'completed', 'cancelled'), nullable=False, default='uncommited')
+    status = db.Column(db.Enum('uncompleted', 'completed', 'cancelled'), nullable=False, default='uncommited')
     released_time = db.Column(db.DateTime, nullable=True)
     timedelta = db.Column(db.Float, nullable=False)
     password = db.Column(db.String(5), nullable=False, default=lambda: ''.join([str(random.choice(range(10))) for i in range(4)]))
@@ -26,24 +26,6 @@ class Order(db.Model):
 
     def __repr__(self):
         return '<Order %d ticketid:%d user_id:%d building_id:%d' % (self.id, self.ticketid, self.user_id, self.building_id)
-
-class Snapshot(db.Model):
-    __tablename__ = 'snapshot'
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
-    name = db.Column(db.String(50), nullable=False)
-    pic_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
-    cat1_rd = db.Column(db.String(32), nullable=False)
-    cat2_rd = db.Column(db.String(32), nullable=False)
-    description = db.Column(db.Text(), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    released_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
-
-    pic = db.relationship('File', backref=db.backref('snapshot', uselist=False))
-    product = db.relationship('Product', backref=db.backref('snapshots', lazy='dynamic'))
-
-    def __repr__(self):
-        return '<Snapshot %d product_id:%d name:%s released_time:%s>' % (self.id, self.product_id or -1, self.name, self.released_time)
 
 class Order_snapshot(db.Model):
     __tablename__ = 'order_snapshot'

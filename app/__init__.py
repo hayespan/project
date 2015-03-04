@@ -33,10 +33,11 @@ class App(object):
             from .cart.models import Cart
             from .category.models import Cat1, Cat2
             from .location.models import School, Building
-            from .order.models import Order, Snapshot, Order_snapshot
-            from .product.models import Product, File, Product_building, Promotion 
-            
+            from .order.models import Order, Order_snapshot
+            from .product.models import Product, Product_building, Snapshot 
+            from .pic.models import File, Promotion
             from .user.models import User
+            
             return dict(app=self.app,
                     db=db,
                     Admin=Admin,
@@ -46,11 +47,11 @@ class App(object):
                     School=School,
                     Building=Building,
                     Order=Order,
-                    Snapshot=Snapshot,
                     Order_snapshot=Order_snapshot,
                     Product=Product,
-                    File=File,
                     Product_building=Product_building,
+                    Snapshot=Snapshot,
+                    File=File,
                     Promotion=Promotion,
                     User=User,
                     )
@@ -89,5 +90,10 @@ class App(object):
         self.app.register_blueprint(
                 userbp,
                 url_prefix='/user',
+                )
+        from .pic import picbp
+        self.app.register_blueprint(
+                picbp,
+                url_prefix='/pic',
                 )
         
