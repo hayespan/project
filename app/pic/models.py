@@ -14,9 +14,8 @@ class Promotion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pic_id =  db.Column(db.Integer, db.ForeignKey('file.id'), nullable=False)
 
-    pic = db.relationship('File', backref=db.backref('promotion', uselist=False))
+    pic = db.relationship('File', backref=db.backref('promotion', uselist=False, onupdate='CASCADE', ondelete='CASCADE'))
 
     def __repr__(self):
         return '<Promotion %d pic_id:%d' % (self.id, self.pic_id)
-
 
