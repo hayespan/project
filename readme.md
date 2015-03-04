@@ -74,7 +74,62 @@ admin_id -> admin.id
 ```
 id
 (use `session` to store default location information)
+
 ```
+##### 3.1 CreateUser
+`POST /user/choose_location`
+
+----
+```
+input:
+building_id
+```
+----
+```
+ouput:
+{
+'code': 0,
+'data': {'_csrf_token': 'xxx'} // 写localstorage，伴随着用户终身
+}
+```
+----
+```
+0
+1
+-1 Building does not exist.
+```
+----
+##### 3.2 UserLocationInfo
+`GET /user/location_info`
+
+----
+```
+ouput:
+{
+'code': 0,
+'data': {
+'school': {'id': x, 'name': 'xxx'}, 
+'building': {'id': x, 'name': 'xxx'}}
+}
+```
+----
+```
+0
+-1 Location info does not exist.
+```
+----
+##### 3.3 GetContactInfo
+`GET /user/contact_info`
+
+----
+```
+ouput:
+{
+'code': 0,
+'data': {'name': 'xxx', 'phone':'xxx', 'addr': 'xxx'}
+}
+```
+
 
 4. Category Module
 ----
