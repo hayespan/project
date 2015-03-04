@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+import os
+from hashlib import md5
+from flask import session
+from flask.ext.wtf import Form
+from wtforms.fields import TextAreaField, StringField, BooleanField, DateField, IntegerField
+from wtforms.validators import Required, Length, Optional, ValidationError, Regexp
+
+from .common import jsonError
+from .errno import Errno
+
+def init_csrf_token():
+        session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
+
+class CsrfTokenForm(Form):
+    csrf_token = StringField(validators=[Required(), Length(min=32, max=32), ])
+
+def csrf_token_required(func):
+    '''check csrf token required decorator'''
+    @wraps(func)
+    def _wrapped(*args, **kwargs):
+        form = CsrfTokenForm()
+        if form.validate_on_submit():
+            csrf = form.csrf_token.data
+            if csrf == session['_csrf_token']:
+                return func(*args, **kwargs)
+        return jsonError(Errno.CSRF_FAILED)
+    return _wrapped
+
