@@ -13,7 +13,8 @@ class UserErrno(Errno):
     CONTACT_INFO_DOES_NOT_EXIST = (-4, 'Contact info does not exist.')
 
 class AdminErrno(Errno):
-    pass
+    PRIVILEGE_ILLEGAL = (-1, 'The privilege of current admin is illegal.')
+    ADMIN_OFFLINE = (-2, 'Admin should didn\'t login.')
 
 class FileErrno(Errno):
     pass
