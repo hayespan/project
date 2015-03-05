@@ -20,6 +20,7 @@ class Order(db.Model):
     # redundancy information
     school_name_rd = db.Column(db.String(32), nullable=False)
     building_name_rd = db.Column(db.String(32), nullable=False)
+    tot_price_rd = db.Column(db.Float, nullable=False) # for query performance
 
     user = db.relationship('User', backref=db.backref('orders', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('orders', lazy='dynamic'))

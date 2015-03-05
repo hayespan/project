@@ -24,6 +24,9 @@ class Product_building(db.Model):
     quantity = db.Column(db.Integer, nullable=False, default=0)
     timedelta = db.Column(db.Float, nullable=False)
 
+    # redundance for order by performance
+    sold_cnt_rd = db.Column(db.Integer, nullable=False, default=0)
+
     product = db.relationship('Product', backref=db.backref('product_buildings', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('product_buildings', lazy='dynamic'))
 
