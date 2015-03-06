@@ -12,8 +12,8 @@ class Order(db.Model):
     addr = db.Column(db.String(100), nullable=False)
     receiver = db.Column(db.String(15), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
-    status = db.Column(db.Enum('uncompleted', 'completed', 'cancelled'), nullable=False, default='uncommited')
-    released_time = db.Column(db.DateTime, nullable=True)
+    status = db.Column(db.Enum('uncompleted', 'completed', 'cancelled'), nullable=False, default='uncompleted')
+    released_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
     timedelta = db.Column(db.Float, nullable=False)
     password = db.Column(db.String(5), nullable=False, default=lambda: ''.join([str(random.choice(range(10))) for i in range(4)]))
 
