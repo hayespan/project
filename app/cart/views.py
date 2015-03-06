@@ -139,7 +139,7 @@ def delete_cart():
     if form.validate_on_submit():
         cart = u.carts.filter_by(product_id=form.product_id.data).first()
         if cart:
-            db.session.remove(cart)
+            db.session.delete(cart)
             db.session.commit()
         return jsonResponse(None)
     return jsonError(CartErrno.INVALID_ARGUMENT)
@@ -150,6 +150,6 @@ def delete_cart():
 @csrf_token_required
 def clear_cart():
     u = g.buyer
-    db.session.remove(u.carts.all())
+    db.session.delete(u.carts)
     return jsonResponse(None)
 
