@@ -80,7 +80,24 @@ def admin_level_3():
     return jsonResponse({'orders' : in_charge_order, 'inventory' : inventory})
 
 def admin_level_2():
-    pass
+    admin_school = Admin.query.filter_by(id = session.get('admin_id')).schools
+    admin_buildings = admin_school.buildings
+    # return all the building's name and id in this school to the front-end
+    buildings = []
+    for building in admin_buildings:
+        buildings.append((building.name, building.id))
+    # get the id of building which the front-end wants to query the order
+    order_building = request.args.get('order_building')
+    # if no building has been selected then return an empty list
+    orders_in_charge = []
+    if order_building:
+        orders = Building.query.filter_by(id = order_building).first().orders
+        for order in orders:
+            if order.
+            orders_in_charge.append({})
+        
+    inventory_building = request.args.get('inventory_building')
+    
 
 def admin_level_1():
     pass
