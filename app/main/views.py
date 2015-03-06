@@ -14,10 +14,10 @@ from ..util.common import viaMobile
 def index():
     uid = session.get('buyerid')
     user = User.query.filter_by(id=uid).first() if uid else None
-    if not session.get('buyer_contact_info'):
-        session['buyer_contact_info'] = [u'匿名用户', '', '']
     if user:
-        user.name = session['buyer_contact_info'][0]
+        user.name = u'匿名用户'
+    schools = School.query.all()
+    locations = [[i, i.buildings.all()] for i in schools]
     catx = [[i, [j for j in i.cat2s.order_by(Cat2.id.desc()).all()]] for i in Cat1.query.order_by(Cat1.id.asec()).all()]
     if user:
         hot_products = db.session.query(Product, Product_building.sold_cnt_rd, Product_building.quantity).\
@@ -38,9 +38,9 @@ def index():
                 all()
     promotions = [i.pic.filename for i in Promotion.query.all()]
     if viaMobile():
-        return render_template('', user=user, catx=catx, hot_products=hot_products, promotions=promotions)
+        return render_template('', user=user, catx=catx, hot_products=hot_products, promotions=promotions, locations=locations)
     else: 
-        return render_template('', user=user, catx=catx, hot_products=hot_products, promotions=promotions)
+        return render_template('', user=user, catx=catx, hot_products=hot_products, promotions=promotions, locations=locations)
 
 
     
