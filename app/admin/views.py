@@ -7,7 +7,7 @@ from hashlib import md5
 
 from . import adminbp 
 from .models import Admin
-from .froms import *
+# from .froms import *
 from .utils import admin_login_required
 
 from .. import db
@@ -30,7 +30,7 @@ def admin_login():
 def admin_logout():
     pass
 
-@adminbp.route('/', methods=['GET', 'POST'])
+@adminbp.route('/', methods=['GET',])
 @admin_login_required
 @csrf_token_required
 def get_admin():
@@ -61,22 +61,22 @@ def refresh_admin():
 def admin_level_3():
     in_charge_order = []
     inventory = []
-    in_charge_buildings = Building.query.filter_by(admin_id = int(session.get('admin_id')))
-    if not in_charge_buildings:
-        return jsonError(AdminErrno.NO_BUILDING_IN_CHARGE)
-    for bd in in_charge_buildings:
-        orders = Order.query.filter_by(building_id = bd.id)
-        for order in orders:
-            d = Order_product.query.filter_by(order_id = order.id)
-            details = []
-            for item in d:
-                details.append((Product.query.filter_by(id = item.product_id).first().name, item.quantity))
-            receiver = {'name' : order.receiver, 'location' : order.room, 'phone' : order.phone}
-            in_charge_orders.append({'number' : order.ticketid, 'details' : d, 'receiver_info' : receiver,
-                                     'status' : order.status, 'released_time' : order.released_time})
-        products = Product_building.query.filter_by(building_id = bd.id)
-        for item in products:
-            inventory.append({'product' : Product.query.filter_by(id = item.product_id).first().name, 'quantity' : item.quantity})
+    admin = Admin.query.filter_by(id = session.get('admin_id'))
+    admin_buildings = admin.buildings
+    orders = admin_buildings.orders
+    for o in orders:
+        order = {'number': o.ticketid, 'details': [], 'receiver_info': {'name': o.receiver, 'location': o.room, 'phone': o.phone},
+                 'status': o.status, 'released_time': o.released_time}
+        snapshots = o.order_snapshots
+        details = []
+        for snapshot in snapshots:
+            product = (Snapshot.query.filter_by(id = snapshot.snapshot_id).first().name, snapshot.quantity)
+            details.append(product)
+        order['details'] = details
+        in_charge_order.append(order)
+    product = admin_buildings.product_buildings
+    for product in products:
+        invenctory.append((Product.query.filter_by(id = product.product_id).first().name, product.quantity))
     return jsonResponse({'orders' : in_charge_order, 'inventory' : inventory})
 
 def admin_level_2():
@@ -88,28 +88,28 @@ def admin_level_1():
 @adminbp.route('/change_password', methods=['POST',])
 @admin_login_required
 @csrf_token_required
-def admin_change_password:
+def admin_change_password():
     pass
 
-@adminbp.route('/administrator', method=['GET',])
+@adminbp.route('/administrator', methods=['GET',])
 @admin_login_required
 @csrf_token_required
 def manage_admin():
     pass
 
-@adminbp.route('/administrator/add', method=['POST',])
+@adminbp.route('/administrator/add', methods=['POST',])
 @admin_login_required
 @csrf_token_required
 def add_admin():
     pass
 
-@adminbp.route('/administrator/edit', method=['POST',])
+@adminbp.route('/administrator/edit', methods=['POST',])
 @admin_login_required
 @csrf_token_required
-def edit_admin:
+def edit_admin():
     pass
 
-@adminbp.route('/administrator/delete', method=['POST',])
+@adminbp.route('/administrator/delete', methods=['POST',])
 @admin_login_required
 @csrf_token_required
 def admin_delete():
