@@ -4,6 +4,7 @@ from functools import wraps
 
 from .models import User
 from ..util.errno import UserErrno
+from ..util.common import jsonError
 
 def buyer_login_required(func):
     '''buyer login required decorator'''
@@ -27,6 +28,8 @@ def buyer_login_required(func):
             buyer.name = buyer_contact_info[0]
             buyer.mobile = buyer_contact_info[1]
             buyer.addr = buyer_contact_info[2]
+        else:
+            buyer.name = u'匿名用户'
         g.buyer = buyer
         return func(*args, **kwargs)
     return _wrapped
