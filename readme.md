@@ -76,7 +76,7 @@ id
 (use `session` to store default location information)
 
 ```
-##### 3.1 CreateUser
+##### 3.1 create_user
 `POST /user/choose_location`
 
 ----
@@ -99,7 +99,7 @@ ouput:
 -1 Building does not exist.
 ```
 ----
-##### 3.2 UserLocationInfo
+##### 3.2 get_user_location_Info
 `GET /user/location_info`
 
 ----
@@ -118,7 +118,7 @@ ouput:
 -1 Location info does not exist.
 ```
 ----
-##### 3.3 GetContactInfo
+##### 3.3 get_contactInfo
 `GET /user/contact_info`
 
 ----
@@ -128,6 +128,11 @@ ouput:
 'code': 0,
 'data': {'name': 'xxx', 'phone':'xxx', 'addr': 'xxx'}
 }
+```
+----
+```
+0
+-1 Contact info does not exist.
 ```
 
 

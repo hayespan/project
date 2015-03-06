@@ -96,4 +96,8 @@ class App(object):
                 picbp,
                 url_prefix='/pic',
                 )
+        from .main import mainbp
+        self.app.register_blueprint(
+                mainbp,
+                )
         
