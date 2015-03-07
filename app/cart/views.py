@@ -33,10 +33,15 @@ def create_cart():
     form = CreateCartForm()
     if form.validate_on_submit():
         pd = Product.query.filter_by(id=form.product_id.data).first()
-        if not pd:
-            return jsonError(CartErrno.BUILDING_DOES_NOT_EXIST)
+        if not pd: #1 building does not exist, failed
+            return jsonError(CartErrno.CART_INVALID)
         quantity = form.quantity.data
-        pd_quantity = pd.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first().quantity
+        pd_bd = pd.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first()
+        if not pd_bd: #2 product detached from building, failed. 
+            return jsonError(CartErrno.CART_INVALID)
+        pd_quantity = pd_bd.quantity
+        if pd_quantity == 0: # product sold out, failed.
+            return jsonError(CartErrno.CART_INVALID)
         # check whether cart obj exists
         cart =  u.carts.filter(Cart.product_id==pd.id).first()
         if cart:
@@ -59,23 +64,36 @@ def create_cart():
         return jsonResponse(cart.id)
     return jsonError(CartErrno.INVALID_ARGUMENT)
     
-@cartbp.route('/', methods=['GET', ])
+# ajax
+@cartbp.route('/', methods=['POST', ])
 @buyer_login_required
+@csrf_token_required
 def get_cart_list():
     u = g.buyer
     carts = u.carts.all()
+    items = []
     for i in carts:
         pb =  i.product.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first()
-        if pb and pb.quantity<i.quantity:
+        if not pb:
+            pb.is_valid = False
+        if pb.quantity == 0:
+            pb.is_valid = False
+        if pb.quantity<i.quantity:
             i.quantity = pb.quantity
         i.last_viewed_time = datetime.now()
-        i.is_valid = i.quantity!=0
         db.session.add(i)
+        pd = i.product
+        items.append({
+            'product_id': pd.id,
+            'name': pd.name,
+            'description': pd.description,
+            'filename': pd.pic.filename,
+            'price': pd.price,
+            'quantity': i.quantity,
+            'is_valid': i.is_valid,
+            })
     db.session.commit()
-    if viaMobile():
-        return render_template('', user=u, carts=carts)
-    else:
-        return render_template('', user=u, carts=carts)
+    return jsonResponse(items)
 
 # ajax
 @cartbp.route('/add', methods=['POST', ])
@@ -139,7 +157,7 @@ def delete_cart():
     if form.validate_on_submit():
         cart = u.carts.filter_by(product_id=form.product_id.data).first()
         if cart:
-            db.session.remove(cart)
+            db.session.delete(cart)
             db.session.commit()
         return jsonResponse(None)
     return jsonError(CartErrno.INVALID_ARGUMENT)
@@ -150,6 +168,6 @@ def delete_cart():
 @csrf_token_required
 def clear_cart():
     u = g.buyer
-    db.session.remove(u.carts.all())
+    db.session.delete(u.carts)
     return jsonResponse(None)
 

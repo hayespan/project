@@ -2,7 +2,7 @@
 
 import os
 
-from flask import request, session, g
+from flask import session, g
 from hashlib import md5
 
 from . import userbp
@@ -14,7 +14,7 @@ from .. import db
 from ..util.common import jsonError, jsonResponse
 from ..util.errno import UserErrno
 from ..util.csrf import init_csrf_token, csrf_token_required
-from ..location.models import Building, School
+from ..location.models import Building 
 
 @userbp.route('/choose_location', methods=['POST', ])
 def create_user():
