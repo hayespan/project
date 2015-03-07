@@ -2,13 +2,14 @@
 
 import os
 
+from datetime import datetime
 from flask import request, session, g, render_template, redirect, url_for
 from hashlib import md5
 
 from . import adminbp 
 from .models import Admin
 # from .froms import *
-from .utils import admin_login_required, get_order_money
+from .utils import admin_login_required, get_order_money, is_in_same_quarter, is_in_same_month
 
 from .. import db
 from ..util.common import jsonError, jsonResponse
@@ -28,7 +29,7 @@ def admin_login():
     session['admin_username'] = 'raymond'
     session['_csrf_token'] = 'asdf'
     session['admin_privilege'] = 4
-    return jsonResponse({'msg': 'login success.'})
+    return jsonResponse({'admin_id' : session['admin_id'], 'admin_username' : session['admin_username'], 'admin_privilege' : session['admin_privilege']})
 
 @adminbp.route('/logout', methods=['POST',])
 @admin_login_required
@@ -68,15 +69,11 @@ def admin_level_3():
     try:
         admin = Admin.query.filter_by(id = session.get('admin_id')).first()
         admin_buildings = admin.buildings
-        print '!' * 50
-        print admin
-        print admin_buildings
-        orders = admin_buildings.orders
-        print orders
+        orders = admin_buildings.orders.all()
     except:
         return jsonError(AdminErrno.NO_ORDER_IN_CHARGE)
     for o in orders:
-        order = {'number': o.ticketid, 'details': [], 'receiver_info': {'name': o.receiver, 'location': o.room, 'phone': o.phone},
+        order = {'number': o.ticketid, 'details': [], 'receiver_info': {'name': o.receiver, 'location': o.addr, 'phone': o.phone},
                  'status': o.status, 'released_time': o.released_time, 'timedelta': o.timedelta}
         snapshots = o.order_snapshots
         details = []
@@ -85,23 +82,22 @@ def admin_level_3():
             details.append(product)
         order['details'] = details
         in_charge_order.append(order)
-    product = admin_buildings.product_buildings
+    products = admin_buildings.product_buildings.all()
     for product in products:
         inventory.append((Product.query.filter_by(id = int(product.product_id)).first().name, product.quantity))
     return jsonResponse({'orders' : in_charge_order, 'inventory' : inventory})
 
 def admin_level_2():
-    admin_school = Admin.query.filter_by(id = session.get('admin_id')).schools
-    admin_buildings = admin_school.buildings
+    admin_school = Admin.query.filter_by(id = session.get('admin_id')).first().school
+    admin_buildings = admin_school.buildings.all()
     # return all the building's name and id in this school to the front-end
     buildings = []
     for building in admin_buildings:
-        buildings.append((building.name, building.id))
+        buildings.append((building.name, int(building.id)))
     # get the id of building which the front-end wants to query the order
-    try:
-        order_building = request.args.get('order_building')
-        inventory_building = request.args.get('inventory_building')
-    except:
+    order_building = request.args.get('order_building')
+    inventory_building = request.args.get('inventory_building')
+    if not (order_building or inventory_building):
         return jsonResponse({'buildings': buildings})
     orders_in_charge = []
     # if there is a building been selected
@@ -127,60 +123,61 @@ def admin_level_2():
         for product in products:
             inventory_info.append((Product.query.filter_by(id = int(product.product_id)).first().name, product.quantity))
     # get the total sales
-    total_sales_building = request.args.get('total_sales_building')
+    total_sales_building = request.args.get('total_sales_building', 'all')
     money = 0
+    amount = 0
     if total_sales_building == 'all':
         for building in admin_buildings:
-            orders = building.orders
+            orders = building.orders.all()
+            amount = amount + len(orders)
             for order in orders:
                 money = money + get_order_money(order)
     else:
         try:
-            orders = Building.query.filter_by(id = int(total_sales_building)).first().orders
-        except Exception as e:
+            orders = Building.query.filter_by(id = int(total_sales_building)).first().orders.all()
+        except:
             return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
         else:
+            amount = len(orders)
             for order in orders:
                 money = money + get_order_money(order)
-    return jsonResponse({'buildings': buildings, 'orders': orders_in_charge, 'inventory': inventory_info, 'total_sales': money})
+    return jsonResponse({'buildings': buildings, 'orders': orders_in_charge, 'inventory': inventory_info, 'total_sales': (amount, money)})
 
 def admin_level_1():
     schools = School.query.all()
     school_buildings = []
     for school in schools:
         s = {'name': school.name, 'school_id': school.id, 'buildings': []}
-        buildings = schools.buildings
+        buildings = school.buildings.all()
         for building in buildings:
             s['buildings'].append((building.name, building.id))
-        schools_buildings.append(s)
-
+        school_buildings.append(s)
     try:
-        is_all_schools = bool(request.args.get('is_all'))
-        (year, quarter, month) = request.args.get('time_range').split('/')
+        is_all_schools = bool(request.args.get('is_all', 'True'))
+        (year, quarter, month) = request.args.get('time_range', str(datetime.now().year)+'/all/all').split('/')
     except:
         return jsonError(AdminErrno.NOT_ENOUGH_ARGS)
     orders = []
     if is_all_schools:
         orders = Order.query.all()
     else:
-        try:
-            school = request.args.get('school')
-            building = request.args.get('building')
-        except:
+        school = request.args.get('school')
+        building = request.args.get('building')
+        if not (school or building):
             return jsonError(AdminErrno.NOT_ENOUGH_ARGS)
         if building == 'all':
             orders = School.query.filter_by(id = int(school)).first().buildings.orders
         else:
             orders = Building.query.filter_by(id = int(building)).first().orders
     money = 0
-    for order in orders:
-        try:
-            if (order.released_time.year == int(year)) and is_in_same_quarter(order.released_time.month, int(quarter)) and is_in_same_month(order.released_time.month, month):
-                money = money + get_order_money(order)
-        except Exception as e:
+    if month != 'all' and quarter != 'all':
+        if not (is_in_same_quarter(int(month), int(quarter))):
             return jsonError(AdminErrno.TIME_ILLEGAL)
+    for order in orders:
+        if (order.released_time.year == int(year)) and ((quarter == 'all') or is_in_same_quarter(order.released_time.month, int(quarter))) and (month == 'all' or is_in_same_month(order.released_time.month, month)):
+            money = money + get_order_money(order)
 
-    return jsonResponse({'schools_buildings': schools_buildings, 'total_sales' : money})
+    return jsonResponse({'schools_buildings': school_buildings, 'total_sales' : money})
         
 
 @adminbp.route('/change_password', methods=['POST',])
@@ -198,7 +195,7 @@ def manage_admin():
 @adminbp.route('/administrator/add', methods=['POST',])
 @csrf_token_required
 def add_admin():
-    admin = Admin(1, 'raymond', 'asdf', )
+    pass
 
 @adminbp.route('/administrator/edit', methods=['POST',])
 @admin_login_required
