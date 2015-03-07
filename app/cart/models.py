@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from .. import db
 
 class Cart(db.Model):
@@ -7,7 +8,9 @@ class Cart(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
     building_id = db.Column(db.Integer, db.ForeignKey('building.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
-    last_viewed_time = db.Column(db.DateTime, nullable=True)
+
+    # update only when user open cart
+    last_viewed_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     is_valid = db.Column(db.Boolean, nullable=False, default=True)
 

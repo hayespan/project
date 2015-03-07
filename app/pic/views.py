@@ -1,6 +1,11 @@
 # # -*- coding: utf-8 -*-
 
+<<<<<<< HEAD
 # from flask import request
+=======
+from flask import request
+from flask.ext.login import login_required
+>>>>>>> dev0
 
 # from . import picbp
 # from .. import db

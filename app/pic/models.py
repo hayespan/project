@@ -12,9 +12,9 @@ class File(db.Model):
 class Promotion(db.Model):
     __tablename__ = 'promotion'
     id = db.Column(db.Integer, primary_key=True)
-    pic_id =  db.Column(db.Integer, db.ForeignKey('file.id'), nullable=False)
+    pic_id =  db.Column(db.Integer, db.ForeignKey('file.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
 
-    pic = db.relationship('File', backref=db.backref('promotion', uselist=False, onupdate='CASCADE', ondelete='CASCADE'))
+    pic = db.relationship('File', backref=db.backref('promotion', uselist=False))
 
     def __repr__(self):
         return '<Promotion %d pic_id:%d' % (self.id, self.pic_id)

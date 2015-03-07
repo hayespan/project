@@ -7,7 +7,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     pic_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
-    cat2_id = db.Column(db.Integer, db.ForeignKey('cat2.id'), nullable=True)
+    cat2_id = db.Column(db.Integer, db.ForeignKey('cat2.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     description = db.Column(db.Text(), nullable=False, default='')
     price = db.Column(db.Float, nullable=False)
 
@@ -19,10 +19,13 @@ class Product(db.Model):
 
 class Product_building(db.Model):
     __tablename__ = 'product_building'
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, primary_key=True)
-    building_id = db.Column(db.Integer, db.ForeignKey('building.id'), nullable=False, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
+    building_id = db.Column(db.Integer, db.ForeignKey('building.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=0)
     timedelta = db.Column(db.Float, nullable=False)
+
+    # redundance for order by performance
+    sold_cnt_rd = db.Column(db.Integer, nullable=False, default=0)
 
     product = db.relationship('Product', backref=db.backref('product_buildings', lazy='dynamic'))
     building = db.relationship('Building', backref=db.backref('product_buildings', lazy='dynamic'))
