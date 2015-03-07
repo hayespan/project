@@ -2,7 +2,7 @@
 from flask import Blueprint
 
 adminbp = Blueprint(
-        'adminbp',
+        'admin',
         __name__,
         # if templates & static dirs are in
         # subapp/ then the following configs

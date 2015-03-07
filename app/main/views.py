@@ -10,6 +10,7 @@ from ..product.models import Product, Product_building
 from ..pic.models import Promotion
 from ..util.common import viaMobile
 from ..category.utils import _get_catx
+from ..location.models import School, Building
 
 @mainbp.route('/', methods=['GET', ])
 def index():
@@ -38,8 +39,4 @@ def index():
                 all()
     promotions = [i.pic.filename for i in Promotion.query.all()]
     return render_template('', user=user, catx=_get_catx(), hot_products=hot_products, promotions=promotions, locations=locations)
-
-
-    
-    
 
