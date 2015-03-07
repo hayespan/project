@@ -4,7 +4,7 @@ from datetime import datetime
 from .. import db
 
 class Order(db.Model):
-    __tablename__ = 'order'
+    __tablename__ = 'my_order'
     id = db.Column(db.Integer, primary_key=True)
     ticketid = db.Column(db.String(21), nullable=False, default=lambda:datetime.now().strftime('%Y%m%d%H%M%S%f'), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
@@ -28,11 +28,11 @@ class Order(db.Model):
     building = db.relationship('Building', backref=db.backref('orders', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Order %d ticketid:%d user_id:%d building_id:%d' % (self.id, self.ticketid, self.user_id, self.building_id)
+        return '<Order %d ticketid:%s user_id:%d building_id:%d' % (self.id, self.ticketid, self.user_id, self.building_id)
 
 class Order_snapshot(db.Model):
     __tablename__ = 'order_snapshot'
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('my_order.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
     snapshot_id = db.Column(db.Integer, db.ForeignKey('snapshot.id'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False, default=1)
 
