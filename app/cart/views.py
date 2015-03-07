@@ -15,16 +15,15 @@ from ..product.models import Product
 
 # ajax
 @cartbp.route('/cnt', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def get_cart_num():
     u = g.buyer
     return jsonResponse(u.carts.count())
 
-
 # ajax
 @cartbp.route('/insert', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def create_cart():
     u = g.buyer
@@ -66,7 +65,7 @@ def create_cart():
     
 # ajax
 @cartbp.route('/', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def get_cart_list():
     u = g.buyer
@@ -97,7 +96,7 @@ def get_cart_list():
 
 # ajax
 @cartbp.route('/add', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def increase_cart_quantity():
     u = g.buyer
@@ -123,7 +122,7 @@ def increase_cart_quantity():
 
 #ajax
 @cartbp.route('/sub', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def decrease_cart_quantity():
     u = g.buyer
@@ -149,7 +148,7 @@ def decrease_cart_quantity():
 
 # ajax
 @cartbp.route('/delete', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def delete_cart():
     u = g.buyer
@@ -164,7 +163,7 @@ def delete_cart():
 
 #ajax
 @cartbp.route('/clear', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def clear_cart():
     u = g.buyer

@@ -2,7 +2,7 @@
 from flask import Blueprint
 
 locationbp = Blueprint(
-        'locationbp',
+        'location',
         __name__,
         # if templates & static dirs are in
         # subapp/ then the following configs

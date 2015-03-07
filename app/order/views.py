@@ -15,7 +15,7 @@ from ..user.utils import buyer_login_required
 
 # ajax
 @orderbp.route('/create', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def create_order():
     u = g.buyer
@@ -66,7 +66,7 @@ def create_order():
 
 
 @orderbp.route('/', methods=['GET', ])
-@buyer_login_required
+@buyer_login_required(False, 'main.index')
 def get_order_list():
     u = g.buyer
     orders = u.orders.order_by(db.case([(Order.status=='uncompleted', 1),], else_=0).desc()).all()

@@ -3,6 +3,7 @@ from ..util.common import jsonResponse, jsonError
 from .models import School, Building
 from . import locationbp
 from ..util.errno import LocationErrno
+
 # ajax
 @locationbp.route('/school_list', methods=['GET', ])
 def get_school_list():
