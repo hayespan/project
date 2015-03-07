@@ -65,7 +65,7 @@ def create_order():
     return jsonError(OrderErrno.INVALID_ARGUMENT)
 
 
-@orderbp.route('/buyer', methods=['GET', ])
+@orderbp.route('/', methods=['GET', ])
 @buyer_login_required
 def get_order_list():
     u = g.buyer
@@ -97,8 +97,5 @@ def get_order_list():
             items.append(item_meta)
         data['items'] = items
         order_data.append(data) 
-    if viaMobile():
-        return render_template('', user=u, orders=order_data)
-    else:
-        return render_template('', user=u, orders=order_data)
+    return render_template('', user=u, orders=order_data)
 

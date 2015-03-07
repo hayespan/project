@@ -24,7 +24,7 @@ class CartErrno(Errno):
     CART_DOES_NOT_EXIST = (-3, 'Cart record does not exist.')
 
 class ProductErrno(Errno):
-    pass
+    CATX_DOES_NOT_EXIST = (-1, 'Category x does not exist.')
 
 class LocationErrno(Errno):
     SCHOOL_DOES_NOT_EXIST = (-1, 'School does not exist.')

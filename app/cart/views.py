@@ -64,11 +64,14 @@ def create_cart():
         return jsonResponse(cart.id)
     return jsonError(CartErrno.INVALID_ARGUMENT)
     
-@cartbp.route('/buyer', methods=['GET', ])
+# ajax
+@cartbp.route('/', methods=['POST', ])
 @buyer_login_required
+@csrf_token_required
 def get_cart_list():
     u = g.buyer
     carts = u.carts.all()
+    items = []
     for i in carts:
         pb =  i.product.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first()
         if not pb:
@@ -79,11 +82,18 @@ def get_cart_list():
             i.quantity = pb.quantity
         i.last_viewed_time = datetime.now()
         db.session.add(i)
+        pd = i.product
+        items.append({
+            'product_id': pd.id,
+            'name': pd.name,
+            'description': pd.description,
+            'filename': pd.pic.filename,
+            'price': pd.price,
+            'quantity': i.quantity,
+            'is_valid': i.is_valid,
+            })
     db.session.commit()
-    if viaMobile():
-        return render_template('', user=u, carts=carts)
-    else:
-        return render_template('', user=u, carts=carts)
+    return jsonResponse(items)
 
 # ajax
 @cartbp.route('/add', methods=['POST', ])

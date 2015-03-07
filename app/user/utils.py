@@ -5,6 +5,8 @@ from functools import wraps
 from .models import User
 from ..util.errno import UserErrno
 from ..util.common import jsonError
+from ..location.models import Building 
+from .. import db
 
 def buyer_login_required(func):
     '''buyer login required decorator'''
@@ -16,6 +18,9 @@ def buyer_login_required(func):
         buyer_contact_info = session.get('buyer_contact_info')
         if not (userid and _csrf_token and buyer_location_info):
             return jsonError(UserErrno.USER_OFFLINE)
+        bd = db.session.query(Building).filter(Building.id==buyer_location_info[1][0]).first()
+        if not bd:
+            return jsonError(UserErrno.USER_OFFLINE)
         buyer = User.query.filter_by(id=userid).first()
         buyer.location_info = {
                 'school_id': buyer_location_info[0][0],
@@ -23,6 +28,7 @@ def buyer_login_required(func):
                 'building_id': buyer_location_info[1][0],
                 'building_name': buyer_location_info[1][1],
                 }
+        buyer.building = bd
         buyer.csrf_token = _csrf_token
         if buyer_contact_info:
             buyer.name = buyer_contact_info[0]
