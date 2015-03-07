@@ -10,7 +10,7 @@ class School(db.Model):
 
     admin = db.relationship('Admin', backref=db.backref('school', uselist=False))
 
-    def __repr_(self):
+    def __repr__(self):
         return '<School %d %s>' % (self.id, self.name)
 
 class Building(db.Model):
@@ -23,6 +23,6 @@ class Building(db.Model):
     school = db.relationship('School', backref=db.backref('buildings', lazy='dynamic'))
     admin = db.relationship('Admin', backref=db.backref('buildings', uselist=False))
 
-    def __repr_(self):
+    def __repr__(self):
         return '<Building %d %s>' % (self.id, self.name)
 
