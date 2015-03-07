@@ -48,7 +48,6 @@ def get_admin():
 
 @adminbp.route('/refresh', methods=['GET',])
 @admin_login_required
-@csrf_token_required
 def refresh_admin():
     privilege = session.get('admin_privilege')
     if privilege == 4:
@@ -187,10 +186,9 @@ def manage_admin():
     pass
 
 @adminbp.route('/administrator/add', methods=['POST',])
-@admin_login_required
 @csrf_token_required
 def add_admin():
-    pass
+    admin = Admin(1, 'raymond', 'asdf', )
 
 @adminbp.route('/administrator/edit', methods=['POST',])
 @admin_login_required
