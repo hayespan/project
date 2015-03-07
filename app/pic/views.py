@@ -1,18 +1,13 @@
-# # -*- coding: utf-8 -*-
-
-<<<<<<< HEAD
+# -*- coding: utf-8 -*-
 # from flask import request
-=======
-from flask import request
-from flask.ext.login import login_required
->>>>>>> dev0
+# from flask.ext.login import login_required
 
 # from . import picbp
 # from .. import db
 
 # from .models import File, Promotion
 # from .utils import savepic, removepic
-# # from ..admin.utils import root_required
+# from ..admin.utils import root_required
 
 # @picbp.route('/promotion/create', methods=['POST', ])
 # @login_required

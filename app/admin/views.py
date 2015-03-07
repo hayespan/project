@@ -24,7 +24,11 @@ from ..product.models import Product, Product_building, Snapshot
 # the privilege is 1, 2, 4 and if the privilege is 1, the admin got the highest priority
 @adminbp.route('/login', methods=['POST', 'GET'])
 def admin_login():
-    pass
+    session['admin_id'] = 1
+    session['admin_username'] = 'raymond'
+    session['_csrf_token'] = 'asdf'
+    session['admin_privilege'] = 4
+    return jsonResponse({'msg': 'login success.'})
 
 @adminbp.route('/logout', methods=['POST',])
 @admin_login_required
@@ -34,7 +38,6 @@ def admin_logout():
 
 @adminbp.route('/', methods=['GET',])
 @admin_login_required
-@csrf_token_required
 def get_admin():
     privilege = session.get('admin_privilege')
     if privilege == 4:
@@ -51,20 +54,27 @@ def get_admin():
 def refresh_admin():
     privilege = session.get('admin_privilege')
     if privilege == 4:
-        return admin_level_3
+        return admin_level_3()
     elif privilege == 2:
-        return admin_level_2
+        return admin_level_2()
     elif privilege == 1:
-        return admin_level_1
+        return admin_level_1()
     else:
-        return jsonError(AdminErrno.PRIVILEGE_ILLIGAL)
+        return jsonError(AdminErrno.PRIVILEGE_ILLEGAL)
 
 def admin_level_3():
     in_charge_order = []
     inventory = []
-    admin = Admin.query.filter_by(id = session.get('admin_id'))
-    admin_buildings = admin.buildings
-    orders = admin_buildings.orders
+    try:
+        admin = Admin.query.filter_by(id = session.get('admin_id')).first()
+        admin_buildings = admin.buildings
+        print '!' * 50
+        print admin
+        print admin_buildings
+        orders = admin_buildings.orders
+        print orders
+    except:
+        return jsonError(AdminErrno.NO_ORDER_IN_CHARGE)
     for o in orders:
         order = {'number': o.ticketid, 'details': [], 'receiver_info': {'name': o.receiver, 'location': o.room, 'phone': o.phone},
                  'status': o.status, 'released_time': o.released_time, 'timedelta': o.timedelta}

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
 from flask import session, g
 from functools import wraps
 
@@ -45,20 +44,3 @@ def is_in_same_quarter(month, quarter):
 
 def is_in_same_month(m1, m2):
     return (m2 == 'all') or (m1 == int(m2))
-=======
-
-from functools import wraps
-from flask import abort
-from flask.ext.login import current_user
-
-def root_required(func):
-    '''
-    root required decorator
-    '''
-    @wraps(func)
-    def _wrapped(*args, **kwargs):
-        if current_user.is_root:
-            return func(*args, **kwargs)
-        return abort(404)
-    return _wrapped
->>>>>>> dev0
