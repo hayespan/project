@@ -14,7 +14,10 @@ class UserErrno(Errno):
 
 class AdminErrno(Errno):
     PRIVILEGE_ILLEGAL = (-1, 'The privilege of current admin is illegal.')
-    ADMIN_OFFLINE = (-2, 'Admin should didn\'t login.')
+    ADMIN_OFFLINE = (-2, 'Admin didn\'t login.')
+    BUILDING_DOES_NOT_EXIST = (-3, 'Building does not exist.')
+    TIME_ILLEGAL = (-4, 'The time provided by front-end is illegal.')
+    NOT_ENOUGH_ARGS = (-5, 'The amount of args is not enough.')
 
 class FileErrno(Errno):
     pass
