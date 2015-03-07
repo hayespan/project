@@ -22,18 +22,18 @@ def create_order():
     form = CreateOrderForm()
     if form.validate_on_submit():
         product_ids = form.product_ids_list
-        carts = [u.carts.filter_by(
-                    product_id=i,
-                    ).first() for i in product_ids
-                    ]
         carts = u.carts.filter(Cart.product_id.in_(product_ids)).all()
-        for i in carts:
+        for i in carts: # check whether post invalid id
             if not i.is_valid:
                 return jsonError(CartErrno.CART_INVALID)
         pbs = [Product_building.query.filter_by(product_id=i.product_id, building_id=u.location_info['building_id']).first() for i in carts]
-        if None in pbs:
+        if None in pbs: # check whether all product is accessible
             return jsonError(CartErrno.CART_INVALID)
-        timedelta = max([i.timedelta for i in pbs])
+        for i in range(len(pbs)): # check whether some products have been updated
+            pd = pbs[i].product
+            if pd.snapshots.filter(released_time>carts[i].last_viewed_time).count():
+                return jsonError(OrderErrno.PRODUCT_REFRESH)
+        timedelta = max([i.timedelta for i in pbs]) # get max delivery time
         order = Order(
                 user_id=u.id,
                 building_id=u.location_info['building_id'],
@@ -45,21 +45,18 @@ def create_order():
                 building_name_rd=u.location_info['building_name'],
                 )
         db.session.add(order)
-        # get right snapshot for association and calculate total price
+        # get most recent snapshot for association and calculate total price
         tot_price = 0
         for i in range(len(pbs)):
             pd = pbs[i].product
-            sns = pd.snapshots.order_by('released_time desc').all() 
-            for i in sns:
-                if i.released_time < carts[i].last_viewed_time:
-                    od_sn = Order_snapshot(
-                            order=order,
-                            snapshot=i,
-                            quantity=carts[i].quantity,
-                            )
-                    db.session.add(od_sn)
-                    tot_price += carts[i].quantity*i.price
-                    break
+            sn = pd.snapshots.order_by(Snapshot.released_time.desc()).limit(1).first()
+            od_sn = Order_snapshot(
+                    order=order,
+                    snapshot=sn,
+                    quantity=carts[i].quantity,
+                    )
+            db.session.add(od_sn)
+            tot_price += carts[i].quantity*i.price
         order.tot_price_rd = tot_price           
         # finally clear all items in cart
         u.carts.filter(Cart.product_id.in_(product_ids)).delete()

@@ -30,7 +30,8 @@ class LocationErrno(Errno):
     SCHOOL_DOES_NOT_EXIST = (-1, 'School does not exist.')
 
 class OrderErrno(Errno):
-    pass
+    PRODUCT_REFRESH = (-1, 'Some product info has been updated, please reload.')
+    CART_INVALID = (-2, 'Some item in cart is invalid, please reload.')
 
 class CategoryErrno(Errno):
     pass
