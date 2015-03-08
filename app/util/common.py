@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import time
+import datetime 
 from flask import jsonify, request
 
 def jsonError(ERROR):
@@ -15,3 +17,12 @@ def viaMobile():
             return True
     return False
 
+def datetime_2_unixstamp(dt):
+    '''datetime obj parsed to unixstamp
+    '''
+    return time.mktime(dt.timetuple())
+
+def timedelta_2_second(hours_f):
+    '''floating type, hour-delta, parsed to seconds
+    '''
+    return datetime.timedelta(hours=float(hours_f)).seconds
