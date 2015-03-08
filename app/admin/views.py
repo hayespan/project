@@ -8,7 +8,7 @@ from flask import request, session, g, render_template, redirect, url_for, abort
 
 from . import adminbp 
 from .models import Admin
-from .forms import LoginForm
+from .forms import LoginForm, HandleOrderForm
 from .utils import admin_login_required, is_in_same_quarter, is_in_same_month, admin_x_required
 
 from .. import db
@@ -85,6 +85,44 @@ def admin_3rd_api():
 @csrf_token_required
 def admin_2nd_api():
     return _admin_level_2()
+
+@adminbp.route('/level3/handle_order', methods=['POST', ])
+@admin_login_required
+@admin_x_required(4)
+@csrf_token_required
+def admin_3rd_handle_order():
+    '''handle order, complete or cancel
+    '''
+    form = HandleOrderForm()
+    if form.validate_on_submit():
+        ticketid = form.ticketid.data
+        password = form.password.data
+        handle = form.handle.data
+        order = Order.query.filter(Order.ticketid==ticketid).first()
+        if not order:
+            return jsonError(AdminErrno.ORDER_DOES_NOT_EXIST)
+        if order.status != 'uncompleted':
+            return jsonError(AdminErrno.ORDER_HANDLED)
+        if order.password == password:
+            order.status = 'completed' if handle else 'cancelled'
+            db.session.add(order)
+        # if complete order, fresh inventory & total sales
+        if handle:
+            od_sns = order.order_snapshots.all()
+            for od_sn in od_sns:
+                pd = od_sn.snapshot.product
+                if pd:
+                    pd_bd = pd.product_buildings.filter(Product_building.building_id==order.building_id).first()
+                    if pd_bd:
+                        pd_bd.quantity -= od_sn.quantity
+                        pd_bd.sold_cnt_rd += od_sn.quantity
+                        db.session.add(pd_bd)
+        # if cancel order, do nothing
+        else:
+            pass
+        db.session.commit()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 def _admin_level_3():
     '''APIs for 3rd admin.
