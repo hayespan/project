@@ -14,7 +14,7 @@ def init_csrf_token():
     session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
 class CsrfTokenForm(Form):
-    csrf_token = StringField(validators=[Required(), Length(min=32, max=32), ])
+    _csrf_token = StringField(validators=[Required(), Length(min=32, max=32), ])
 
 def csrf_token_required(func):
     '''check csrf token required decorator'''

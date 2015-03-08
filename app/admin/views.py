@@ -54,7 +54,7 @@ def login():
 def logout():
     session.pop('admin_id', None)
     session.pop('_csrf_token', None)
-    return jsonResponse(True)
+    return jsonResponse(None)
 
 @adminbp.route('/index', methods=['GET',])
 @admin_login_required(False, 'admin.login')
@@ -72,14 +72,14 @@ def index():
     else:
         abort(404)
 
-@adminbp.route('/level3', methods=['POST', ])
+@adminbp.route('/level3/query', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(4)
 @csrf_token_required
 def admin_3rd_api():
     return _admin_level_3()
 
-@adminbp.route('/level2', methods=['POST', ])
+@adminbp.route('/level2/query', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(2)
 @csrf_token_required
@@ -154,6 +154,7 @@ def _admin_level_2():
     '''
     admin = g.admin
     admin_school = admin.school
+    admin_buildings = admin_school.buildings.all()
     time_ = _get_time_()
     if not admin_school:
         return jsonError(AdminErrno.NO_SCHOOL_IN_CHARGE)
@@ -162,7 +163,6 @@ def _admin_level_2():
     get_building_list = request.args.get('get_building_list', None, type=int)
     building_data = []
     if get_building_list is not None:
-        admin_buildings = admin_school.buildings.all()
         # return all the building's name and id in this school to the front-end
         for building in admin_buildings:
             building_data.append({
@@ -171,7 +171,7 @@ def _admin_level_2():
                 })
 
     # get orders
-    order_building = request.args.get('order_building', None, type=int)
+    order_building = request.args.get('get_order_list', None, type=int)
     orders_in_charge = []
     if order_building is not None:
         # if there is a building been selected
@@ -201,7 +201,7 @@ def _admin_level_2():
                  })
 
     # get inventory
-    inventory_building = request.args.get('inventory_building',None, type=int)
+    inventory_building = request.args.get('get_inventory_list',None, type=int)
     inventory_info = []
     if inventory_building is not None:
         # get the inventory information
@@ -226,7 +226,7 @@ def _admin_level_2():
                 })
 
     # get the total sales
-    total_sales_building = request.args.get('total_sales_building', None, type=int)
+    total_sales_building = request.args.get('get_total_sales', None, type=int)
     money = 0
     amount = 0
     now = datetime.datetime.now()
