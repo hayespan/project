@@ -4,11 +4,6 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
-from flask.ext.login import LoginManager
-login_manager = LoginManager()
-login_manager.session_protection = 'strong'
-login_manager.login_view = 'admin.login'
-
 class App(object):
     def __init__(self, *args, **kwargs):
         self.app = Flask(__name__, instance_relative_config=True)
@@ -18,7 +13,6 @@ class App(object):
         # app.config.from_envvar('APP_CONFIG_FILE') # APP_CONFIG_FILE defined in start.sh
 
         db.init_app(self.app)
-        login_manager.init_app(self.app)
 
         from flask.ext.migrate import Migrate, MigrateCommand
         self.migrate = Migrate(self.app, db)

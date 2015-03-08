@@ -2,11 +2,10 @@
 
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask.ext.login import UserMixin
 
 from .. import db
 
-class Admin(UserMixin, db.Model):
+class Admin(db.Model):
     __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False, index=True)
@@ -28,9 +27,4 @@ class Admin(UserMixin, db.Model):
 
     def __repr__(self):
         return '<Admin %d %s>' % (self.id, self.username)
-
-from .. import login_manager
-@login_manager.user_loader
-def load_user(admin_id):
-    return Admin.query.get(int(admin_id))
 

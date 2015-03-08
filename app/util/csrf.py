@@ -11,7 +11,7 @@ from .common import jsonError
 from .errno import Errno
 
 def init_csrf_token():
-        session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
+    session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
 class CsrfTokenForm(Form):
     csrf_token = StringField(validators=[Required(), Length(min=32, max=32), ])
