@@ -33,7 +33,7 @@ class Order(db.Model):
 class Order_snapshot(db.Model):
     __tablename__ = 'order_snapshot'
     order_id = db.Column(db.Integer, db.ForeignKey('my_order.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, primary_key=True)
-    snapshot_id = db.Column(db.Integer, db.ForeignKey('snapshot.id'), nullable=False, primary_key=True)
+    snapshot_id = db.Column(db.Integer, db.ForeignKey('snapshot.id', onupdate='CASCADE'), nullable=False, primary_key=True) # snapshot cannot be deleted
     quantity = db.Column(db.Integer, nullable=False, default=1)
 
     order = db.relationship('Order', backref=db.backref('order_snapshots', lazy='dynamic'))

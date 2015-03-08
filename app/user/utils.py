@@ -44,5 +44,4 @@ def buyer_login_required(api, view_path=None):
             g.buyer = buyer
             return func(*args, **kwargs)
         return _wrapped
-    _buyer_login_required.func_name = md5(os.urandom(32)).hexdigest()
     return _buyer_login_required

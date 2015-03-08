@@ -36,7 +36,7 @@ def create_user():
 
 # ajax
 @userbp.route('/location_info', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def get_user_location_info():
     data = session.get('buyer_location_info')
@@ -47,7 +47,7 @@ def get_user_location_info():
 
 # ajax
 @userbp.route('/contact_info', methods=['POST', ])
-@buyer_login_required
+@buyer_login_required(True)
 @csrf_token_required
 def profile():
     data = session.get('buyer_contact_info')
