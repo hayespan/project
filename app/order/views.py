@@ -58,6 +58,7 @@ def create_order():
             db.session.add(od_sn)
             tot_price += carts[i].quantity*i.price
         order.tot_price_rd = tot_price           
+        db.session.add(order)
         # finally clear all items in cart
         u.carts.filter(Cart.product_id.in_(product_ids)).delete()
         db.session.commit()

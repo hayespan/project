@@ -7,3 +7,8 @@ class LoginForm(Form):
     username = StringField(validators=[Required(), Length(1, 64), ])
     password = PasswordField(validators=[Required(), ])
 
+class HandleOrderForm(Form):
+    ticketid = StringField(validators=[Required(), Length(1, 21), ])
+    password = PasswordField(validators=[Required(), ])
+    handle = BooleanField(validators=[Required(), ])
+

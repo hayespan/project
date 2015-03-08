@@ -23,6 +23,8 @@ class AdminErrno(Errno):
     AUTHENTICATION_FAILED = (-8, 'Authentication failed.')
     NO_SCHOOL_IN_CHARGE = (-9, 'This administrator has no school in charge.')
     PERMISSION_DENIED = (-10, 'Act beyond authority.')
+    ORDER_DOES_NOT_EXIST = (-11, 'Order does not exist.')
+    ORDER_HANDLED = (-12, 'Order is now completed or cancelled.')
 
 class FileErrno(Errno):
     pass
