@@ -8,8 +8,8 @@ from flask import request, session, g, render_template, redirect, url_for, abort
 
 from . import adminbp 
 from .models import Admin
-from .forms import LoginForm, HandleOrderForm
-from .utils import admin_login_required, is_in_same_quarter, is_in_same_month, admin_x_required
+from .forms import *
+from .utils import admin_login_required, is_in_same_quarter, is_in_same_month, admin_x_required, parse_quarter_2_month
 
 from .. import db
 from ..util.common import jsonError, jsonResponse, datetime_2_unixstamp, timedelta_2_second, viaMobile
@@ -18,6 +18,7 @@ from ..util.csrf import init_csrf_token, csrf_token_required
 from ..location.models import Building, School
 from ..order.models import Order, Order_snapshot
 from ..product.models import Product, Product_building, Snapshot
+from ..category.models import Cat1, Cat2
 
 # store the admin's information in the session
 # session['admin_id'], session['_csrf_token']
@@ -87,7 +88,7 @@ def admin_2nd_api():
     return _admin_level_2()
 
 @adminbp.route('/level3/handle_order', methods=['POST', ])
-@admin_login_required
+@admin_login_required(True)
 @admin_x_required(4)
 @csrf_token_required
 def admin_3rd_handle_order():
@@ -303,10 +304,460 @@ def _admin_level_2():
             },
         })
 
-# TODO 一级管理页面还没整理
+@adminbp.route('/admin/level2/add_quantity', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(2)
+@csrf_token_required
+def admin_2nd_modify_quantity():
+    '''2nd admin modify product_building.quantity, sub/add
+    '''
+    ad = g.admin
+    sc = ad.school
+    if not sc:
+        return jsonError(AdminErrno.NO_SCHOOL_IN_CHARGE)
+    form = ModifyQuantityForm()
+    if form.validate_on_submit():
+        product_id = form.producct_id.data
+        quantity = form.quantity.data
+        building_id = form.building_id.data
+        if not sc.buildings.filter(Building.id==building_id).count():
+            return jsonError(AdminErrno.PERMISSION_DENIED)
+        pd_bd = Product_building.query.filter(Product_building.building_id==building_id, Product_building.product_id==product_id).first()
+        if not pd_bd:
+            return jsonError(AdminErrno.PRODUCT_DISASSO_WITH_BUILDING)
+        if quantity >= 0:
+            pd_bd.quantity += quantity
+        else:
+            pd_bd.quantity += quantity
+            if pd_bd.quantity < 0:
+                pd_bd.quantity = 0
+        db.session.add(pd_bd)
+        db.session.commit()
+        return jsonResponse(pd_bd.quantity)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+
+@adminbp.route('/level1/total_sales', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
 def admin_level_1():
     '''APIs for 1st admin.
+    school_id:
+    building_id:
+    year:
+    quarter:
+    month:
+    export:
     '''
+    ad = g.admin
+    school_id = request.args.get('school_id', None, type=int)
+    if school_id is None:
+        q1 = Order.query
+    else:
+        sc = School.query.filter_by(id=school_id).first()
+        if not sc:
+            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+        q1 = db.session.query(Order).\
+                join(Building, Order.building_id==Building.id).\
+                join(School, Building.school_id==School.id)
+
+    building_id = request.args.get('building_id', None ,type=int)
+    if building_id is None:
+        q2 = q1
+    else:
+        bd = Building.query.filter_by(id=building_id).first()
+        if not bd:
+            return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+        q2 = q1.filter(Order.building_id==bd.id)
+
+    year = request.args.get('year', None, type=int)
+    if year is None:
+        q3 = q2
+    else:
+        q3 = q2.filter(db.func.year(Order.released_time)==year)
+
+    quarter = request.args.get('quarter', None, type=int)
+    if quarter is None:
+        q4 = q3
+    else:
+        q4 = q3.filter(db.func.month(Order.released_time).in_(parse_quarter_2_month(quarter)))
+
+    month = request.args.get('month', None, type=int)
+    if month is None:
+        q5 = q4
+    else:
+        q5 = q4.filter(db.func.month(Order.released_time)==(month-1)%12+1)
+    
+    # export order excel
+    export = request.args.get('export', 0, type=int)
+    if export == 1:
+        q6 = q5.order_by(Order.released_time).all()
+        # XXX
+
+    # get total sales
+    orders = q5.filter(status=='completed').all()
+    total_sales = 0
+    for i in orders:
+        total_sales += i.tot_price_rd
+
+    return jsonResponse(total_sales)
+
+# School ---- get, insert, modify, delete
+@adminbp.route('/level1/school/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_school_list():
+    scs = []
+    for i in School.query.all():
+        scs.append({
+            'id':i.id,
+            'name': i.name,
+            })
+    return jsonResponse(scs)
+
+@adminbp.route('/level1/school/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_school():
+    form = CreateSchoolForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        if School.query.filter_by(name=name).count():
+            return jsonError(AdminErrno.SCHOOL_EXISTS)
+        sc = School(name=name)
+        db.session.add(sc)
+        db.session.commit()
+        return jsonResponse({
+            'id': sc.id,
+            'name': sc.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/school/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_school():
+    form = ModifySchoolForm()
+    if form.validate_on_submit():
+        school_id = form.school_id.data
+        sc = School.query.get(school_id)
+        if not sc:
+            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+        sc.name = form.name.data
+        db.session.add(sc)
+        db.session.commit()
+        return jsonResponse({
+            'id': sc.id,
+            'name': sc.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/school/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_school():
+    form = DeleteSchoolForm()
+    if form.validate_on_submit():
+        School.query.filter_by(id=form.school_id.data).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+# Building ---- get, insert, update, delete
+@adminbp.route('/level1/building/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_building_list():
+    form = GetBuildingListForm()
+    if form.validate_on_submit():
+        sc_id = form.school_id.data
+        sc = School.query.get(sc_id)
+        if not sc:
+            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+        bds = []
+        for i in sc.buildings.all():
+            bds.append({
+                'id': i.id,
+                'name': i.name,
+                })
+        return jsonResponse(bds)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/building/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_building():
+    form = CreateBuildingForm()
+    if form.validate_on_submit():
+        sc_id = form.school_id.data
+        name = form.name.data
+        sc = School.query.get(sc_id)
+        if not sc:
+            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+        bd = Building(name=name)
+        bd.school = sc
+        db.session.add(bd)
+        db.session.commit()
+        return jsonResponse({
+            'id': bd.id,
+            'name': bd.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/building/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_building():
+    form = ModifyBuildingForm()
+    if form.validate_on_submit():
+        bd = Building.query.get(form.building_id.data)
+        if not bd:
+            return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+        bd.name = form.name.data
+        db.session.add(bd)
+        db.session.commit()
+        return jsonResponse({
+            'id': bd.id,
+            'name': bd.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/building/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_building():
+    form = DeleteBuildingForm()
+    if form.validate_on_submit():
+        bd_id = form.building_id.data
+        Building.query.filter_by(id=bd_id).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+# 2nd_admin ---- get, insert, modify, delete
+@adminbp.route('/level1/admin_2nd/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_admin_2nd_list():
+    ads = []
+    for i in Admin.query.all():
+        sc = i.school
+        if sc:
+            sc_info = {
+                    'id': sc.id,
+                    'name': sc.name,
+                    }
+        else:
+            sc_info = None
+        ads.append({
+            'id': i.id,
+            'username': i.username,
+            'name': i.name,
+            'contact_info': i.contact_info,
+            'school': sc_info,
+            })
+    return jsonResponse(ads)
+
+@adminbp.route('/level1/admin_2nd/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_admin_2nd():
+    form = CreateAdmin2ndForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        name = form.name.data
+        contact_info = form.contact_info.data
+        school_id = form.school_id.data
+        if Admin.query.filter_by(username=username).count():
+            return jsonError(AdminErrno.ADMIN_EXISTS)
+        sc = None
+        if school_id is not None:
+            sc = School.query.get(school_id)
+            if not sc:
+                return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+            if sc.admin:
+                return jsonError(AdminErrno.SCHOOL_BEING_OCCUPIED)
+        ad = Admin(
+                username=username,
+                name=name,
+                contact_info=contact_info,
+                )
+        ad.password = password
+        ad.school = sc
+        db.session.add(ad)
+        db.session.commit()
+        return jsonResponse({
+            'id': ad.id,
+            'username': ad.username,
+            'school_id': ad.school.id if ad.school else None
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_2nd/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_admin_2nd():
+    form = ModifyAdmin2ndForm()
+    if form.validate_on_submit():
+        admin_id = form.admin_id.data
+        username = form.username.data
+        password = form.password.data
+        name = form.name.data
+        contact_info = form.contact_info.data
+        school_id = form.school_id.data
+        ad = Admin.query.get(admin_id)
+        if not ad:
+            return jsonError(AdminErrno.ADMIN_DOES_NOT_EXIST)
+        if ad.username != username:
+            if Admin.query.filter_by(username=username).count():
+                return jsonError(AdminErrno.USERNAME_EXISTS)
+            ad.username = username
+        ad.password = password
+        ad.name = name
+        ad.contact_info = contact_info
+        if school_id is None:
+            ad.school = None
+        else:
+            sc = School.query.get(school_id)
+            if not sc:
+                return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+            if ad.school:
+                if ad.school.id == sc.id:
+                    pass
+                else:
+                    if sc.admin:
+                        return jsonError(AdminErrno.SCHOOL_BEING_OCCUPIED)
+                    else:
+                        ad.school = sc
+            else:
+                if sc.admin:
+                    return jsonError(AdminErrno.SCHOOL_BEING_OCCUPIED)
+                else:
+                    ad.school = sc
+        db.session.add(ad)
+        db.session.commit()
+        return jsonResponse({
+            'id': ad.id,
+            'username': ad.username,
+            'school_id': ad.school.id if ad.school else None,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_2nd/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_admin_2nd():
+    form = DeleteAdmin2ndForm()
+    if form.validate_on_submit():
+        ad_id = form.admin_id.data
+        Admin.query.filter_by(id=ad_id).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+# XXX
+# 3rd_admin ---- get, insert, modify, delete
+@adminbp.route('/level1/admin_3rd/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_admin_3rd_list():
+    ads = []
+    for i in Admin.query.all():
+        sc = i.school
+        if sc:
+            sc_info = {
+                    'id': sc.id,
+                    'name': sc.name,
+                    }
+        else:
+            sc_info = None
+        ads.append({
+            'id': i.id,
+            'username': i.username,
+            'name': i.name,
+            'contact_info': i.contact_info,
+            'school': sc_info,
+            })
+    return jsonResponse(ads)
+
+# Cat1 ---- get, insert, modify, delete
+@adminbp.route('/level1/cat1/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_cat1_list():
+    cat1s = []
+    for i in Cat1.query.all():
+        cat1s.append({
+            'id': i.id,
+            'name': i.name,
+            })
+    return jsonResponse(cat1s)
+    
+@adminbp.route('/level1/cat1/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_cat1():
+    form = CreateCat1Form()
+    if form.validate_on_submit():
+        name = form.name.data
+        if Cat1.query.filter_by(name=name).count():
+            return jsonError(AdminErrno.CAT1_EXISTS)
+        cat1 = Cat1(name=name)
+        db.session.add(cat1)
+        db.session.commit()
+        return jsonResponse({
+            'id': cat1.id,
+            'name': cat1.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/cat1/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_cat1():
+    form = ModifyCat1Form()
+    if form.validate_on_submit():
+        cat1_id = form.cat1_id.data
+        cat1 = Cat1.query.get(cat1_id)
+        if not cat1:
+            return jsonError(AdminErrno.CAT1_DOES_NOT_EXIST)
+        cat1.name = form.name.data
+        db.session.add(cat1)
+        db.session.commit()
+        return jsonResponse({
+            'id': cat1.id,
+            'name': cat1.name,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/cat1/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_cat1():
+    form = DeleteCat1Form()
+    if form.validate_on_submit():
+        Cat1.query.filter_by(id=form.cat1_id.data).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+     
+def _admin_1st_tmp():
     schools = School.query.all()
     school_buildings = []
     for school in schools:
@@ -339,9 +790,14 @@ def admin_level_1():
     for order in orders:
         if (order.released_time.year == int(year)) and ((quarter == 'all') or is_in_same_quarter(order.released_time.month, int(quarter))) and (month == 'all' or is_in_same_month(order.released_time.month, month)):
             money = money + get_order_money(order)
-
     return jsonResponse({'schools_buildings': school_buildings, 'total_sales' : money})
-        
+
+# @adminbp.route('/level1/statistic', methods=['POST', ])
+# @admin_login_required(True)
+# @admin_x_required(1)
+# @csrf_token_required
+# def get_excel():
+
 
 @adminbp.route('/change_password', methods=['POST',])
 @admin_login_required(True)

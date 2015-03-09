@@ -64,3 +64,9 @@ def is_in_same_quarter(month, quarter):
 
 def is_in_same_month(m1, m2):
     return (m2 == 'all') or (m1 == int(m2))
+
+def parse_quarter_2_month(x):
+    '''parse quarter to month list
+    '''
+    t = (x-1)%4+1
+    return [t*3-2, t*3-1, t*3]
