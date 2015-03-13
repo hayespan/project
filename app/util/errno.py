@@ -25,6 +25,20 @@ class AdminErrno(Errno):
     PERMISSION_DENIED = (-10, 'Act beyond authority.')
     ORDER_DOES_NOT_EXIST = (-11, 'Order does not exist.')
     ORDER_HANDLED = (-12, 'Order is now completed or cancelled.')
+    PRODUCT_DISASSO_WITH_BUILDING = (-13, 'Product is not associated with request building.')
+    SCHOOL_DOES_NOT_EXIST = (-14, 'School does not exist.')
+    SCHOOL_EXISTS = (-15, 'School already exists.')
+    CAT1_EXISTS = (-16, 'Category #1 already exists.')
+    CAT1_DOES_NOT_EXIST = (-17, 'Category #1 does not exist.')
+    ADMIN_EXISTS = (-18, 'Admin already exists.')
+    SCHOOL_BEING_OCCUPIED = (-19, 'School already has an admin.')
+    USERNAME_EXISTS = (-20, 'Username is already used.')
+    BUILDING_BEING_OCCUPIED = (-21, 'Building already has an admin.')
+    CAT2_EXISTS = (-22, 'Category #2 already exists.')
+    CAT2_DOES_NOT_EXIST = (-23, 'Category #2 does not exist.')
+    PRODUCT_DOES_NOT_EXIST = (-24, 'Product does not exist.')
+    PRODUCT_BUILDING_EXISTS = (-25, 'Product has been associated with building.')
+    BUILDING_EXISTS = (-26, 'Building already exists.')
 
 class FileErrno(Errno):
     pass

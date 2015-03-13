@@ -6,7 +6,7 @@ class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    pic_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
+    pic_id = db.Column(db.Integer, db.ForeignKey('file.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     cat2_id = db.Column(db.Integer, db.ForeignKey('cat2.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     description = db.Column(db.Text(), nullable=False, default='')
     price = db.Column(db.Float, nullable=False)
@@ -38,7 +38,7 @@ class Snapshot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     name = db.Column(db.String(50), nullable=False)
-    pic_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
+    pic_id = db.Column(db.Integer, db.ForeignKey('file.id', onupdate='CASCADE', ondelete='SET NULL'), nullable=True)
     cat1_rd = db.Column(db.String(32), nullable=False)
     cat2_rd = db.Column(db.String(32), nullable=False)
     description = db.Column(db.Text(), nullable=False)
