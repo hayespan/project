@@ -33,6 +33,12 @@ class AdminErrno(Errno):
     ADMIN_EXISTS = (-18, 'Admin already exists.')
     SCHOOL_BEING_OCCUPIED = (-19, 'School already has an admin.')
     USERNAME_EXISTS = (-20, 'Username is already used.')
+    BUILDING_BEING_OCCUPIED = (-21, 'Building already has an admin.')
+    CAT2_EXISTS = (-22, 'Category #2 already exists.')
+    CAT2_DOES_NOT_EXIST = (-23, 'Category #2 does not exist.')
+    PRODUCT_DOES_NOT_EXIST = (-24, 'Product does not exist.')
+    PRODUCT_BUILDING_EXISTS = (-25, 'Product has been associated with building.')
+    BUILDING_EXISTS = (-26, 'Building already exists.')
 
 class FileErrno(Errno):
     pass

@@ -19,6 +19,7 @@ from ..location.models import Building, School
 from ..order.models import Order, Order_snapshot
 from ..product.models import Product, Product_building, Snapshot
 from ..category.models import Cat1, Cat2
+from ..pic.utils import savepic, changepic, removepic, copypic
 
 # store the admin's information in the session
 # session['admin_id'], session['_csrf_token']
@@ -73,57 +74,13 @@ def index():
     else:
         abort(404)
 
+## admin 3rd's api
 @adminbp.route('/level3/query', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(4)
 @csrf_token_required
 def admin_3rd_api():
     return _admin_level_3()
-
-@adminbp.route('/level2/query', methods=['POST', ])
-@admin_login_required(True)
-@admin_x_required(2)
-@csrf_token_required
-def admin_2nd_api():
-    return _admin_level_2()
-
-@adminbp.route('/level3/handle_order', methods=['POST', ])
-@admin_login_required(True)
-@admin_x_required(4)
-@csrf_token_required
-def admin_3rd_handle_order():
-    '''handle order, complete or cancel
-    '''
-    form = HandleOrderForm()
-    if form.validate_on_submit():
-        ticketid = form.ticketid.data
-        password = form.password.data
-        handle = form.handle.data
-        order = Order.query.filter(Order.ticketid==ticketid).first()
-        if not order:
-            return jsonError(AdminErrno.ORDER_DOES_NOT_EXIST)
-        if order.status != 'uncompleted':
-            return jsonError(AdminErrno.ORDER_HANDLED)
-        if order.password == password:
-            order.status = 'completed' if handle else 'cancelled'
-            db.session.add(order)
-        # if complete order, fresh inventory & total sales
-        if handle:
-            od_sns = order.order_snapshots.all()
-            for od_sn in od_sns:
-                pd = od_sn.snapshot.product
-                if pd:
-                    pd_bd = pd.product_buildings.filter(Product_building.building_id==order.building_id).first()
-                    if pd_bd:
-                        pd_bd.quantity -= od_sn.quantity
-                        pd_bd.sold_cnt_rd += od_sn.quantity
-                        db.session.add(pd_bd)
-        # if cancel order, do nothing
-        else:
-            pass
-        db.session.commit()
-        return jsonResponse(None)
-    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 def _admin_level_3():
     '''APIs for 3rd admin.
@@ -187,6 +144,52 @@ def _admin_level_3():
         'orders': in_charge_order,
         'inventory': inventory,
         })
+
+@adminbp.route('/level3/handle_order', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(4)
+@csrf_token_required
+def admin_3rd_handle_order():
+    '''handle order, complete or cancel
+    '''
+    form = HandleOrderForm()
+    if form.validate_on_submit():
+        ticketid = form.ticketid.data
+        password = form.password.data
+        handle = form.handle.data
+        order = Order.query.filter(Order.ticketid==ticketid).first()
+        if not order:
+            return jsonError(AdminErrno.ORDER_DOES_NOT_EXIST)
+        if order.status != 'uncompleted':
+            return jsonError(AdminErrno.ORDER_HANDLED)
+        if order.password == password:
+            order.status = 'completed' if handle else 'cancelled'
+            db.session.add(order)
+        # if complete order, fresh inventory & total sales
+        if handle:
+            od_sns = order.order_snapshots.all()
+            for od_sn in od_sns:
+                pd = od_sn.snapshot.product
+                if pd:
+                    pd_bd = pd.product_buildings.filter(Product_building.building_id==order.building_id).first()
+                    if pd_bd:
+                        pd_bd.quantity -= od_sn.quantity
+                        pd_bd.sold_cnt_rd += od_sn.quantity
+                        db.session.add(pd_bd)
+        # if cancel order, do nothing
+        else:
+            pass
+        db.session.commit()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+## admin 2nd's api
+@adminbp.route('/level2/query', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(2)
+@csrf_token_required
+def admin_2nd_api():
+    return _admin_level_2()
 
 def _admin_level_2():
     '''APIs for 2nd admin.
@@ -304,7 +307,7 @@ def _admin_level_2():
             },
         })
 
-@adminbp.route('/admin/level2/add_quantity', methods=['POST', ])
+@adminbp.route('/level2/modify_quantity', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(2)
 @csrf_token_required
@@ -336,12 +339,12 @@ def admin_2nd_modify_quantity():
         return jsonResponse(pd_bd.quantity)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
-
+## admin 1st's api
 @adminbp.route('/level1/total_sales', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
 @csrf_token_required
-def admin_level_1():
+def get_total_sales():
     '''APIs for 1st admin.
     school_id:
     building_id:
@@ -350,7 +353,6 @@ def admin_level_1():
     month:
     export:
     '''
-    ad = g.admin
     school_id = request.args.get('school_id', None, type=int)
     if school_id is None:
         q1 = Order.query
@@ -360,7 +362,8 @@ def admin_level_1():
             return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
         q1 = db.session.query(Order).\
                 join(Building, Order.building_id==Building.id).\
-                join(School, Building.school_id==School.id)
+                join(School, Building.school_id==School.id).\
+                filter(School.id==sc.id)
 
     building_id = request.args.get('building_id', None ,type=int)
     if building_id is None:
@@ -447,9 +450,15 @@ def modify_school():
         sc = School.query.get(school_id)
         if not sc:
             return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
-        sc.name = form.name.data
-        db.session.add(sc)
-        db.session.commit()
+        name = form.name.data
+        if sc.name == name:
+            pass
+        else:
+            if School.query.filter_by(name=name).count():
+                return jsonError(AdminErrno.SCHOOL_EXISTS)
+            sc.name = name
+            db.session.add(sc)
+            db.session.commit()
         return jsonResponse({
             'id': sc.id,
             'name': sc.name,
@@ -520,9 +529,15 @@ def modify_building():
         bd = Building.query.get(form.building_id.data)
         if not bd:
             return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
-        bd.name = form.name.data
-        db.session.add(bd)
-        db.session.commit()
+        name = form.name.data
+        if bd.name == name:
+            pass
+        else:
+            if Building.query.get(name=name).count():
+                return jsonError(AdminErrno.BUILDING_EXISTS)
+            bd.name = name
+            db.session.add(bd)
+            db.session.commit()
         return jsonResponse({
             'id': bd.id,
             'name': bd.name,
@@ -562,7 +577,7 @@ def get_admin_2nd_list():
             'username': i.username,
             'name': i.name,
             'contact_info': i.contact_info,
-            'school': sc_info,
+            'school_info': sc_info,
             })
     return jsonResponse(ads)
 
@@ -599,7 +614,10 @@ def create_admin_2nd():
         return jsonResponse({
             'id': ad.id,
             'username': ad.username,
-            'school_id': ad.school.id if ad.school else None
+            'school_info': {
+                'id': ad.school.id,
+                'name': ad.school.name,
+                } if ad.school else None
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
@@ -623,7 +641,8 @@ def modify_admin_2nd():
             if Admin.query.filter_by(username=username).count():
                 return jsonError(AdminErrno.USERNAME_EXISTS)
             ad.username = username
-        ad.password = password
+        if password:
+            ad.password = password
         ad.name = name
         ad.contact_info = contact_info
         if school_id is None:
@@ -650,7 +669,10 @@ def modify_admin_2nd():
         return jsonResponse({
             'id': ad.id,
             'username': ad.username,
-            'school_id': ad.school.id if ad.school else None,
+            'school_info': {
+                'id': ad.school.id,
+                'name': ad.school.name,
+                } if ad.school else None
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
@@ -666,31 +688,167 @@ def delete_admin_2nd():
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
-# XXX
+# NOTE documnt here
 # 3rd_admin ---- get, insert, modify, delete
 @adminbp.route('/level1/admin_3rd/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
 @csrf_token_required
 def get_admin_3rd_list():
-    ads = []
-    for i in Admin.query.all():
-        sc = i.school
-        if sc:
-            sc_info = {
-                    'id': sc.id,
-                    'name': sc.name,
-                    }
+    form = GetAdmin3rdListForm()
+    if form.validate_on_submit():
+        school_id = form.school_id.data
+        if school_id is None:
+            q1 = Admin.query
         else:
-            sc_info = None
-        ads.append({
-            'id': i.id,
-            'username': i.username,
-            'name': i.name,
-            'contact_info': i.contact_info,
-            'school': sc_info,
+            sc = School.query.get(school_id)
+            if not sc:
+                return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+            q1 = db.session.query(Admin).join(Building, Building.admin_id==Admin.id).join(School, Building.school_id==School.id)
+        ads = []
+        for i in q1.all():
+            bd = i.building
+            if bd:
+                bd_info = {
+                        'id': bd.id,
+                        'name': bd.name,
+                        }
+                sc_info = {
+                        'id': bd.school.id,
+                        'name': bd.school.name,
+                        }
+            else:
+                bd_info = None
+                sc_info = None
+            ads.append({
+                'id': i.id,
+                'username': i.username,
+                'name': i.name,
+                'contact_info': i.contact_info,
+                'school_info': sc_info,
+                'building_info': bd_info,
+                })
+        return jsonResponse(ads)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_3rd/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_admin_3rd():
+    form = CreateAdmin3rdForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        name = form.name.data
+        contact_info = form.contact_info.data
+        building_id = form.building_id.data
+        if Admin.query.filter_by(username=username).count():
+            return jsonError(AdminErrno.ADMIN_EXISTS)
+        bd = None
+        if building_id is not None:
+            bd = Building.query.get(building_id)
+            if not bd:
+                return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+            if bd.admin:
+                return jsonError(AdminErrno.BUILDING_BEING_OCCUPIED)
+        ad = Admin(
+                username=username,
+                name=name,
+                contact_info=contact_info,
+                )
+        ad.password = password
+        ad.building = bd
+        db.session.add(ad)
+        db.session.commit()
+        bd_info = {
+                'id': ad.building.id,
+                'name': ad.building.name,
+                } if ad.building else None
+        sc_info = {
+                'id': ad.building.school.id,
+                'name': ad.building.school.name,
+                } if ad.building else None
+        return jsonResponse({
+            'id': ad.id,
+            'username': ad.username,
+            'school_info': sc_info,
+            'building_info': bd_info,
             })
-    return jsonResponse(ads)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_3rd/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_admin_3rd():
+    form = ModifyAdmin3rdForm()
+    if form.validate_on_submit():
+        admin_id = form.admin_id.data
+        username = form.username.data
+        password = form.password.data
+        name = form.name.data
+        contact_info = form.contact_info.data
+        building_id = form.building_id.data
+        ad = Admin.query.get(admin_id)
+        if not ad:
+            return jsonError(AdminErrno.ADMIN_DOES_NOT_EXIST)
+        if ad.username != username:
+            if Admin.query.filter_by(username=username).count():
+                return jsonError(AdminErrno.USERNAME_EXISTS)
+            ad.username = username
+        if password:
+            ad.password = password
+        ad.name = name
+        ad.contact_info = contact_info
+        if building_id is None:
+            ad.building = None
+        else:
+            bd = Building.query.get(building_id)
+            if not bd:
+                return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+            if ad.building:
+                if ad.building.id == bd.id:
+                    pass
+                else:
+                    if bd.admin:
+                        return jsonError(AdminErrno.BUILDING_BEING_OCCUPIED)
+                    else:
+                        ad.building = bd
+            else:
+                if bd.admin:
+                    return jsonError(AdminErrno.BUILDING_BEING_OCCUPIED)
+                else:
+                    ad.building = bd
+        db.session.add(ad)
+        db.session.commit()
+        sc_info = {
+                'id': bd.school.id,
+                'name': bd.school.name,
+                } if bd else None
+        bd_info = {
+                'id': bd.school.id,
+                'name': bd.school.name,
+                } if bd else None
+        return jsonResponse({
+            'id': ad.id,
+            'username': ad.username,
+            'school_info': sc_info,
+            'bd_info': bd_info,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_3rd/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_admin_3rd():
+    form = DeleteAdmin3rdForm()
+    if form.validate_on_submit():
+        ad_id = form.admin_id.data
+        Admin.query.filter_by(id=ad_id).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 # Cat1 ---- get, insert, modify, delete
 @adminbp.route('/level1/cat1/get_list', methods=['POST', ])
@@ -755,8 +913,276 @@ def delete_cat1():
         Cat1.query.filter_by(id=form.cat1_id.data).delete()
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
-
      
+# Cat2 ---- get, insert, modify, delete
+@adminbp.route('/level1/cat2/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_cat2_list():
+    form = GetCat2ListForm()
+    if form.validate_on_submit():
+        cat1_id = form.cat1_id.data
+        if cat1_id is None:
+            q1 = Cat2.query
+        else:
+            cat1 = Cat1.query.get(cat1_id)
+            if not cat1:
+                return jsonError(AdminErrno.CAT1_DOES_NOT_EXIST)
+            q1 = cat1.cat2s
+        cat2s = []
+        for i in q1.all():
+            cat2s.append({
+                'id': i.id,
+                'name': i.name,
+                })
+        return jsonResponse(cat2s)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+    
+@adminbp.route('/level1/cat2/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_cat2():
+    form = CreateCat2Form()
+    if form.validate_on_submit():
+        cat1_id = form.cat1_id.data
+        name = form.name.data
+        cat1 = Cat1.query.get(cat1_id)
+        if not cat1:
+            return jsonError(AdminErrno.CAT1_DOES_NOT_EXIST)
+        if Cat1.cat2s.filter_by(name=name).count():
+            return jsonError(AdminErrno.CAT2_EXISTS)
+        cat2 = Cat2(name=name)
+        cat2.cat1 = cat1
+        db.session.add(cat2)
+        db.session.commit()
+        return jsonResponse({
+            'id': cat2.id,
+            'name': cat2.name,
+            'cat1_info': {
+                'id': cat1.id,
+                'name': cat1.name,
+                },
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/cat2/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_cat2():
+    form = ModifyCat2Form()
+    if form.validate_on_submit():
+        cat2_id = form.cat2_id.data
+        name = form.name.data
+        cat2 = Cat2.query.get(cat2_id)
+        if not cat2:
+            return jsonError(AdminErrno.CAT2_DOES_NOT_EXIST)
+        cat2.name = name
+        db.session.add(cat2)
+        db.session.commit()
+        return jsonResponse({
+            'id': cat1.id,
+            'name': cat1.name,
+            'cat1_info': {
+                'id': cat2.cat1.id,
+                'name': cat2.cat1.name,
+                },
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/cat2/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_cat2():
+    form = DeleteCat2Form()
+    if form.validate_on_submit():
+        Cat2.query.filter_by(id=form.cat2_id.data).delete()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+## product ---- get, insert, modify, delete
+@adminbp.route('/level1/product/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_product():
+    form = CreateProductForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        description = form.description.data
+        cat2_id = form.cat2_id.data
+        price = form.price.data
+        cat2 = Cat2.query.get(cat2_id)
+        if not cat2:
+            return jsonError(AdminErrno.CAT2_DOES_NOT_EXIST)
+        f = savepic(form.img.data)
+        p = Product(
+                name=name,
+                description=description,
+                price=price,
+                cat2=cat2,
+                pic=f,
+                )
+        db.session.add(f)
+        db.session.commit()
+        # create initial snapshot
+        nf = copypic(p)
+        sn = Snapshot(
+                product=product,
+                name=product.name,
+                description=product.description,
+                cat1_rd=cat2.cat1.name,
+                cat2_rd=cat2.name,
+                price=price,
+                pic=nf,
+                )
+        db.session.add(sn)
+        db.session.commit()
+        return jsonResponse({
+            'id': p.id,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/product/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_product():
+    form = ModifyProductForm()
+    if form.validate_on_submit():
+        product_id = form.product_id.data
+        name = form.name.data
+        description = form.description.data
+        price = form.price.data
+        cat2_id = form.cat2_id.data
+        img = form.img.data
+        cat2 = Cat2.query.get(cat2_id)
+        if not cat2:
+            return jsonError(AdminErrno.CAT2_DOES_NOT_EXIST)
+        p = Product.query.get(product_id)
+        if not p:
+            return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
+        if img:
+            changepic(p, img)
+        p.name = name
+        p.description = description
+        p.price = price
+        p.cat2 = cat2
+        db.session.add(p)
+        # create a new snapshot
+        nf = copypic(p)
+        sn = Snapshot(
+                name=p.name,
+                description=p.description,
+                product=p,
+                pic=nf,
+                cat1_rd=p.cat2.cat1.name,
+                cat2_rd=p.cat2.name,
+                price=p.price,
+                )
+        db.session.add(sn)
+        db.session.commit()
+        return jsonResponse({
+            'id': sn.id,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/product/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_product():
+    form = DeleteProductForm()
+    if form.validate_on_submit():
+        product_id = form.product_id.data
+        p = Product.query.get(product_id)
+        if p and p.pic:
+            removepic(p.pic.filename)
+        db.session.delete(p)
+        db.session.commit()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+## product building ----
+@adminbp.route('/level1/associate/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_product_building():
+    form = CreateProductBuildingForm()
+    if form.validate_on_submit():
+        p_id = form.product_id.data
+        b_id = form.building_id.data
+        qty = form.quantity.data
+        td = form.timedelta.data
+        p = Product.query.get(p_id)
+        if not p:
+            return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
+        bd = Building.query.get(b_id)
+        if not bd:
+            return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+        if Product_building.query.filter(product_id==p_id, building_id==b_id).count():
+            return jsonError(AdminErrno.PRODUCT_BUILDING_EXISTS)
+        pd_bd = Product_building(
+                product=p,
+                building=bd,
+                quantity=qty,
+                timedelta=td,
+                )
+        db,session.add(pd_bd)
+        db.session.commit()
+        return jsonResponse({
+            'product_id': pd_bd.product_id,
+            'building_id': pd_bd.building_id,
+            'quantity': pd_bd.quantity,
+            'timedelta': pd_bd.timedelta,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/associate/modify', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def modify_product_building():
+    form = ModifyProductBuildingForm()
+    if form.validate_on_submit():
+        p_id = form.product_id.data
+        b_id = form.building_id.data
+        qty = form.quantity.data
+        td = form.timedelta.data
+        pd_bd = Product_building.query.filter(product_id==p_id, building_id==b_id).first()
+        if not pd_bd:
+            return jsonError(AdminErrno.PRODUCT_DISASSO_WITH_BUILDING)
+        pd_bd.quantity = qty
+        pd_bd.timedelta = td
+        db.session.add(pd_bd)
+        db.session.commit()
+        return jsonResponse({
+            'product_id': p_id,
+            'building_id': b_id,
+            'quantity': qty,
+            'timedelta': td,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/associate/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_product_building():
+    form = DeleteProductBuildingForm()
+    if form.validate_on_submit():
+        Product_building.query.filter_by(
+                product_id=form.product_id.data,
+                building_id=form.building_id.data,
+                ).delete()
+        db.session.commit()
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
 def _admin_1st_tmp():
     schools = School.query.all()
     school_buildings = []
@@ -791,42 +1217,6 @@ def _admin_1st_tmp():
         if (order.released_time.year == int(year)) and ((quarter == 'all') or is_in_same_quarter(order.released_time.month, int(quarter))) and (month == 'all' or is_in_same_month(order.released_time.month, month)):
             money = money + get_order_money(order)
     return jsonResponse({'schools_buildings': school_buildings, 'total_sales' : money})
-
-# @adminbp.route('/level1/statistic', methods=['POST', ])
-# @admin_login_required(True)
-# @admin_x_required(1)
-# @csrf_token_required
-# def get_excel():
-
-
-@adminbp.route('/change_password', methods=['POST',])
-@admin_login_required(True)
-@csrf_token_required
-def admin_change_password():
-    pass
-
-@adminbp.route('/administrator', methods=['GET',])
-@admin_login_required(True)
-@csrf_token_required
-def manage_admin():
-    pass
-
-@adminbp.route('/administrator/add', methods=['POST',])
-@csrf_token_required
-def add_admin():
-    pass
-
-@adminbp.route('/administrator/edit', methods=['POST',])
-@admin_login_required(True)
-@csrf_token_required
-def edit_admin():
-    pass
-
-@adminbp.route('/administrator/delete', methods=['POST',])
-@admin_login_required(True)
-@csrf_token_required
-def admin_delete():
-    pass
 
 def _get_time_():
     return datetime.datetime.now()-datetime.timedelta(days=30)
