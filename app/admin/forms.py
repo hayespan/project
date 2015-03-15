@@ -121,6 +121,9 @@ class ModifyProductForm(Form):
 class DeleteProductForm(Form):
     product_id = IntegerField(validators=[Required(), ])
 
+class ExportProductForm(Form):
+    product_id = IntegerField(validators=[Required(), ])
+
 class CreateProductBuildingForm(Form):
     product_id = IntegerField(validators=[Required(), ])
     building_id = IntegerField(validators=[Required(), ])
@@ -136,4 +139,10 @@ class ModifyProductBuildingForm(Form):
 class DeleteProductBuildingForm(Form):
     product_id = IntegerField(validators=[Required(), ])
     building_id = IntegerField(validators=[Required(), ])
+
+class CreatePromotionForm(Form):
+    img = FileField(validators=[FileRequired(), ])
+
+class DeletePromotionForm(Form):
+    promotion_id = IntegerField(validators=[Required(), ])
 
