@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-
 import os
-from hashlib import md5
 import datetime
+from hashlib import md5
 
 from flask import request, session, g, render_template, redirect, url_for, abort
 
@@ -15,6 +14,7 @@ from .. import db
 from ..util.common import jsonError, jsonResponse, datetime_2_unixstamp, timedelta_2_second, viaMobile
 from ..util.errno import AdminErrno
 from ..util.csrf import init_csrf_token, csrf_token_required
+from ..util.exportxls import export_xls, export_product_xls
 from ..location.models import Building, School
 from ..order.models import Order, Order_snapshot
 from ..product.models import Product, Product_building, Snapshot
@@ -391,19 +391,17 @@ def get_total_sales():
         q5 = q4
     else:
         q5 = q4.filter(db.func.month(Order.released_time)==(month-1)%12+1)
-    
     # export order excel
     export = request.args.get('export', 0, type=int)
     if export == 1:
-        q6 = q5.order_by(Order.released_time).all()
-        # XXX
-
+        orders = q5.order_by(Order.released_time).all()
+        fn = export_xls(orders)
+        return jsonResponse(url_for('static', filename='tmp/'+fn))
     # get total sales
     orders = q5.filter(status=='completed').all()
     total_sales = 0
     for i in orders:
         total_sales += i.tot_price_rd
-
     return jsonResponse(total_sales)
 
 # School ---- get, insert, modify, delete
@@ -704,7 +702,10 @@ def get_admin_3rd_list():
             sc = School.query.get(school_id)
             if not sc:
                 return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
-            q1 = db.session.query(Admin).join(Building, Building.admin_id==Admin.id).join(School, Building.school_id==School.id)
+            q1 = db.session.query(Admin).\
+                    join(Building, Building.admin_id==Admin.id).\
+                    join(School, Building.school_id==School.id).\
+                    filter(School.id==sc.id)
         ads = []
         for i in q1.all():
             bd = i.building
@@ -1004,6 +1005,39 @@ def delete_cat2():
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 ## product ---- get, insert, modify, delete
+@adminbp.route('/level1/product/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_product_list():
+    pds = Product.query.order_by(Product.id.desc()).all() 
+    pds_info = []
+    for pd in pds:
+        location_info = []
+        pd_bds = pd.product_buildings.all()
+        for pd_bd in pd_bds:
+            bd = pd_bd.building
+            location_info.append({
+                'school_id': bd.school.id,
+                'school_name': bd.school.name,
+                'building_id': bd.id,
+                'building_name': bd.name,
+                'quantity': pd_bd.quantity,
+                'timedelta': pd_bd.timedelta,
+                })
+        pds_info.append({
+            'id': pd.id,
+            'description': pd.description,
+            'img_url': url_for('static', 'img/'+pd.pic.filename),
+            'price': pd.price,
+            'cat1_id': pd.cat2.cat1.id,
+            'cat1_name': pd.cat2.cat1.name,
+            'cat2_id': pd.cat2.id,
+            'cat2_name': pd.cat2.name,
+            'asso': location_info,
+            })
+    return jsonResponse(pds_info)
+
 @adminbp.route('/level1/product/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
@@ -1090,7 +1124,7 @@ def modify_product():
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
-@adminbp.route('/level1/product/modify', methods=['POST', ])
+@adminbp.route('/level1/product/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
 @csrf_token_required
@@ -1104,6 +1138,26 @@ def delete_product():
         db.session.delete(p)
         db.session.commit()
         return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/product/export', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def export_product():
+    form = ExportProductForm()
+    if form.validate_on_submit():
+        pid = form.product_id.data
+        pd = Product.query.get(pid)
+        if not pd:
+            return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
+        items = db.session.query(Order, Order_snapshot, Snapshot).\
+                join(Snapshot, Order_snapshot.snapshot_id==Snapshot.id).\
+                join(Order, Order_snapshot.order_id==Order.id).\
+                filter(Snapshot.product_id==pd.id).\
+                order_by(Order.id).all()
+        fn = export_product_xls(items, pd.name)
+        return jsonResponse(url_for('static', filename='tmp/'+fn)) 
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 ## product building ----
@@ -1183,40 +1237,49 @@ def delete_product_building():
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
-def _admin_1st_tmp():
-    schools = School.query.all()
-    school_buildings = []
-    for school in schools:
-        s = {'name': school.name, 'school_id': school.id, 'buildings': []}
-        buildings = school.buildings.all()
-        for building in buildings:
-            s['buildings'].append((building.name, building.id))
-        school_buildings.append(s)
-    try:
-        is_all_schools = bool(request.args.get('is_all', 'True'))
-        (year, quarter, month) = request.args.get('time_range', str(datetime.now().year)+'/all/all').split('/')
-    except:
-        return jsonError(AdminErrno.NOT_ENOUGH_ARGS)
-    orders = []
-    if is_all_schools:
-        orders = Order.query.all()
-    else:
-        school = request.args.get('school')
-        building = request.args.get('building')
-        if not (school or building):
-            return jsonError(AdminErrno.NOT_ENOUGH_ARGS)
-        if building == 'all':
-            orders = School.query.filter_by(id = int(school)).first().buildings.orders
-        else:
-            orders = Building.query.filter_by(id = int(building)).first().orders
-    money = 0
-    if month != 'all' and quarter != 'all':
-        if not (is_in_same_quarter(int(month), int(quarter))):
-            return jsonError(AdminErrno.TIME_ILLEGAL)
-    for order in orders:
-        if (order.released_time.year == int(year)) and ((quarter == 'all') or is_in_same_quarter(order.released_time.month, int(quarter))) and (month == 'all' or is_in_same_month(order.released_time.month, month)):
-            money = money + get_order_money(order)
-    return jsonResponse({'schools_buildings': school_buildings, 'total_sales' : money})
+## promotion ---- get, insert, delete
+@adminbp.route('/level1/promotion/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_promotion_list():
+    pmts = Promotion.query.all()
+    pmts_info = []
+    for i in pmts:
+        f = i.pic
+        pmts_info.append({
+            'id': i.id,
+            'uri': url_for('static', filename='img/'+f.filename)
+            })
+    return jsonResponse(pmts_info)
+
+@adminbp.route('/level1/promotion/create', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def create_promotion():
+    form = CreatePromotionForm()
+    if form.validate_on_submit():
+        file_obj = savepic(form.img.data)
+        p = Promotion(pic=f)
+        db.session.add(p)
+        db.session.commit(p)
+        return jsonResponse({'id': p.id})
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/promotion/delete', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def delete_promotion():
+    form = DeletePromotionForm()
+    if form.validate_on_submit():
+        pmt_id = form.promotion_id.data
+        pmt = Promotion.query.get(pmt_id)
+        if pmt:
+            removepic(pmt.pic.filename)  
+        return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 def _get_time_():
     return datetime.datetime.now()-datetime.timedelta(days=30)
