@@ -77,7 +77,7 @@ class ModifyAdmin3rdForm(Form):
     contact_info = StringField(validators=[Required(), Length(0, 100), ])
     building_id = IntegerField(validators=[Optional(), ])
 
-class DeleteAdmin2ndForm(Form):
+class DeleteAdmin3rdForm(Form):
     admin_id = IntegerField(validators=[Required(), ])
 
 class CreateCat1Form(Form):
@@ -122,6 +122,9 @@ class DeleteProductForm(Form):
     product_id = IntegerField(validators=[Required(), ])
 
 class ExportProductForm(Form):
+    product_id = IntegerField(validators=[Required(), ])
+
+class GetProductBuildingListForm(Form):
     product_id = IntegerField(validators=[Required(), ])
 
 class CreateProductBuildingForm(Form):

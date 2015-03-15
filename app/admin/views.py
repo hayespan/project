@@ -835,7 +835,7 @@ def modify_admin_3rd():
             'id': ad.id,
             'username': ad.username,
             'school_info': sc_info,
-            'bd_info': bd_info,
+            'building_info': bd_info,
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
@@ -892,10 +892,16 @@ def modify_cat1():
     form = ModifyCat1Form()
     if form.validate_on_submit():
         cat1_id = form.cat1_id.data
+        name = form.name.data
         cat1 = Cat1.query.get(cat1_id)
         if not cat1:
             return jsonError(AdminErrno.CAT1_DOES_NOT_EXIST)
-        cat1.name = form.name.data
+        if name == cat1.name:
+            pass
+        else:
+            if Cat1.query.filter_by(name=name).count():
+                return jsonError(AdminErrno.CAT1_EXISTS)
+        cat1.name = name
         db.session.add(cat1)
         db.session.commit()
         return jsonResponse({
@@ -980,6 +986,11 @@ def modify_cat2():
         cat2 = Cat2.query.get(cat2_id)
         if not cat2:
             return jsonError(AdminErrno.CAT2_DOES_NOT_EXIST)
+        if name == cat2.name:
+            pass
+        else:
+            if Cat2.query.filter_by(name=name):
+                return jsonError(AdminErrno.CAT2_EXISTS)
         cat2.name = name
         db.session.add(cat2)
         db.session.commit()
@@ -1018,22 +1029,31 @@ def get_product_list():
         for pd_bd in pd_bds:
             bd = pd_bd.building
             location_info.append({
-                'school_id': bd.school.id,
-                'school_name': bd.school.name,
-                'building_id': bd.id,
-                'building_name': bd.name,
+                'school_info': {
+                    'id': bd.school.id,
+                    'name': bd.school.name,
+                    },
+                'building_info': {
+                    'id': bd.id,
+                    'name': bd.name,
+                    },
                 'quantity': pd_bd.quantity,
                 'timedelta': pd_bd.timedelta,
                 })
         pds_info.append({
             'id': pd.id,
             'description': pd.description,
-            'img_url': url_for('static', 'img/'+pd.pic.filename),
+            'img_uri': url_for('static', 'img/'+pd.pic.filename),
             'price': pd.price,
-            'cat1_id': pd.cat2.cat1.id,
-            'cat1_name': pd.cat2.cat1.name,
-            'cat2_id': pd.cat2.id,
-            'cat2_name': pd.cat2.name,
+            'cat1_info': {
+                'id': pd.cat2.cat1.id,
+                'name': pd.cat2.cat1.name,
+                },
+
+            'cat2_info': {
+                'id': pd.cat2.id,
+                'name': pd.cat2.name,
+                },
             'asso': location_info,
             })
     return jsonResponse(pds_info)
@@ -1160,7 +1180,37 @@ def export_product():
         return jsonResponse(url_for('static', filename='tmp/'+fn)) 
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
-## product building ----
+## product building ---- get, create, modify, delete
+@adminbp.route('/level1/associate/get_list', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_product_building_list():
+    form = GetProductBuildingListForm()
+    if form.validate_on_submit():
+        pid = form.product_id.data
+        pd = Product.query.get(pd)
+        if not pd:
+            return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
+        pd_bds = pd.product_buildings.all()
+        pd_bds_info = []
+        for pd_bd in pd_bds:
+            bd = pd_bd.building
+            pd_bds_info.append({
+                'school_info': {
+                    'id': bd.school.id,
+                    'name': bd.school.name,
+                    },
+                'building_info': {
+                    'id': bd.id,
+                    'name': bd.name,
+                    },
+                'quantity': pd_bd.quantity,
+                'timedelta': pd_bd.timedelta,
+                }) 
+        return jsonResponse(pd_bds_info)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
 @adminbp.route('/level1/associate/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
@@ -1210,7 +1260,8 @@ def modify_product_building():
         pd_bd = Product_building.query.filter(product_id==p_id, building_id==b_id).first()
         if not pd_bd:
             return jsonError(AdminErrno.PRODUCT_DISASSO_WITH_BUILDING)
-        pd_bd.quantity = qty
+        if qty is not None:
+            pd_bd.quantity = qty
         pd_bd.timedelta = td
         db.session.add(pd_bd)
         db.session.commit()
@@ -1249,7 +1300,7 @@ def get_promotion_list():
         f = i.pic
         pmts_info.append({
             'id': i.id,
-            'uri': url_for('static', filename='img/'+f.filename)
+            'img_uri': url_for('static', filename='img/'+f.filename)
             })
     return jsonResponse(pmts_info)
 
