@@ -22,7 +22,7 @@ def csrf_token_required(func):
     def _wrapped(*args, **kwargs):
         form = CsrfTokenForm()
         if form.validate_on_submit():
-            csrf = form.csrf_token.data
+            csrf = form._csrf_token.data
             if csrf == session['_csrf_token']:
                 return func(*args, **kwargs)
         return jsonError(Errno.CSRF_FAILED)
