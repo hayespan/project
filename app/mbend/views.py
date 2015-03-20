@@ -24,7 +24,7 @@ def index():
     return render_template('m/index.html', user=user, catx=_get_catx(), promotions=promotions)
 
 @mobilebp.route('/locations', methods=['GET', ])
-def get_locations():
+def location_page():
     schools = School.query.all()
     locations = [[i, i.buildings.all()] for i in schools]
     return render_template('m/choose_location.html', locations=locations)
