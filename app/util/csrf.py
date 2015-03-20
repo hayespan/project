@@ -14,7 +14,7 @@ def init_csrf_token():
     session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
 class CsrfTokenForm(Form):
-    _csrf_token = StringField(validators=[Required(), Length(min=32, max=32), ])
+    _csrf_token = StringField(_name='csrf_token', validators=[Required(), Length(min=32, max=32), ])
 
 def csrf_token_required(func):
     '''check csrf token required decorator'''
@@ -23,7 +23,7 @@ def csrf_token_required(func):
         form = CsrfTokenForm()
         if form.validate_on_submit():
             csrf = form.csrf_token.data
-            if csrf == session['_csrf_token']:
+            if csrf == session.get('_csrf_token', None):
                 return func(*args, **kwargs)
         return jsonError(Errno.CSRF_FAILED)
     return _wrapped

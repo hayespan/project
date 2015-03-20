@@ -686,6 +686,20 @@ def delete_admin_2nd():
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
+# XXX
+@adminbp.route('/level1/admin_2nd/unbind_school', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_admin_2nd_unbind_school():
+    sc_info = []
+    for sc in School.query.filter_by(admin_id=None).all():
+        sc_info.append({
+            'id': sc.id,
+            'name': sc.name,
+            })
+    return jsonResponse(sc_info)
+
 # NOTE documnt here
 # 3rd_admin ---- get, insert, modify, delete
 @adminbp.route('/level1/admin_3rd/get_list', methods=['POST', ])
@@ -849,6 +863,26 @@ def delete_admin_3rd():
         ad_id = form.admin_id.data
         Admin.query.filter_by(id=ad_id).delete()
         return jsonResponse(None)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
+
+@adminbp.route('/level1/admin_3rd/unbind_building', methods=['POST', ])
+@admin_login_required(True)
+@admin_x_required(1)
+@csrf_token_required
+def get_admin_3rd_unbind_building():
+    form = GetBuildingListForm()
+    if form.validate_on_submit():
+        sc_id = form.school_id.data
+        sc = School.query.get(sc_id)
+        if not sc:
+            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+        bd_info = []
+        for bd in sc.buildings.filter_by(admin_id=None).all():
+            bd_info.append({
+                'id': bd.id,
+                'name': bd.name,
+                })
+        return jsonResponse(bd_info)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 # Cat1 ---- get, insert, modify, delete
