@@ -4,7 +4,7 @@ from flask import g
 
 from . import cartbp
 from .models import Cart
-from .forms import CreateCartForm, CartForm 
+from .forms import *
 
 from .. import db
 from ..util.common import jsonResponse, jsonError, viaMobile
@@ -139,6 +139,32 @@ def decrease_cart_quantity():
             return jsonError(CartErrno.CART_INVALID)
         qty = cart.quantity-1 or 1
         if qty>pb.quantity:
+            qty = pb.quantity
+        cart.quantity = qty
+        db.session.add(cart)
+        db.session.commit()
+        return jsonResponse(cart.quantity)
+    return jsonError(CartErrno.INVALID_ARGUMENT)
+
+#ajax
+@cartbp.route('/set_quantity', methods=['POST', ])
+@buyer_login_required(True)
+@csrf_token_required
+def set_cart_quantity():
+    u = g.buyer
+    form = SetCartForm()
+    if form.validate_on_submit():
+        cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info.get('building_id'), Cart.product_id==form.product_id.data).first()
+        if not cart:
+            return jsonError(CartErrno.CART_DOES_NOT_EXIST)
+        pb = db.session.query(Product_building).filter(Product_building.building_id==u.location_info['building_id'], Product_building.product_id==product_id).first()
+        if not pb or pb.quantity == 0:
+            cart.is_valid = False
+            db.session.add(cart)
+            db.session.commit()
+            return jsonError(CartErrno.CART_INVALID)
+        qty = form.quantity.data
+        if qty > pb.quantity:
             qty = pb.quantity
         cart.quantity = qty
         db.session.add(cart)

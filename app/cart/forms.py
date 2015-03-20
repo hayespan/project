@@ -12,3 +12,10 @@ class CreateCartForm(Form):
 
 class CartForm(Form):
     product_id = IntegerField(validators=[Required(), ])
+
+class SetCartForm():
+    product_id = IntegerField(validators=[Required(), ])
+    quantity = IntegerField(validators=[Required(), ])
+    def validate_quantity(form, field):
+        if field.data <= 0:
+            raise ValidationError('Quantity must be positive.')

@@ -18,16 +18,20 @@ from ..location.models import Building
 
 # ajax
 @userbp.route('/choose_location', methods=['POST', ])
-def create_user():
+def choose_location():
     form = CreateUserForm()    
     if form.validate_on_submit():
         bd = Building.query.filter_by(id=form.building_id.data).first()
         if not bd:
             return jsonError(UserErrno.BUILDING_DOES_NOT_EXIST)
-        u = User()
-        db.session.add(u)
-        db.session.commit()
-        session['buyerid'] = u.id
+        uid = session.get('buyerid')
+        if uid:
+            u = User.query.get(uid)
+        else:
+            u = User()
+            db.session.add(u)
+            db.session.commit()
+            session['buyerid'] = u.id
         init_csrf_token()
         sc = bd.school
         session['buyer_location_info'] = ((sc.id, sc.name), (bd.id, bd.name))
