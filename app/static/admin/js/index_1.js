@@ -520,7 +520,7 @@ function createAdmin3rd(f) {
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
 	var building_id = $(f).find('#thirdbuilding option:selected').attr('id');
-	var url = "/admin/level1/admin_3nd/create"
+	var url = "/admin/level1/admin_3rd/create"
   var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
 	if (building_id != null) {
 	   data = data + "&building_id=" +building_id;
@@ -557,7 +557,7 @@ function modifyAdmin3rd(t) {
     if (building_id == null) {
         building_id = null;
     }
-    var url="/admin/level1/admin_3nd/modify"
+    var url="/admin/level1/admin_3rd/modify"
     var data = "admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&building_id=" + building_id;
   	$.ajax({
    		type: "POST",
