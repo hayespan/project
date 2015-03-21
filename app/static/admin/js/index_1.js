@@ -874,7 +874,7 @@ function toSchoolSelect(t) {
 
 function toBuildingSelect(t) {
 	var buildingTd = $(t)
-    buildingTd.text() = "";
+    buildingTd.text("");
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
 	buildingTd.attr('onclick', "");
     var schoolId = buildingTd.prev().find('option:selected').attr('id');
