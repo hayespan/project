@@ -577,7 +577,7 @@ function modifyAdmin3rd(t) {
 }
 
 function addToAdmin3rdTable(id, name, username, password, contact_info, schoolId, schoolName, buildingId, buildingName) {
-	$("#hostTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td id="'+ buildingId + '" onclick="toBuildingSelect(\'' + schoolId + '\', this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
+	$("#hostTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td id="'+ buildingId + '" onclick="toBuildingSelect(this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
 									   		+ username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   		+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin3rd(this)"/> \n'
 									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin3rd(this)"/> \n'
@@ -867,17 +867,17 @@ function toCatSelect(t) {
 
 function toSchoolSelect(t) {
 	var obj = $(t);
-	obj.html('<div class="form-group"><select class="form-control" onchange="toBuildingSelect(this)"><option>学校</option></select></div>')
+	obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
 	$(t).attr('onclick', "");
 	getSchoolList(t);
 }
 
-function toBuildingSelect(school) {
-	var buildingTd = $(school).next();
+function toBuildingSelect(t) {
+	var buildingTd = $(t)
     buildingTd.text() = "";
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
 	buildingTd.attr('onclick', "");
-    var schoolId = $(school).find('option:selected').attr('id');
+    var schoolId = buildingTd.prev().find('option:selected').attr('id');
 	getBuildingList(schoolId, buildingTd);
 }
 
