@@ -289,7 +289,7 @@ function createBuilding(school, f) {
  	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+school_id+"&name=" + f.word.name + "&csrf_token=" + token,
+   		data: "school_id="+school_id+"&name=" + f.word.value + "&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -820,7 +820,7 @@ function getProductList() {
   	$.ajax({
    		type: "POST",
    		url: "/admin/level1/product/get_list",
-   		data: "_csrf_token=" + token,
+   		data: "csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
