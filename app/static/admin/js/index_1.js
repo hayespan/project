@@ -490,7 +490,7 @@ function createAdmin3rd(f) {
 	var contact_info = f.word[3].value;
 	var building_id = $(f).find('#thirdbuilding option:selected').attr('id');
 	var url = "/admin/level1/admin_3nd/create"
-  var dara = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
+  var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
 	if (building_id != null) {
 	data = data + "&building_id=" +building_id;
   }
