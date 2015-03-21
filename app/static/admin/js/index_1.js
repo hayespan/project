@@ -519,12 +519,12 @@ function createAdmin3rd(f) {
 	var password = f.word[2].value;
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
-	var building_id = $(f).find('#thirdbuilding option:selected').attr('id');
+	var building_id = $(f).find('#thirdBuilding option:selected').attr('id');
 	var url = "/admin/level1/admin_3rd/create"
-  var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
-	if (building_id != null) {
+    var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
+	if (building_id != undefined) {
 	   data = data + "&building_id=" +building_id;
-  }
+    }
     data = data + "&csrf_token=" + token;
 	$.ajax({
    		type: "POST",
