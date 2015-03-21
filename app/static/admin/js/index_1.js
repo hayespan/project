@@ -471,7 +471,7 @@ function deleteAdmin2nd(t) {
 }
 
 function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId, schoolName) {
-	$("#managerTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)>' + schoolName + '</td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div  contenteditable="true">' + username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
+	$("#managerTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect2nd(this)>' + schoolName + '</td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div  contenteditable="true">' + username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin2nd(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin2nd(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin2nd()"/></td></tr>');
@@ -900,6 +900,12 @@ function toSchoolSelect(t) {
         toBuildingSelect(buildingTd);
     });
 	getSchoolList(t);
+}
+
+function toSchoolSelect2nd(t) {
+    var obj = $(t);
+    obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
+    getSchoolList(t);
 }
 
 function toBuildingSelect(t) {
