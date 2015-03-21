@@ -20,6 +20,7 @@ from ..order.models import Order, Order_snapshot
 from ..product.models import Product, Product_building, Snapshot
 from ..category.models import Cat1, Cat2
 from ..pic.utils import savepic, changepic, removepic, copypic
+from ..pic.models import Promotion
 
 # store the admin's information in the session
 # session['admin_id'], session['_csrf_token']
@@ -65,8 +66,6 @@ def index():
     if ad.privilege == 4:
         if not viaMobile():
             return render_template('admin/index_3.html')
-        else:
-            return render_template('admin/index_3_m.html')
     elif ad.privilege == 2:
         return render_template('admin/index_2.html')
     elif ad.privilege == 1:
@@ -561,7 +560,7 @@ def delete_building():
 @csrf_token_required
 def get_admin_2nd_list():
     ads = []
-    for i in Admin.query.all():
+    for i in Admin.query.filter_by(privilege=2).all():
         sc = i.school
         if sc:
             sc_info = {
@@ -604,6 +603,7 @@ def create_admin_2nd():
                 username=username,
                 name=name,
                 contact_info=contact_info,
+                privilege=2,
                 )
         ad.password = password
         ad.school = sc
@@ -632,7 +632,7 @@ def modify_admin_2nd():
         name = form.name.data
         contact_info = form.contact_info.data
         school_id = form.school_id.data
-        ad = Admin.query.get(admin_id)
+        ad = Admin.query.filter_by(id=admin_id, privilege=2).first()
         if not ad:
             return jsonError(AdminErrno.ADMIN_DOES_NOT_EXIST)
         if ad.username != username:
@@ -682,7 +682,7 @@ def delete_admin_2nd():
     form = DeleteAdmin2ndForm()
     if form.validate_on_submit():
         ad_id = form.admin_id.data
-        Admin.query.filter_by(id=ad_id).delete()
+        Admin.query.filter_by(id=ad_id, privilege=2).delete()
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
@@ -700,7 +700,6 @@ def get_admin_2nd_unbind_school():
             })
     return jsonResponse(sc_info)
 
-# NOTE documnt here
 # 3rd_admin ---- get, insert, modify, delete
 @adminbp.route('/level1/admin_3rd/get_list', methods=['POST', ])
 @admin_login_required(True)
@@ -711,7 +710,7 @@ def get_admin_3rd_list():
     if form.validate_on_submit():
         school_id = form.school_id.data
         if school_id is None:
-            q1 = Admin.query
+            q1 = Admin.query.filter(Admin.privilege==4)
         else:
             sc = School.query.get(school_id)
             if not sc:
@@ -719,7 +718,7 @@ def get_admin_3rd_list():
             q1 = db.session.query(Admin).\
                     join(Building, Building.admin_id==Admin.id).\
                     join(School, Building.school_id==School.id).\
-                    filter(School.id==sc.id)
+                    filter(School.id==sc.id, Admin.privilege==4)
         ads = []
         for i in q1.all():
             bd = i.building
@@ -771,6 +770,7 @@ def create_admin_3rd():
                 username=username,
                 name=name,
                 contact_info=contact_info,
+                privilege=4,
                 )
         ad.password = password
         ad.building = bd
@@ -805,7 +805,7 @@ def modify_admin_3rd():
         name = form.name.data
         contact_info = form.contact_info.data
         building_id = form.building_id.data
-        ad = Admin.query.get(admin_id)
+        ad = Admin.query.filter_by(id=admin_id, privilege=4).first()
         if not ad:
             return jsonError(AdminErrno.ADMIN_DOES_NOT_EXIST)
         if ad.username != username:
@@ -861,7 +861,7 @@ def delete_admin_3rd():
     form = DeleteAdmin3rdForm()
     if form.validate_on_submit():
         ad_id = form.admin_id.data
-        Admin.query.filter_by(id=ad_id).delete()
+        Admin.query.filter_by(id=ad_id, privilege=4).delete()
         return jsonResponse(None)
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 

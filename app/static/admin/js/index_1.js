@@ -236,7 +236,7 @@ function getBuildingList(schoolId, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
-    if (schoolId == undefied) {
+    if (schoolId == undefined) {
         schoolId = null;
     }
   	$.ajax({
@@ -308,7 +308,7 @@ function modifyBuilding(t, schoolId) {
     var temp = $(t).parent().siblings();
     var building_id = $(temp[0]).attr("id");
     var name = $(temp[0]).text();
-    if (building_id == undefied) {
+    if (building_id == undefined) {
         building_id = null;
     }
     var url="/admin/level1/building/modify";
@@ -422,7 +422,7 @@ function modifyAdmin2nd(t) {
   	if (password == "") {
   		password = null;
   	}
-  	if (school_id == undefied) {
+  	if (school_id == undefined) {
   		school_id = null;
   	}
     var url = "/admin/level1/admin_2nd/modify"
@@ -473,7 +473,7 @@ function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId
 function getAdmin3rdList(school) {
   	var token = window.localStorage.getItem("token");
     var school_id = $("#"+school).find("option:selected").attr('id');
-    if (school_id == undefied) {
+    if (school_id == undefined) {
         data = "school_id=" + null;
     } else {
         data = "school_id="+school_id; 

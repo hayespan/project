@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from flask import request
 import os
 from hashlib import md5
 from functools import wraps
@@ -14,7 +15,7 @@ def init_csrf_token():
     session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
 class CsrfTokenForm(Form):
-    _csrf_token = StringField(_name='csrf_token', validators=[Required(), Length(min=32, max=32), ])
+    csrf_token = StringField(_name='csrf_token', validators=[Required(), Length(min=32, max=32), ])
 
 def csrf_token_required(func):
     '''check csrf token required decorator'''
