@@ -473,9 +473,10 @@ function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId
 function getAdmin3rdList(school) {
   	var token = window.localStorage.getItem("token");
     var school_id = $("#"+school).find("option:selected").attr('id');
+    var data = ""; 
     if (school_id == undefined) {
     } else {
-        data = "school_id="+school_id; 
+      data = "school_id="+school_id; 
     }
    	$.ajax({
    		type: "POST",
