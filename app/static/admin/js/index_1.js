@@ -880,7 +880,7 @@ function createProductBuilding(f) {
 	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: data + "&_csrf_token="+token,
+  		data: data + "&csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
