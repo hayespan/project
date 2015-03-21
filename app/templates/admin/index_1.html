@@ -25,10 +25,10 @@
                     data-toggle="dropdown">
                     学校信息修改 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                    <li><a href="#school" tabindex="-1" data-toggle="tab">学校</a></li>
-                    <li><a href="#manager" tabindex="-1" data-toggle="tab">主管</a></li>
+                    <li><a href="#school" tabindex="-1" data-toggle="tab" onclick="getSchoolList()">学校</a></li>
+                    <li><a href="#manager" tabindex="-1" data-toggle="tab" onclick="getAdmin2ndList()">主管</a></li>
                     <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
-                    <li><a href="#host" tabindex="-1" data-toggle="tab">楼主</a></li>
+                    <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="getAdmin3rdList()">楼主</a></li>
                 </ul>
             </li>                                    
             <li class="dropdown">
