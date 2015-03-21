@@ -1113,8 +1113,8 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-            $(school).find('option:selected').attr('id');
-			getBuildingList(school);
+      var school_id = $(school).find('option:selected').attr('id');
+			getBuildingList(school_id);
 		}
 }
 
