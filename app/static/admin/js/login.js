@@ -12,7 +12,7 @@ function login() {
         code = msg.code;
             if (code == 0) {
                 window.localStorage.setItem("token", msg.data._csrf_token);
-                window.location.href="admin/index"; 
+                window.location.href="/admin/index"; 
             } else if (code == 1) {
                 alert("数据不符合格式");
             } else if (code == -7) {
