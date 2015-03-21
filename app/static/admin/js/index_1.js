@@ -880,7 +880,7 @@ function toSchoolSelect(t) {
 	$(t).attr('onclick', "");
     $(t).change(function(){
         var buildingTd = $(t).next();
-        buildingTd.attr('onclick', 'toBuildingSelect(this)');
+        toBuildingSelect(buildingTd);
     });
 	getSchoolList(t);
 }
