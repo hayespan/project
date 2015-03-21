@@ -878,6 +878,10 @@ function toSchoolSelect(t) {
 	var obj = $(t);
 	obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
 	$(t).attr('onclick', "");
+    $(t).change(function(){
+        var buildingTd = $(t).next();
+        buildingTd.attr('onclick', 'toBuildingSelect(this)');
+    });
 	getSchoolList(t);
 }
 
@@ -887,6 +891,7 @@ function toBuildingSelect(t) {
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
     var schoolId = buildingTd.prev().find('option:selected').attr('id');
 	getBuildingList(schoolId, buildingTd);
+    $(t).attr('onclick', "");
 }
 
 function deleteBuildingProduct(t) {
