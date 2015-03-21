@@ -28,11 +28,11 @@ from ..pic.utils import savepic, changepic, removepic, copypic
 @adminbp.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        admin_id = session.get('admin_id')
-        csrf_token = session.get('_csrf_token')
-        if (admin_id and csrf_token and Admin.query.filter_by(id=admin_id).count()):
-            return redirect(url_for('.index'))
-        return render_template('admin-login.html')
+        # admin_id = session.get('admin_id')
+        # csrf_token = session.get('_csrf_token')
+        # if (admin_id and csrf_token and Admin.query.filter_by(id=admin_id).count()):
+            # return redirect(url_for('.index'))
+        return render_template('admin/login.html')
     elif request.method == 'POST':
         form = LoginForm()
         if form.validate_on_submit():
@@ -64,13 +64,13 @@ def index():
     ad = g.admin
     if ad.privilege == 4:
         if not viaMobile():
-            return render_template('index_3.html')
+            return render_template('admin/index_3.html')
         else:
-            return render_template('index_3_m.html')
+            return render_template('admin/index_3_m.html')
     elif ad.privilege == 2:
-        return render_template('index_2.html')
+        return render_template('admin/index_2.html')
     elif ad.privilege == 1:
-        return render_template('index_1.html')
+        return render_template('admin/index_1.html')
     else:
         abort(404)
 

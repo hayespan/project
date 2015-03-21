@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap-select test page</title>
+
+    <meta charset="utf-8">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/static/admin/css/metisMenu.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/admin/css/bootstrap-select.css">
+    
+    <!-- Custom Fonts -->
+    <link href="/static/admin/css/font-awesome.css" rel="stylesheet" type="text/css">
+
+ 
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <a class="navbar-brand" href="#">SB Admin v2.0</a>
+        </div>
+
+            <!-- /.navbar-header -->
+
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a id="logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <div id="page-wrapper">
+        <hr>
+        <ul id="myTab" class="nav nav-tabs">
+            <li><a href="#sale" data-toggle="tab">销售额</a></li>
+            <li class="dropdown">
+                <a href="#" id="myTabDrop1" class="dropdown-toggle" 
+                    data-toggle="dropdown">
+                    学校信息修改 <b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                    <li><a href="#school" tabindex="-1" data-toggle="tab">学校</a></li>
+                    <li><a href="#manager" tabindex="-1" data-toggle="tab">主管</a></li>
+                    <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
+                    <li><a href="#host" tabindex="-1" data-toggle="tab">楼主</a></li>
+                </ul>
+            </li>                                    
+            <li class="dropdown">
+               <a href="#" id="myTabDrop1" class="dropdown-toggle" 
+                    data-toggle="dropdown">
+                    类别编辑 <b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                    <li><a href="#cat1" tabindex="-1" data-toggle="tab">一级类别</a></li>
+                    <li><a href="#cat2" tabindex="-1" data-toggle="tab">二级类别</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#product" data-toggle="tab">
+                    货品信息修改</a>
+            </li>
+            <li>
+                <a href="#promotion" data-toggle="tab">
+                    促销信息修改</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="sale">
+            <div class="container">
+                <hr>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <select id="firstSchool" name="schoolList" class="form-control" onchange="checkSchool(this, 'firstBuilding')">
+                            <option selected = "selected" value = -1>请选择学校</option>
+                        </select>
+                        <select id="firstBuilding" name="buildingList" class="form-control" disabled="disabled">
+                            <option selected = "selected" value = -1>请选择楼栋</option>
+                        </select>
+                        <select id="year" class="form-control" onchange="checkYear(this);">
+                            <option selected = "selected" value = -1>请选择年份</option>
+                            <option>2015</option>
+                            <option>2014</option>
+                            <option>2013</option>
+                            <option>2012</option>
+                            <option>2011</option>
+                        </select>
+                        <select id="quarter" class="form-control" title="输入季度" disabled="disabled" onchange="checkBoth('quarter', 'month');">
+                            <option selected = "selected" value = -1>请选择季度</option>
+                            <option value = 1>第一季度</option>
+                            <option value = 2>第二季度</option>
+                            <option value = 3>第三季度</option>
+                            <option value = 4>第四季度</option>
+                        </select>
+                        <hr>
+                        <select id="month" class="form-control" disabled="disabled" onchange="checkBoth('month', 'quarter');">
+                            <option selected = "selected" value = -1>请选择月份</option>
+                            <option　value = 1>一月</option>
+                            <option value = 2>二月</option>
+                            <option value = 3>三月</option>
+                            <option value = 4>四月</option>
+                            <option value = 5>五月</option>
+                            <option value = 6>六月</option>
+                            <option value = 7>七月</option>
+                            <option value = 8>八月</option>
+                            <option value = 9>九月</option>
+                            <option value = 10>十月</option>
+                            <option value = 11>十一月</option>
+                            <option value = 12>十二月</option>
+                        </select>
+                        <select id="export" class="form-control">
+                            <option selected = "selected" value = -1>是否导出</option>
+                            <option value = 1>导出</option>
+                            <option value = 0>不导出</option>
+                        </select>
+                    </div>
+                    <hr>
+                    <button type="submit" class="btn btn-default" id="myTab" onclick = "showSales()">查询</button>
+                </form>
+                <br>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="manager">
+            <div class="container">
+                <hr>
+                <form class="form-inline" name="manageTable">
+                    <div class="form-group">
+                        <select name="schoolList" class="form-control">
+                            <option selected = "selected" value = -1>请选择学校</option>
+                        </select>
+                        <input type="text" class="form-control" name="word" placeholder="姓名"/>
+                        <input type="text" class="form-control" name="word" placeholder="账号"/>
+                        <input type="text" class="form-control" name="word" placeholder="密码"/>
+                        <hr>
+                        <input type="text" class="form-control" name="word" placeholder="联系方式"/>
+                        <input type="button" value="添加" onclick="createAdmin2nd(this.form);" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+
+            <hr>
+            <div class="hero-unit">
+                <table name="mainTable" id="managerTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>学校</th><th>主管名称</th><th>账号</th><th>密码</th><th>联系方式</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="school">
+            <div class="container">
+                <hr>
+                <form name="schoolTable" method="post" action="" class="form-inline" role="form">
+                    <div class="form-group">
+　　                     <input type="text" class="form-control" name="word" placeholder="学校"/>
+                    </div>
+　　               <input type="button" value="添加" onclick="createSchool(this.form)" class="btn btn-default" />
+　　            </form>
+            </div>
+            <div class="hero-unit" style="width: 40%; margin: 50px 0 0 10%">
+                <table name="mainTable" id="schoolTable" class="table table-striped">
+                    <thead><tr><th>学校</th><th>操作</th></tr></thead>
+                    <tbody>
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+        <div class="tab-pane fade" id="building">
+            <div class="container">
+                <form action="" class="form-inline">
+                    <select name="schoolList" class="form-control" onchange="checkSchool(this,'secondBuilding');">
+                        <option selected = "selected" value = -1>请选择学校</option>
+                    </select>
+                    <input type="text" class="form-control" name="word" placeholder="楼栋"/>
+                    <input type="button" value="查询" onclick='getBuildingList("secondSchool");' class="btn btn-default" />
+                    <input type="button" value="添加" onclick="createBuilding('secondSchool' ,this.form);" class="btn btn-default" />
+                </form>
+            </div>
+            <div class="hero-unit">
+                <table name="mainTable" id="buildingTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>楼层</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="host">
+            <div class="container">
+                <hr>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <select id="thirdSchool" name="schoolList" class="form-control" onchange="checkSchool(this, 'thirdBuilding');">
+                            <option selected = "selected" value = -1>请选择学校</option>
+                        </select>
+                        <select id ="thirdBuilding" name="buildingList"  disabled="disabled" class="form-control">
+                            <option selected = "selected" value = -1>请选择楼栋</option>
+                        </select>
+                        <input type="text" class="form-control" name="word" placeholder="姓名"/>
+                        <input type="text" class="form-control" name="word" placeholder="账号"/>
+                        <hr>
+                        <input type="text" class="form-control" name="word" placeholder="密码"/>
+                        <input type="text" class="form-control" name="word" placeholder="联系方式"/>
+                        <input type="button" value="查询" onclick='getAdmin3rdTable("thirdSchool");' class="btn btn-default" />
+                        <input type="button" value="添加" onclick="createAdmin3rd(this.form);" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+
+            <div class="hero-unit">
+                <table name="mainTable" id="hostTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>学校</th><th>楼层</th><th>楼管</th><th>用户名</th><th>密码</th><th>联系方式</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+
+        <div class="tab-pane fade" id="cat1">
+            <div class="container">
+                <form name="cat1" method="post" action="" class="form-inline" role="form">
+　　                <div class="form-group">
+                        <input type="text" class="form-control" name="word" 
+                        placeholder="一级类别" />
+                    </div>
+　　                <input type="button" value="增加" onclick="createCat1(this.form);" class="btn btn-default" />
+　　            </form>
+            </div>
+            <div class="hero-unit">
+                <table name="mainTable" id="cat1Table" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>类别</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="cat2">
+            <div class="container">
+                <form name="cat2" method="post" action="" class="form-inline" role="form">
+　　                <div class="form-group">
+                        <select name="cat1List"  class="form-control">
+                            <option selected = "selected" value = -1>请选择类别</option>
+                        </select>
+                        <input type="text" class="form-control" name="word" 
+                        placeholder="二级类别" />
+                        <input type="button" value="查询" onclick='getCat2List("cat1List");' class="btn btn-default" />
+　　                    <input type="button" value="增加" onclick="createCat2(this.form);" class="btn btn-default" />
+                    </div>
+　　            </form>
+            </div>
+            <div class="hero-unit">
+                <table name="mainTable" id="cat2Table" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>二级类别</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="product">
+            <div class="container">
+                <form action="" class="form-inline">
+                    <select name="cat1List" onchange="checkCat(this);"  class="form-control">
+                        <option selected = "selected" value = -1>请选择类别</option>
+                    </select>
+                    <select id="cat2"  class="form-control" disabled="disabled">
+                        <option value=-1>请选择二级类别</option>
+                    </select>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="word" 
+                        placeholder="名字" />
+                        <input type="text" class="form-control" name="word" 
+                        placeholder="单价" />
+                        <textarea class="form-control" rows="3" name="word" placeholder="描述"></textarea>
+                    </div>
+                    <br><br>
+                    <div class="form-group">
+                        <input type="file" id="inputfile" class="btn btn-default">
+                    </div>
+                    <input type="button" value="添加"  class="btn btn-default" />
+                </form>
+            </div>
+            <div id="productList">
+
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="promotion">
+            <div class="container">
+                <form name="promotion" method="post" action="" class="form-inline" role="form">
+                    <div class="form-group">
+                        <input type="file" id="inputfile" class="btn btn-default">
+                    </div>
+　　                <input type="button" value="提交" onclick="submit(this.form);" class="btn btn-default" />
+　　            </form>
+            </div>
+            <div class="hero-unit">
+                <table id="promotionTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>促销品</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://libs.baidu.com/jquery/2.1.1/jquery.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/static/admin/js/json2.js"></script>
+  <script src="/static/admin/js/index_1.js"></script>
+
+</body>
+</html>
