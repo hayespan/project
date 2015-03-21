@@ -236,13 +236,14 @@ function getBuildingList(schoolId, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
-    if (schoolId == undefined) {
-        schoolId = null;
+    var data = "";
+    if (schoolId != undefined && schoolId != null) {
+        data = "school_id=" + schoolId + "&";
     }
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+schoolId+"&csrf_token=" + token,
+   		data: data + "csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -871,16 +872,18 @@ function toSchoolSelect(t) {
 	getSchoolList(t);
     var buildingTd = $(t).next().find('select');
     if (buildingTd != null) {
-        toBuildingSelect(buildingTd);
+        toBuildingSelect(obj.attr('id'), buildingTd);
     }
 }
 
-function toBuildingSelect(t) {
-	var obj = $(t);
-	school_id = obj.siblings().eq(0).attr('id');
+function toBuildingSelect(schoolId, t) {
+	if (schoolId == undefined) {
+        schoolId = null;
+    }
+    t.text() = "";
 	obj.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
 	$(t).attr('onclick', "");
-	getBuildingList(school_id, t);
+	getBuildingList(schoolId, t);
 }
 
 function deleteBuildingProduct(t) {
