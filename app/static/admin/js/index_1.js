@@ -1101,7 +1101,8 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-			getBuildingList(school);
+            var schoolId = $(school).find("option:selected").attr('id');
+			getBuildingList(schoolId);
 			$('.selectpicker').selectpicker('refresh');
 		}
 }
