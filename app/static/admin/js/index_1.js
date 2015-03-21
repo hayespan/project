@@ -842,7 +842,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 	$("#productList").append('<div class="first"><div class="second" style="float:left; margin: 50px 10px 0 1%">'
         +'<table name="productTable" class="table table-striped" >'
         +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th></tr></thead>'
-        +'<tbody><tr><td><img src="'+img_uri+'"></td><td><div contenteditable="true" id="'+id+'">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td id="'+cat1Id+'">'+cat1Name+'</td><td id="'+cat2Id+'" onclick="toCatSelect(this)">'+cat2Name+'</td><td>'
+        +'<tbody><tr><td><img src="'+img_uri+'"></td><td><div contenteditable="true" id="'+id+'">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td id="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td id="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
       	+'<input type="file" id="inputfile" enctype="multipart/form-data" id="image" class="btn btn-default" style="width:250px"><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
@@ -857,13 +857,22 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 	}
 }
 
-function toCatSelect(t) {
+function toCat2Select(t) {
 	var obj = $(t);
 	var cat2_id = $(t).prev().attr('id');
 	obj.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
 	$(t).attr('onclick', "");
 	getCat2List(cat2_id, t);
 }
+
+function toCat1Select(t) {
+    var obj = $(t);
+    var cat1_id = $(t).attr('id');
+    obj.html('<div class="form-group"><select class="form-control"><option>类别</option></select></div>')
+    $(t).attr('onclick', "");
+    getCat1List(cat1_id, t);
+}
+
 
 function toSchoolSelect(t) {
 	var obj = $(t);
