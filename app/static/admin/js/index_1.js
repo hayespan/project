@@ -906,6 +906,7 @@ function toSchoolSelect2nd(t) {
     var obj = $(t);
     obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
     getSchoolList(t);
+    $(t).attr('onclick', "");
 }
 
 function toBuildingSelect(t) {
