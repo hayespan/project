@@ -130,7 +130,6 @@ function getSchoolList(t) {
    			var output = msg;
       	var code = output.code;
       		if (code == 0) {
-            alert("code == 0");
       			var data = output.data;
       			if (t == null) {
 	    			clearTable('schoolTable');
@@ -359,7 +358,14 @@ function getAdmin2ndList() {
 	    		var password = "";
 	    		clearTable('managerTable');
 	    		for (var i = 0; i < data.length; ++i) {
-	    			addToAdmin2ndTable(data[i].id, data[i].name, data[i].username, password, data[i].contact_info, data[i].school_info.id, data[i].school_info.name);
+                    if (data[i].school_info == null) {
+                        var schoolId = "";
+                        var schollName = "";
+                    } else {
+                        var schoolId = data[i].school_info.id;
+                        var schoolName = data[i].school_info.name;
+                    }
+	    			addToAdmin2ndTable(data[i].id, data[i].name, data[i].username, password, data[i].contact_info, schoolId, schoolName);
 	    		}
 	    	} else {
 	    		errorCode(code);
@@ -471,7 +477,21 @@ function getAdmin3rdList(school_id) {
 	    		var password = "";
 	    		clearTable('hostTable');
 	    		for (var i = 0; i < data.length; ++i) {
-	    			addToAdmin3rdTable(data[i].id, data[i].name, data[i].username, password, data[i].contact_info, data[i].school_info.id, data[i].school_info.name,data[i].building_info.id, data[i].building_info.name);
+                    if (data[i].school_info == null) {
+                        var schoolId = "";
+                        var schoolName = "";
+                    } else {
+                        var schoolId = data[i].school_info.id;
+                        var schoolName = data[i].school_info.name;
+                    }
+                    if (data[i].building_info == null) {
+                        var buildingId = "";
+                        var buildingName = "";
+                    } else {
+                        var buildingId = data[i].building_info.id;
+                        var buildingName = data[i].building_info.name;
+                    }
+	    			addToAdmin3rdTable(data[i].id, data[i].name, data[i].username, password, data[i].contact_info, schoolId, schoolName, buildingId, buildingName);
 	    		}
 	    	} else {
 	    		errorCode(code);
