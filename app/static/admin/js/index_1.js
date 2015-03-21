@@ -61,7 +61,7 @@ function logout() {
    			url: "/admin/logout",
    			data: "csrf_token=" + token,
    			success: function(msg){
-      	    	code = JSON.parse(msg).code;
+      	    	code = msg.code;
       			if (code == 0) {
     			} else {
     				errorCode(code);
@@ -103,7 +103,7 @@ function showSales() {
    		url: url,
    		data: "csrf_token=" +token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -127,7 +127,7 @@ function getSchoolList(t) {
    		url: "/admin/level1/school/get_list",
    		data: "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	var code = output.code;
       		if (code == 0) {
             alert("code == 0");
@@ -177,7 +177,7 @@ function createSchool(f) {
    		url: "/admin//level1/school/create",
    		data: "name=" + name + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -201,7 +201,7 @@ function modifySchool(t) {
    		url: url,
    		data: "school_id=" + school_id + "&name=" + name +"&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -223,7 +223,7 @@ function deleteSchool(t) {
    		url: url,
    		data: "school_id="+school_id+"&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -242,7 +242,7 @@ function getBuildingList(school, t) {
    		url: url,
    		data: "school_id="+school+"&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -288,7 +288,7 @@ function createBuilding(schoolId, f) {
    		url: url,
    		data: "school_id="+school_id+"&name=" + f.word.name + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -311,7 +311,7 @@ function modifyBuilding(t) {
    	    url: url,
    	    data: "building_id="+building_id + "&name=" + name + "&csrf_token=" + token,
    	    success: function(msg){
-   		    var output = JSON.parse(msg);
+   		    var output = msg;
             var code = output.code;
       		if (code == 0) {
       		var data = output.data;
@@ -333,7 +333,7 @@ function deleteBuilding(t) {
    		url: url,
    		data: "building_id="+building_id + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -352,7 +352,7 @@ function getAdmin2ndList() {
    		url: "/admin/level1/admin_2nd/get_list",
    		data: "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -386,7 +386,7 @@ function createAdmin2nd(f) {
    		url: url,
    		data: data,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getAdmin2ndList();
@@ -419,7 +419,7 @@ function modifyAdmin2nd(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getAdmin2ndList();
@@ -440,7 +440,7 @@ function deleteAdmin2nd(t) {
    		url: url,
    		data: "admin_id=" + admin_id + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -464,7 +464,7 @@ function getAdmin3rdList(school_id) {
    		url: "/admin/level1/admin_3rd/get_list",
    		data: "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -498,7 +498,7 @@ function createAdmin3rd(f) {
    		url: url,
    		data: data,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getAdmin3rdList();
@@ -528,7 +528,7 @@ function modifyAdmin3rd(t) {
    		url: url,
    		data: data +"&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getAdmin3rdList();
@@ -558,7 +558,7 @@ function deleteAdmin3rd(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -576,7 +576,7 @@ function getCat1List() {
    		url: url,
    		data: "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -615,7 +615,7 @@ function createCat1(f) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat1List();
@@ -638,7 +638,7 @@ function modifyCat1(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat1List();
@@ -661,7 +661,7 @@ function deleteCat1(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat1List();
@@ -682,7 +682,7 @@ function getCat2List(cat1_id, cat2_id) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -724,7 +724,7 @@ function createCat2(f) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat2List();
@@ -746,7 +746,7 @@ function modifyCat2(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat2List();
@@ -768,7 +768,7 @@ function deleteCat2(t) {
    		url: url,
    		data: data + "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getCat2List();
@@ -786,7 +786,7 @@ function getProductList() {
    		url: "/admin/level1/product/get_list",
    		data: "_csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -856,7 +856,7 @@ function deleteBuildingProduct(t) {
    		url: url,
    		data: data + "csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -882,7 +882,7 @@ function createProductBuilding(f) {
   		type: 'POST',
   		data: data + "&csrf_token="+token,
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -906,7 +906,7 @@ function exportProduct(t) {
   		type: 'POST',
   		data: data + "csrf_token="+token,
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -938,7 +938,7 @@ function createProduct(f) {
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getProductList();
@@ -965,7 +965,7 @@ function modifyProduct(t) {
   		type: 'POST',
   		data: data + "&csrf_token="+token,
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			getProductList();
@@ -988,7 +988,7 @@ function deleteProduct(t) {
   		type: 'POST',
   		data: data + "&csrf_token="+token,
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -1006,7 +1006,7 @@ function getPromotionList() {
   		type: 'POST',
   		data: "csrf_token="+token,
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
@@ -1038,7 +1038,7 @@ function createPromotion(f) {
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
-  			var output = JSON.parse(msg);
+  			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
@@ -1060,7 +1060,7 @@ function deletePromotion(t) {
    		url: url,
    		data: data + "&csrf_token=" + token,
    		success: function(msg){
-   			var output = JSON.parse(msg);
+   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
 	    	} else {
