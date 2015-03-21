@@ -232,15 +232,17 @@ function deleteSchool(t) {
 	});
 }
 
-function getBuildingList(school, t) {
+function getBuildingList(schoolId, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
-
+    if (schoolId == undefied) {
+        schoolId = null;
+    }
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+school+"&csrf_token=" + token,
+   		data: "school_id="+schoolId+"&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -250,7 +252,7 @@ function getBuildingList(school, t) {
 	    			clearList('buildingList');
 	    			clearTable('buildingTable');
 	    			for (var i = 0; i < data.length; ++i) {
-	    				addToBuildingTable(data[i].id, data[i].name);
+	    				addToBuildingTable(data[i].id, data[i].name, schoolId);
 	    				addToBuildingList(data[i].id, data[i].name);
 	    			}
 	    		} else {
@@ -273,16 +275,17 @@ function addToBuildingList(newId, newName, t) {
 	}
 }
 
-function addToBuildingTable(newId, newName) {
+function addToBuildingTable(newId, newName, schoolId) {
 	$("#buildingTable").find('tbody').append('<tr><td id="'+ newId + '"><div contenteditable="true">' + newName
-									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this)"/> \n'
+									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this, \'' + schoolId + '\'')"/> \n'
 									+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
-									+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + school + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
+									+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + schoolId + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
 }
 
-function createBuilding(schoolId, f) {
+function createBuilding(school, f) {
 	var url="/admin/level1/building/create";
  	var token = window.localStorage.getItem("token");
+    var school_id = $("#"+school).find("option:selected").attr('id');
  	$.ajax({
    		type: "POST",
    		url: url,
@@ -292,7 +295,7 @@ function createBuilding(schoolId, f) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-	    		getBuildingList();
+	    		getBuildingList(school_id);
 	    	} else {
 	    		errorCode(code);
     		}
@@ -300,11 +303,14 @@ function createBuilding(schoolId, f) {
 	});
 }
 
-function modifyBuilding(t) {
+function modifyBuilding(t, schoolId) {
     var token = window.localStorage.getItem("token");
     var temp = $(t).parent().siblings();
     var building_id = $(temp[0]).attr("id");
     var name = $(temp[0]).text();
+    if (building_id == undefied) {
+        building_id = null;
+    }
     var url="/admin/level1/building/modify";
     $.ajax({
    	    type: "POST",
@@ -315,7 +321,7 @@ function modifyBuilding(t) {
             var code = output.code;
       		if (code == 0) {
       		var data = output.data;
-	    	getBuildingList();
+	    	getBuildingList(schoolId);
 	    	} else {
 	    		errorCode(code);
     		}
@@ -464,12 +470,18 @@ function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin2nd()"/></td></tr>');
 }
 
-function getAdmin3rdList(school_id) {
+function getAdmin3rdList(school) {
   	var token = window.localStorage.getItem("token");
-  	$.ajax({
+    var school_id = $("#"+school).find("option:selected").attr('id');
+    if (school_id == undefied) {
+        data = "school_id=" + null;
+    } else {
+        data = "school_id="+school_id; 
+    }
+   	$.ajax({
    		type: "POST",
    		url: "/admin/level1/admin_3rd/get_list",
-   		data: "csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -958,7 +970,7 @@ function createProduct(f) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+data+"&csrf_token="+token,
+  		data: formdata + "&" + data+"&csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -1058,7 +1070,7 @@ function createPromotion(f) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+ data + "&csrf_token="+token,
+  		data: formdata+ "&" + data + "&csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -1101,8 +1113,8 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-            var schoolId = $(school).find("option:selected").attr('id');
-			getBuildingList(schoolId);
+            $(school).find('option:selected').attr('id');
+			getBuildingList(school);
 			$('.selectpicker').selectpicker('refresh');
 		}
 }
@@ -1152,9 +1164,9 @@ function initPage() {
 	getPromotionList();
 }
 
-function resetBuilding(school, tableId) {
+function resetBuilding(schoolId, tableId) {
 	clearTable(tableId);
-	getBuildingList();
+	getBuildingList(schoolId);
 }
 
 function resetSchool() {
