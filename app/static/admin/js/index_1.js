@@ -238,7 +238,6 @@ function getBuildingList(schoolId, t) {
   	var url = "/admin/level1/building/get_list";
     var data = "";
     if (schoolId != undefined) {
-        alert(schoolId);
         data = "school_id=" + schoolId + "&";
     }
   	$.ajax({
