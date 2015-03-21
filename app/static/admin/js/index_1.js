@@ -889,7 +889,11 @@ function toBuildingSelect(t) {
 	var buildingTd = $(t)
     buildingTd.text("");
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
-    var schoolId = buildingTd.prev().find('option:selected').attr('id');
+    if (buildingTd.prev().children().eq(0).is('select')) {
+        var schoolId = buildingTd.prev().find('option:selected').attr('id');
+    } else {
+        var schoolId = buildingTd.prev().attr('id');
+    }
 	getBuildingList(schoolId, buildingTd);
     $(t).attr('onclick', "");
 }
