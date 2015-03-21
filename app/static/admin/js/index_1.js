@@ -59,7 +59,7 @@ function logout() {
 		$.ajax({
    			type: "POST",
    			url: "/admin/logout",
-   			data: "_csrf_token=" + token,
+   			data: "csrf_token=" + token,
    			success: function(msg){
       	    	code = JSON.parse(msg).code;
       			if (code == 0) {
@@ -101,7 +101,7 @@ function showSales() {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" +token,
+   		data: "csrf_token=" +token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -125,7 +125,7 @@ function getSchoolList(t) {
 	$.ajax({
    		type: "POST",
    		url: "/admin/level1/school/get_list",
-   		data: "_csrf_token=" + token,
+   		data: "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	var code = output.code;
@@ -175,7 +175,7 @@ function createSchool(f) {
 	$.ajax({
    		type: "POST",
    		url: "/admin//level1/school/create",
-   		data: "name=" + name + "&_csrf_token=" + token,
+   		data: "name=" + name + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -199,7 +199,7 @@ function modifySchool(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id=" + school_id + "&name=" + name +"&_csrf_token=" + token,
+   		data: "school_id=" + school_id + "&name=" + name +"&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -221,7 +221,7 @@ function deleteSchool(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+school_id+"&_csrf_token=" + token,
+   		data: "school_id="+school_id+"&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -240,7 +240,7 @@ function getBuildingList(school, t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+school+"&_csrf_token=" + token,
+   		data: "school_id="+school+"&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -286,7 +286,7 @@ function createBuilding(schoolId, f) {
  	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id="+school_id+"&name=" + f.word.name + "&_csrf_token=" + token,
+   		data: "school_id="+school_id+"&name=" + f.word.name + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -301,22 +301,21 @@ function createBuilding(schoolId, f) {
 }
 
 function modifyBuilding(t) {
-  	var token = window.localStorage.getItem("token");
-	var sendData = "_csrf_token=" + token;
-  	var temp = $(t).parent().siblings();
-  	var building_id = $(temp[0]).attr("id");
-  	var name = $(temp[0]).text();
+    var token = window.localStorage.getItem("token");
+    var temp = $(t).parent().siblings();
+    var building_id = $(temp[0]).attr("id");
+    var name = $(temp[0]).text();
     var url="/admin/level1/building/modify";
-  	$.ajax({
-   		type: "POST",
-   		url: url,
-   		data: "building_id="+building_id + "&name=" + name + "&_csrf_token=" + token,
-   		success: function(msg){
-   			var output = JSON.parse(msg);
-      	    var code = output.code;
+    $.ajax({
+   	    type: "POST",
+   	    url: url,
+   	    data: "building_id="+building_id + "&name=" + name + "&csrf_token=" + token,
+   	    success: function(msg){
+   		    var output = JSON.parse(msg);
+            var code = output.code;
       		if (code == 0) {
-      			var data = output.data;
-	    		getBuildingList();
+      		var data = output.data;
+	    	getBuildingList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -332,7 +331,7 @@ function deleteBuilding(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "building_id="+building_id + "&_csrf_token=" + token,
+   		data: "building_id="+building_id + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -351,7 +350,7 @@ function getAdmin2ndList() {
   	$.ajax({
    		type: "POST",
    		url: "/admin/level1/admin_2nd/get_list",
-   		data: "_csrf_token=" + token,
+   		data: "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -371,14 +370,13 @@ function getAdmin2ndList() {
 
 function createAdmin2nd(f) {
   	var token = window.localStorage.getItem("token");
-	var sendData = "_csrf_token=" + token;
 	var username = f.word[1].value;
 	var password = f.word[2].value;
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
 	var school_id = $(f).find('option:selected').attr('id');
 	var url = "/admin/level1/admin_2nd/create"
-  var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&_csrf_token=" + token
+    var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&csrf_token=" + token
 	if (school_id != null) {
 	   data = data + "&school_id=" +school_id;
   	}
@@ -419,7 +417,7 @@ function modifyAdmin2nd(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -440,7 +438,7 @@ function deleteAdmin2nd(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "admin_id=" + admin_id + "&_csrf_token=" + token,
+   		data: "admin_id=" + admin_id + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -464,7 +462,7 @@ function getAdmin3rdList(school_id) {
   	$.ajax({
    		type: "POST",
    		url: "/admin/level1/admin_3rd/get_list",
-   		data: "_csrf_token=" + token,
+   		data: "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -490,11 +488,11 @@ function createAdmin3rd(f) {
 	var contact_info = f.word[3].value;
 	var building_id = $(f).find('#thirdbuilding option:selected').attr('id');
 	var url = "/admin/level1/admin_3nd/create"
-  var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
+    var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
 	if (building_id != null) {
-	data = data + "&building_id=" +building_id;
+	   data = data + "&building_id=" +building_id;
   }
-  data = data + "&_csrf_token=" + token;
+    data = data + "&csrf_token=" + token;
 	$.ajax({
    		type: "POST",
    		url: url,
@@ -528,7 +526,7 @@ function modifyAdmin3rd(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data +"&_csrf_token=" + token,
+   		data: data +"&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -558,7 +556,7 @@ function deleteAdmin3rd(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -576,7 +574,7 @@ function getCat1List() {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -615,7 +613,7 @@ function createCat1(f) {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -638,7 +636,7 @@ function modifyCat1(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -661,7 +659,7 @@ function deleteCat1(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -682,7 +680,7 @@ function getCat2List(cat1_id, cat2_id) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -724,7 +722,7 @@ function createCat2(f) {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -746,7 +744,7 @@ function modifyCat2(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -768,7 +766,7 @@ function deleteCat2(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "_csrf_token=" + token,
+   		data: data + "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -856,7 +854,7 @@ function deleteBuildingProduct(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "_csrf_token=" + token,
+   		data: data + "csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -906,7 +904,7 @@ function exportProduct(t) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: data + "_csrf_token="+token,
+  		data: data + "csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -931,12 +929,12 @@ function createProduct(f) {
 	var price = f.word[1].value;
 	var cat2_id = $("#cat2").find('option:selected').attr('id');
 	var url = "/admin/level1/product/create";
-  var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
+    var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	var formdata=new FormData();
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+data+"&_csrf_token="+token,
+  		data: formdata+data+"&csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -965,7 +963,7 @@ function modifyProduct(t) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: data + "&_csrf_token="+token,
+  		data: data + "&csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -1036,7 +1034,7 @@ function createPromotion(f) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+ data + "&_csrf_token="+token,
+  		data: formdata+ data + "&csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -1060,7 +1058,7 @@ function deletePromotion(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "&_csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
