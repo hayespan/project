@@ -867,25 +867,18 @@ function toCatSelect(t) {
 
 function toSchoolSelect(t) {
 	var obj = $(t);
-	obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
+	obj.html('<div class="form-group"><select class="form-control" onchange="toBuildingSelect(this)"><option>学校</option></select></div>')
 	$(t).attr('onclick', "");
 	getSchoolList(t);
-    var buildingTd = $(t).next().find('select');
-    if (buildingTd != null) {
-        alert("buildingTd != null");
-        toBuildingSelect(obj.attr('id'), buildingTd);
-    }
 }
 
-function toBuildingSelect(schoolId, t) {
-	if (schoolId == undefined) {
-        schoolId = null;
-    }
-    alert(t.text());
-    t.text() = "";
-	obj.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
-	$(t).attr('onclick', "");
-	getBuildingList(schoolId, t);
+function toBuildingSelect(school) {
+	var buildingTd = $(school).next();
+    buildingTd.text() = "";
+	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
+	buildingTd.attr('onclick', "");
+    var schoolId = $(school).find('option:selected').attr('id');
+	getBuildingList(schoolId, buildingTd);
 }
 
 function deleteBuildingProduct(t) {
