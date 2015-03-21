@@ -236,6 +236,7 @@ function getBuildingList(school, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
+
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -415,7 +416,7 @@ function modifyAdmin2nd(t) {
   	if (password == "") {
   		password = null;
   	}
-  	if (school_id == "") {
+  	if (school_id == null) {
   		school_id = null;
   	}
     var url = "/admin/level1/admin_2nd/modify"
@@ -541,8 +542,11 @@ function modifyAdmin3rd(t) {
   	if (password == "") {
   		password = null;
   	}
+    if (building_id == null) {
+        building_id = null;
+    }
     var url="/admin/level1/admin_3nd/modify"
-    var data = "admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
+    var data = "admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&building_id=" + building_id;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -1097,7 +1101,7 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-			getBuildingList();
+			getBuildingList(school);
 			$('.selectpicker').selectpicker('refresh');
 		}
 }
