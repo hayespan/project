@@ -431,7 +431,7 @@ function modifyAdmin2nd(t) {
   		data = data + "&password=" + password;
   	}
   	if (school_id != undefined) {
-  		data = data + "school_id=" + school_id; 
+  		data = data + "&school_id=" + school_id; 
   	}
     var url = "/admin/level1/admin_2nd/modify"
   	$.ajax({
