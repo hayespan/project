@@ -1154,7 +1154,7 @@ function resetBuilding(school, tableId) {
 
 function resetSchool() {
 	clearTable('schoolTable');
-	getSchoolList(1);
+	getSchoolList();
 }
 
 function resetAdmin2nd() {
