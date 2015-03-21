@@ -237,7 +237,8 @@ function getBuildingList(schoolId, t) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
     var data = "";
-    if (schoolId != undefined && schoolId != null) {
+    if (schoolId != undefined) {
+        alert(schoolId);
         data = "school_id=" + schoolId + "&";
     }
   	$.ajax({
@@ -887,14 +888,18 @@ function toSchoolSelect(t) {
 
 function toBuildingSelect(t) {
 	var buildingTd = $(t)
-    buildingTd.text("");
+    var schoolId;
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
     if (buildingTd.prev().children().eq(0).is('select')) {
-        var schoolId = buildingTd.prev().find('option:selected').attr('id');
+        schoolId = buildingTd.prev().find('option:selected').attr('id');
     } else {
-        var schoolId = buildingTd.prev().attr('id');
+        schoolId = buildingTd.prev().attr('id');
     }
-	getBuildingList(schoolId, buildingTd);
+    if (schoolId == undefined || schoolId == "") {
+        clearList2nd(buildingTd);
+    } else {
+        getBuildingList(schoolId, buildingTd);
+    }
     $(t).attr('onclick', "");
 }
 
@@ -1230,6 +1235,10 @@ function clearList(selectName) {
 	} else {
 		$("select[name="+selectName+"]").find('option[value!=-1]').remove();
 	}
+}
+
+function clearList2nd(t) {
+    $(t).find('option[value!=-1]').remove();
 }
 
 
