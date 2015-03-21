@@ -101,7 +101,7 @@ function showSales() {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "_csrf_token=" +token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -173,8 +173,8 @@ function createSchool(f) {
   	var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
-   		url: "/admin//level1/school/create?name=" + name,
-   		data: "_csrf_token=" + token,
+   		url: "/admin//level1/school/create",
+   		data: "name=" + name + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -194,11 +194,11 @@ function modifySchool(t) {
   	var temp = $(t).parent().siblings();
   	var school_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
-    var url="/admin//level1/school/modify?school_id=" + school_id + "&name="+name;
+    var url="/admin//level1/school/modify";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "school_id=" + school_id + "&name=" + name +"&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -216,11 +216,11 @@ function deleteSchool(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var school_id = $(temp[0]).attr("id");
-  	var url = "/admin/level1/school/delete?school_id="+school_id;
+  	var url = "/admin/level1/school/delete";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "school_id="+school_id+"&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -235,11 +235,11 @@ function deleteSchool(t) {
 function getBuildingList(school, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
-  	var url = "/admin/level1/building/get_list?school_id="+school;
+  	var url = "/admin/level1/building/get_list";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "school_id="+school+"&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -280,12 +280,12 @@ function addToBuildingTable(newId, newName) {
 }
 
 function createBuilding(schoolId, f) {
-	var url="/admin/level1/building/create?school_id=" + schoolId + "name="+f.word.name;
+	var url="/admin/level1/building/create";
  	var token = window.localStorage.getItem("token");
  	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "school_id="+school_id+"&name=" + f.word.name + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -305,11 +305,11 @@ function modifyBuilding(t) {
   	var temp = $(t).parent().siblings();
   	var building_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
-    var url="/admin/level1/building/modify?building_id=" + building_id + "&name="+name;
+    var url="/admin/level1/building/modify";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "building_id="+building_id + "&name=" + name + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -327,11 +327,11 @@ function deleteBuilding(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var building_id = $(temp[0]).attr("id");
-  	var url="/admin/level1/building/delete?building_id="+building_id;
+  	var url="/admin/level1/building/delete";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "building_id="+building_id + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -376,14 +376,16 @@ function createAdmin2nd(f) {
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
 	var school_id = $(f).find('option:selected').attr('id');
-	var url = "/admin/level1/admin_2nd/create?username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
+	var url = "/admin/level1/admin_2nd/create"
+  var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&_csrf_token=" + token
 	if (school_id != null) {
-	url = url + "&school_id=" +school_id;
+	   data = data + "&school_id=" +school_id;
   	}
+
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -411,11 +413,12 @@ function modifyAdmin2nd(t) {
   	if (school_id == "") {
   		school_id = null;
   	}
-    var url="/admin/level1/admin_2nd/modify?admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
+    var url = "/admin/level1/admin_2nd/modify"
+    var data="admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -432,11 +435,11 @@ function deleteAdmin2nd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var admin_id = $(temp[1]).attr("id");
-  	url="/admin/level1/admin_2nd/delete?admin_id=" + admin_id;
+  	var url="/admin/level1/admin_2nd/delete";
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: "admin_id=" + admin_id + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -485,14 +488,16 @@ function createAdmin3rd(f) {
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
 	var building_id = $(f).find('#thirdbuilding option:selected').attr('id');
-	var url = "/admin/level1/admin_3nd/create?username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
+	var url = "/admin/level1/admin_3nd/create"
+  var dara = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
 	if (building_id != null) {
-	url = url + "building_id=" +building_id;
-  	}
+	data = data + "&building_id=" +building_id;
+  }
+  data = data + "&_csrf_token=" + token;
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -517,11 +522,12 @@ function modifyAdmin3rd(t) {
   	if (password == "") {
   		password = null;
   	}
-    var url="/admin/level1/admin_3nd/modify?admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
+    var url="/admin/level1/admin_3nd/modify"
+    var data = "admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data +"&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -546,11 +552,12 @@ function deleteAdmin3rd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var admin_id = $(temp[2]).attr("id");
-  	var url="/admin/level1/admin_3rd/delete?admin_id=" + admin_id;
+  	var url="/admin/level1/admin_3rd/delete"
+    var data = "admin_id=" + admin_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -602,11 +609,12 @@ function addToCat1List(id, name) {
 function createCat1(f) {
   	var token = window.localStorage.getItem("token");
 	var name = f.word.value;
-	var url = "/admin/level1/cat1/create?name=" + name;
+	var url = "/admin/level1/cat1/create"
+  var dara = "name=" + name;
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -624,11 +632,12 @@ function modifyCat1(t) {
   	var temp = $(t).parent().siblings();
   	var cat1_id = $(temp[0]).attr('id');
   	var name = $(temp[0]).text();
-    var url="/admin/level1/cat1/modify?cat1_id="+cat1_id+"&name="+name;
+    var url="/admin/level1/cat1/modify"
+    var dara = "cat1_id="+cat1_id+"&name="+name;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -646,11 +655,12 @@ function deleteCat1(t) {
   	var temp = $(t).parent().siblings();
   	var cat1_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
-  	var url="/admin/level1/cat1/delete?admin_id=" + cat1_id+"&name="+name;
+  	var url="/admin/level1/cat1/delete"
+    var data = "admin_id=" + cat1_id+"&name="+name;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -667,11 +677,11 @@ function getCat2List(cat1_id, cat2_id) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/cat2/get_list";
   	if (cat2_id != null)
-  		url = url + "?cat2_id="+ cat2_id;
+  		var data = "cat2_id="+ cat2_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -708,11 +718,12 @@ function addToCat2List(id, name, t) {
 function createCat2(f) {
   	var token = window.sessionStorage.getItem("token");
 	var name = f.word.value;
-	var url = "/admin/level1/cat2/create?name=" + name;
+	var url = "/admin/level1/cat2/create"
+  var data = "name=" + name;
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -729,11 +740,12 @@ function modifyCat2(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var cat2_id = $(temp[0]+ " select option:selected").attr('id');
-    url="/admin/level1/cat2/modify?cat2_id="+cat2_id;
+    var url="/admin/level1/cat2/modify";
+    var data ="cat2_id="+cat2_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -750,11 +762,12 @@ function deleteCat2(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var cat2_id = $(temp[0]).attr("id");
-  	url="/admin/level1/cat2/delete?cat2_id=" + cat2_id;
+  	var url="/admin/level1/cat2/delete"
+    var data = "cat2_id=" + cat2_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -837,11 +850,12 @@ function deleteBuildingProduct(t) {
   	var product_id = $(temp).attr("id");
   	var building_id = $(t).parent().siblings().eq(1).attr('id');
   	$(t).parent().parent().remove();
-  	var url=" /admin/level1/associate/delete?product_id="+product_id+"&building_id="+buidling_id;
+  	var url=" /admin/level1/associate/delete";
+    var data = "product_id="+product_id+"&building_id="+buidling_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -859,14 +873,15 @@ function createProductBuilding(f) {
 	var timedelta = f.word[1].value;
 	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
 	var building_id = $(f + " select[name='buildingList']").eq(0).attr('id');
-	url = "/admin/level1/associate/create?product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
+	var url = "/admin/level1/associate/create"
+  var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
   	if (quantity != null) {
-  		url = url +"&quantity="+quantity;
+  		data = data +"&quantity="+quantity;
   	}
 	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: "_csrf_token="+token,
+  		data: data + "&_csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -885,11 +900,12 @@ function exportProduct(t) {
   	var temp = $(t).parent().siblings();
   	var product_id = $(temp[1]).attr("id");
   	var token = window.localStorage.getItem("token");
-  	var url = "/admin/level1/product/export?product_id=" + product_id;
+  	var url = "/admin/level1/product/export";
+    var data = "product_id=" + product_id;
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: "_csrf_token="+token,
+  		data: data + "_csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -913,12 +929,13 @@ function createProduct(f) {
 	var description = f.word[2].value; 
 	var price = f.word[1].value;
 	var cat2_id = $("#cat2").find('option:selected').attr('id');
-	var url = "/admin/level1/product/create?name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
+	var url = "/admin/level1/product/create";
+  var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	var formdata=new FormData();
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+"&_csrf_token="+token,
+  		data: formdata+data+"&_csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -942,11 +959,12 @@ function modifyProduct(t) {
   	var description = $(temp[2]).find("div").text();
   	var price = $(temp[3]).find("div").text();
   	var cat2_id =  $(temp[5]).find("select option:selected").attr('id');
-    var url="/admin//level1/school/modify?product_id=" + product_id + "&name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
+    var url="/admin//level1/school/modify";
+    var data = "product_id=" + product_id + "&name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: "_csrf_token="+token,
+  		data: data + "&_csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -964,11 +982,12 @@ function deleteProduct(t) {
   	var temp = $(t).parent().siblings();
   	var product_id = $(temp[1]).attr("id");
   	$(t).parent().parent().parent().parent().parent().parent().remove();
-    url="/admin/level1/product/delete?product_id="+product_id;
+    var url="/admin/level1/product/delete";
+    var data = "product_id="+product_id;
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: "_csrf_token="+token,
+  		data: data + "&_csrf_token="+token,
   		success: function(msg) {
   			var output = JSON.parse(msg);
       	    var code = output.code;
@@ -1010,12 +1029,13 @@ function addToPromotionTable(id, img_uri) {
 
 function createPromotion(f) {
   	var token = window.localStorage.getItem("token");
-  	var url = "/admin/level1/promotion/create?name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
+  	var url = "/admin/level1/promotion/create";
+    var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	var formdata=new FormData();
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+"&_csrf_token="+token,
+  		data: formdata+ data + "&_csrf_token="+token,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -1034,11 +1054,12 @@ function deletePromotion(t) {
   	var temp = $(t).parent().siblings();
   	var promotion_id = $(temp[0]).find("img").attr("id");
   	$(t).parent().parent().parent().parent().parent().parent().remove();
-    url="/admin/level1/promotion/delete?promotion_id="+promotion_id;
+    var url="/admin/level1/promotion/delete";
+    var data = "promotion_id="+promotion_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "_csrf_token=" + token,
+   		data: data + "&_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
       	    var code = output.code;
