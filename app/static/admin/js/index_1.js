@@ -545,7 +545,7 @@ function createAdmin3rd(f) {
 function modifyAdmin3rd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var building_id = $(temp[1]).find("selected option:selected").attr("id");
+  	var building_id = $(temp[1]).find("select option:selected").attr("id");
   	var name = $(temp[2]).text();
   	var contact_info = $(temp[5]).text();
   	var username = $(temp[3]).text();
@@ -869,6 +869,10 @@ function toSchoolSelect(t) {
 	obj.html('<div class="form-group"><select class="form-control"><option>学校</option></select></div>')
 	$(t).attr('onclick', "");
 	getSchoolList(t);
+    var buildingTd = $(t).next().find('select');
+    if (buildingTd != null) {
+        toBuildingSelect(buildingTd);
+    }
 }
 
 function toBuildingSelect(t) {
