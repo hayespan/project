@@ -195,10 +195,15 @@ function modifySchool(t) {
   	var school_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
     var url="/admin/level1/school/modify";
+    var data = "";
+    if (school_id != undefined) {
+        data = data + "school_id="+school_id;
+    }
+
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "school_id=" + school_id + "&name=" + name +"&csrf_token=" + token,
+   		data: data + "&name=" + name +"&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -309,14 +314,15 @@ function modifyBuilding(t, schoolId) {
     var temp = $(t).parent().siblings();
     var building_id = $(temp[0]).attr("id");
     var name = $(temp[0]).text();
-    if (building_id == undefined) {
-        building_id = null;
+    var data = "";
+    if (building_id != undefined) {
+        data = data + "building_id="+building_id;
     }
     var url="/admin/level1/building/modify";
     $.ajax({
    	    type: "POST",
    	    url: url,
-   	    data: "building_id="+building_id + "&name=" + name + "&csrf_token=" + token,
+   	    data: data + "&name=" + name + "&csrf_token=" + token,
    	    success: function(msg){
    		    var output = msg;
             var code = output.code;
@@ -420,14 +426,14 @@ function modifyAdmin2nd(t) {
   	var username = $(temp[2]).text();
   	var password = $(temp[3]).text();
   	var admin_id = $(temp[1]).attr('id');
-  	if (password == "") {
-  		password = null;
+    var data = "admin_id=" + admin_id + "&username=" + username + "&name=" + name + "&contact_info=" + contact_info;
+  	if (password != "") {
+  		data = data + "&password=" + password;
   	}
-  	if (school_id == undefined) {
-  		school_id = null;
+  	if (school_id != undefined) {
+  		data = data + "school_id=" + school_id; 
   	}
     var url = "/admin/level1/admin_2nd/modify"
-    var data="admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&school_id=" + school_id;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -858,19 +864,30 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 }
 
 function toCat2Select(t) {
-	var obj = $(t);
-	var cat2_id = $(t).prev().attr('id');
-	obj.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
-	$(t).attr('onclick', "");
-	getCat2List(cat2_id, t);
+	var cat2Td = $(t);
+    cat2Td.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
+    if (cat2Td.prev().has('select')) {
+        cat1Id = cat2Td.prev().find('option:selected').attr('id');
+    } else {
+        cat1lId = cat2Td.prev().attr('id');
+    }
+    if (cat1Id == undefined || cat1Id == "") {
+        clearList2nd(cat2Td);
+    } else {
+        getCat2List(cat1Id, cat2Td);
+    }
+    $(t).attr('onclick', "");
 }
 
 function toCat1Select(t) {
     var obj = $(t);
-    var cat1_id = $(t).attr('id');
     obj.html('<div class="form-group"><select class="form-control"><option>类别</option></select></div>')
     $(t).attr('onclick', "");
-    getCat1List(cat1_id, t);
+    $(t).change(function(){
+        varcat2Td = $(t).next();
+        toBuildingSelect(buildingTd);
+    });
+    getCat1List();
 }
 
 
