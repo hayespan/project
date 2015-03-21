@@ -422,7 +422,7 @@ function modifyAdmin2nd(t) {
   	if (password == "") {
   		password = null;
   	}
-  	if (school_id == null) {
+  	if (school_id == undefied) {
   		school_id = null;
   	}
     var url = "/admin/level1/admin_2nd/modify"
@@ -1115,7 +1115,6 @@ function checkSchool(school, buildingId) {
 			$("#" + buildingId).removeAttr("disabled");
             $(school).find('option:selected').attr('id');
 			getBuildingList(school);
-			$('.selectpicker').selectpicker('refresh');
 		}
 }
 
@@ -1125,11 +1124,9 @@ function checkYear(year) {
 			$("#month").val(-1);
 			$("#month").attr("disabled", "disabled");
 			$("#quarter").attr("disabled", "disabled");
-			$('.selectpicker').selectpicker('refresh');
 		} else if ($(year).val() != -1) {
 			$("#month").removeAttr("disabled");
 			$("#quarter").removeAttr("disabled");
-			$('.selectpicker').selectpicker('refresh');
 		}
 }
 
