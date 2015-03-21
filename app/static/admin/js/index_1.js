@@ -277,7 +277,7 @@ function addToBuildingList(newId, newName, t) {
 
 function addToBuildingTable(newId, newName, schoolId) {
 	$("#buildingTable").find('tbody').append('<tr><td id="'+ newId + '"><div contenteditable="true">' + newName
-									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this, \'' + schoolId + '\'')"/> \n'
+									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this,  \'' + schoolId + '\')"/> \n'
 									+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
 									+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + schoolId + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
 }
