@@ -173,7 +173,7 @@ function createSchool(f) {
   var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
-   		url: "/admin//level1/school/create",
+   		url: "/admin/level1/school/create",
    		data: "name=" + name + "&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
@@ -978,7 +978,7 @@ function modifyProduct(t) {
   	var description = $(temp[2]).find("div").text();
   	var price = $(temp[3]).find("div").text();
   	var cat2_id =  $(temp[5]).find("select option:selected").attr('id');
-    var url="/admin//level1/school/modify";
+    var url="/admin/level1/school/modify";
     var data = "product_id=" + product_id + "&name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	$.ajax({
   		url: url,
