@@ -577,7 +577,7 @@ function modifyAdmin3rd(t) {
 }
 
 function addToAdmin3rdTable(id, name, username, password, contact_info, schoolId, schoolName, buildingId, buildingName) {
-	$("#hostTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td id="'+ buildingId + '" onclick="toBuildingSelect(this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
+	$("#hostTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td id="'+ buildingId + '" onclick="toBuildingSelect(\'' + schoolId + '\', this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
 									   		+ username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   		+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin3rd(this)"/> \n'
 									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin3rd(this)"/> \n'
@@ -872,6 +872,7 @@ function toSchoolSelect(t) {
 	getSchoolList(t);
     var buildingTd = $(t).next().find('select');
     if (buildingTd != null) {
+        alert("buildingTd != null");
         toBuildingSelect(obj.attr('id'), buildingTd);
     }
 }
@@ -880,6 +881,7 @@ function toBuildingSelect(schoolId, t) {
 	if (schoolId == undefined) {
         schoolId = null;
     }
+    alert(t.text());
     t.text() = "";
 	obj.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
 	$(t).attr('onclick', "");
