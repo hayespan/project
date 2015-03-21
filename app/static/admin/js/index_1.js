@@ -120,7 +120,7 @@ function showSales() {
 }
 
 function getSchoolList(t) {
-  	var token = window.localStorage.getItem("token");
+  var token = window.localStorage.getItem("token");
 	//var responseText = '{"code":0, "data":[{"id":"l", "name":"中大"}, {"id":"ll", "name":"中西夏"}]}';
 	$.ajax({
    		type: "POST",
@@ -128,8 +128,9 @@ function getSchoolList(t) {
    		data: "_csrf_token=" + token,
    		success: function(msg){
    			var output = JSON.parse(msg);
-      	    var code = output.code;
+      	var code = output.code;
       		if (code == 0) {
+            alert("code == 0");
       			var data = output.data;
       			if (t == null) {
 	    			clearTable('schoolTable');
@@ -170,7 +171,7 @@ function addToSchoolTable(id, name) {
 
 function createSchool(f) {
 	var name = f.word.value;
-  	var token = window.localStorage.getItem("token");
+  var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
    		url: "/admin//level1/school/create",
@@ -194,7 +195,7 @@ function modifySchool(t) {
   	var temp = $(t).parent().siblings();
   	var school_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
-    var url="/admin//level1/school/modify";
+    var url="/admin/level1/school/modify";
   	$.ajax({
    		type: "POST",
    		url: url,
