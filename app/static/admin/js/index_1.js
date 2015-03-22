@@ -425,7 +425,7 @@ function modifyAdmin2nd(t) {
     if ($(temp[0]).has('select')) {
   	    var school_id = $(temp[0]).find("select option:selected").attr("class");
     } else {
-        var school_id = $(temp[0]).attr("class");
+        var school_id = temp[0].attr("class");
     }
   	var name = $(temp[1]).text();
   	var contact_info = $(temp[4]).text();
