@@ -885,6 +885,7 @@ function getProductBuilding(productId) {
             var code = output.code;
             if (code == 0) {
                 var data = output.data;
+                clearProductBuildingTable(productId);
                 for (var i = 0; i < data.length; ++i) {
                     $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.school_id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.building_id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+data[i].timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
@@ -1331,6 +1332,10 @@ function resetCat2(cat1Id) {
 
 function clearTable(tableId) {
 	$("#"+tableId + ' tbody tr').remove();
+}
+
+function clearProductBuildingTable(name) {
+    $("table[name=\""+ name + "\"]").find('tr').remove();
 }
 
 function clearDiv() {
