@@ -622,7 +622,7 @@ function deleteAdmin3rd(t) {
 	});
 }
 
-function getCat1List() {
+function getCat1List(t) {
   	var token = window.localStorage.getItem("token");
 	var url = "/admin/level1/cat1/get_list";
 	$.ajax({
@@ -635,12 +635,18 @@ function getCat1List() {
       		if (code == 0) {
       			var data = output.data;
 	    		var password_ = "";
-	    		clearTable('cat1Table');
-	    		clearList('cat1List');
-	    		for (var i = 0; i < data.length; ++i) {
-	    			addToCat1Table(data[i].id, data[i].name);
-	    			addToCat1List(data[i].id, data[i].name);
-	    		}
+                if (t == null) {
+	    		    clearTable('cat1Table');
+	    		    clearList('cat1List');
+	    		    for (var i = 0; i < data.length; ++i) {
+	    			    addToCat1Table(data[i].id, data[i].name);
+	    			    addToCat1List(data[i].id, data[i].name);
+	    		    }
+                } else {
+                    for (var i = 0; i < data.length; ++i) {
+                        addToCat1List(data[i].id, data[i].name, t);
+                    }
+                }
 	    	} else {
 	    		errorCode(code);
     		}
@@ -655,8 +661,12 @@ function addToCat1Table(id, name) {
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
 }
 
-function addToCat1List(id, name) {
-	$("select[name='cat1List']").append('<option class="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+function addToCat1List(id, name, t) {
+    if (t == null) {
+	   $("select[name='cat1List']").append('<option class="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+    }  else {
+        $(t).append('<option class="' + id + '">' + name + '</option>');
+    } 
 }
 
 function createCat1(f) {
@@ -901,7 +911,7 @@ function toCat1Select(t) {
         var cat2Td = $(t).next();
         toCat2Select(cat2Td);
     });
-    getCat1List();
+    getCat1List(t);
 }
 
 
