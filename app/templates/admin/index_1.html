@@ -251,7 +251,10 @@
         <div class="tab-pane fade" id="product">
             <div class="container">
                 <form action="" class="form-inline">
-                    <select name="cat1List" onchange="checkCat(this)"  class="form-control" id="cat1Product">
+                   <!-- <div class="form-group">
+                        <input type="file" id="inputfile" class="btn btn-default">
+                    </div>  -->
+                    <select name="cat1List" onchange="checkCat(this)"  class="form-control">
                         <option selected = "selected" value = -1>请选择类别</option>
                     </select>
                     <select id = "cat2Select"  class="form-control" disabled="disabled">
@@ -265,10 +268,12 @@
                         <textarea class="form-control" rows="3" name="word" placeholder="描述"></textarea>
                     </div>
                     <br><br>
+                    <input type="button" value="添加"  onclick="createProduct(this.form)" class="btn btn-default" />
+                </form>
+                <form id="Fimageorm">
                     <div class="form-group">
                         <input type="file" id="inputfile" class="btn btn-default">
                     </div>
-                    <input type="button" value="添加"  onclick="createProduct(this.form)" class="btn btn-default" />
                 </form>
             </div>
             <div id="productList">
@@ -280,7 +285,7 @@
             <div class="container">
                 <form name="promotion" method="post" action="" class="form-inline" role="form">
                     <div class="form-group">
-                        <input type="file" id="inputfile" class="btn btn-default">
+                        <input type="file" id="input" class="btn btn-default">
                     </div>
 　　                <input type="button" value="提交" onclick="createPromotion(this.form);" class="btn btn-default" />
 　　            </form>
