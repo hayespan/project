@@ -920,7 +920,7 @@ function toBuildingSelect(t) {
 	buildingTd = $(t);
     var schoolId;
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
-    if (buildingTd.prev().has('select')) {
+    if (buildingTd.prev().has('select').length > 0) {
         schoolId = buildingTd.prev().find('select option:selected').attr('class');
     } else {
         schoolId = buildingTd.prev().attr('class');
