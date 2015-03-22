@@ -9,6 +9,45 @@
   width: 220px \0;
   /*IE9 and below*/
 }
+
+div.first {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  display: inline;
+}
+td.description {
+  width: 200px;
+}
+
+img {
+  height: 100px;
+  width: 100px;
+}
+
+table.scrolled tbody {
+    display:block;
+    height:200px;
+    overflow:auto;
+}
+
+table.scrolled thead {
+    display:table;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+
+table.scrolled thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+
+
+div.second {
+  width: 65%;
+}
+div.third {
+  width:30%;
+}
+
 .bootstrap-select > .btn {
   width: 100%;
   padding-right: 25px;
