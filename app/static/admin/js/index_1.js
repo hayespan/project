@@ -778,11 +778,12 @@ function addToCat2List(id, name, t) {
     $(t).find("select").append('<option class="' + id + '">' + name + '</option>');
 }
 
-function createCat2(f) {
-  	var token = window.sessionStorage.getItem("token");
+function createCat2(cat1, f) {
+  	var token = window.localStorage.getItem("token");
 	var name = f.word.value;
 	var url = "/admin/level1/cat2/create"
-    var data = "name=" + name;
+    var cat1_id = $("#"+cat1).find('option:selected').attr('class');
+    var data = "name=" + name + "&cat1_id=" + cat1_id;
 	$.ajax({
    		type: "POST",
    		url: url,

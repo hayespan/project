@@ -228,14 +228,14 @@
 
         <div class="tab-pane fade" id="cat2">
             <div class="container">
-                <form name="cat2" method="post" action="" class="form-inline" role="form" onchange="checkCat(this)">
+                <form id="firstCat" method="post" action="" class="form-inline" role="form" onchange="checkCat(this)">
 　　                <div class="form-group">
                         <select name="cat1List"  class="form-control">
                             <option selected = "selected" value = -1>请选择类别</option>
                         </select>
                         <input type="text" class="form-control" name="word" 
                         placeholder="二级类别" />
-　　                    <input type="button" value="增加" onclick="createCat2(this.form);" class="btn btn-default" />
+　　                    <input type="button" value="增加" onclick="createCat2('firstCat',this.form);" class="btn btn-default" />
                     </div>
 　　            </form>
             </div>
