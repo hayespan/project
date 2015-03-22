@@ -420,8 +420,11 @@ function createAdmin2nd(f) {
 function modifyAdmin2nd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-    if (temp[0].has())
-  	var school_id = $(temp[0]).find("select option:selected").attr("class");
+    if (temp[0].has('select')) {
+  	    var school_id = $(temp[0]).find("select option:selected").attr("class");
+    } else {
+        var school_id = $(temp[0]).attr("class");
+    }
   	var name = $(temp[1]).text();
   	var contact_info = $(temp[4]).text();
   	var username = $(temp[2]).text();

@@ -27,7 +27,7 @@
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                     <li><a href="#school" tabindex="-1" data-toggle="tab" onclick="getSchoolList()">学校</a></li>
                     <li><a href="#manager" tabindex="-1" data-toggle="tab" onclick="getAdmin2ndList()">主管</a></li>
-                    <li><a href="#building" tabindex="-1" data-toggle="tab" onclick="getBuildingList()">楼栋</a></li>
+                    <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
                     <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="getAdmin3rdList()">楼主</a></li>
                 </ul>
             </li>                                    
@@ -159,7 +159,7 @@
         <div class="tab-pane fade" id="building">
             <div class="container">
                 <form action="" class="form-inline">
-                    <select id="secondSchool" name="schoolList" class="form-control" onchange="checkSchool(this,'secondBuilding');">
+                    <select id="secondSchool" name="schoolList" class="form-control">
                         <option selected = "selected" value = -1>请选择学校</option>
                     </select>
                     <input type="text" class="form-control" name="word" placeholder="楼栋"/>
