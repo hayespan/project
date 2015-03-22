@@ -662,7 +662,7 @@ function addToCat1Table(id, name) {
 
 function addToCat1List(id, name, t) {
     if (t == null) {
-	   $("select[name='cat1List']").append('<option class="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+	   $("select[name='cat1List']").append('<option class="' + id + '">' + name + '</option>');
     }  else {
         $(t).append('<option class="' + id + '">' + name + '</option>');
     } 
@@ -809,7 +809,7 @@ function modifyCat2(t, cat1Id) {
         var name = $(temp[0]).text();
     }
     var url="/admin/level1/cat2/modify";
-    var data ="cat2_id="+cat2_id +"&name" = name;
+    var data ="cat2_id="+cat2_id +"&name" + name;
   	$.ajax({
    		type: "POST",
    		url: url,
