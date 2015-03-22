@@ -1142,6 +1142,7 @@ def create_product():
 @csrf_token_required
 def modify_product():
     form = ModifyProductForm()
+    print form.name.data
     if form.validate_on_submit():
         product_id = form.product_id.data
         name = form.name.data
