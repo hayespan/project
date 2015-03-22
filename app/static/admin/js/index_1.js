@@ -1230,10 +1230,10 @@ function checkBoth(a, b) {
 }
 
 function checkCat(cat1) {
-		if ($(cat1).val() == -1) {
+		if ($(cat1).find("option:selected").attr("class") == undefined) {
 			$("#cat2Select").val(-1);
 			$("#cat2Select").attr("disabled", "disabled");
-		} else if ($(cat1).val() != -1) {
+		} else {
 			$("#cat2Select").removeAttr("disabled");
             var cat1Id = $(cat1).find('option:selected').attr('class');
             var cat2 = "#cat2Select";
