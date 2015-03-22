@@ -986,9 +986,8 @@ function deleteBuildingProduct(t) {
   	var temp = $(t).parent().parent().parent().parent();
   	var product_id = $(temp).attr("id");
   	var building_id = $(t).parent().siblings().eq(1).attr('id');
-  	$(t).parent().parent().remove();
   	var url=" /admin/level1/associate/delete";
-    var data = "product_id="+product_id+"&building_id="+buidling_id;
+    var data = "product_id="+product_id+"&building_id="+building_id;
   	$.ajax({
    		type: "POST",
    		url: url,
