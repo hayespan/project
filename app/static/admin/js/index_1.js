@@ -563,7 +563,7 @@ function modifyAdmin3rd(t) {
   	if (password == "") {
   		data = data + "&password=" + password;
   	}
-    if (building_id == null) {
+    if (building_id != null) {
         data = data + "&building_id=" + building_id;
     }
     var url="/admin/level1/admin_3rd/modify"
