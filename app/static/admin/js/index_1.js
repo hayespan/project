@@ -427,7 +427,6 @@ function modifyAdmin2nd(t) {
   	    school_id = $(temp[0]).find("select option:selected").attr("class");
     } else {
         school_id = $(temp[0]).attr("class");
-        alert(school_id);
     }
   	var name = $(temp[1]).text();
   	var contact_info = $(temp[4]).text();
@@ -918,7 +917,7 @@ function toSchoolSelect2nd(t) {
 }
 
 function toBuildingSelect(t) {
-	var buildingTd = $(t);
+	buildingTd = $(t);
     var schoolId;
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
     if (buildingTd.prev().has('select')) {
