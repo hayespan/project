@@ -887,7 +887,7 @@ function getProductBuilding(productId) {
                 var data = output.data;
                 clearProductBuildingTable(productId);
                 for (var i = 0; i < data.length; ++i) {
-                    $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.school_id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.building_id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+data[i].timedelta
+                    $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+data[i].timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
                 }
                 getSchoolList();
@@ -985,7 +985,7 @@ function deleteBuildingProduct(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().parent().parent().parent();
   	var product_id = $(temp).attr('name');
-  	var building_id = $(t).parent().siblings().eq(1).attr('id');
+  	var building_id = $(t).parent().siblings().eq(1).attr('class');
   	var url=" /admin/level1/associate/delete";
     var data = "product_id="+product_id+"&building_id="+building_id;
   	$.ajax({
