@@ -883,7 +883,7 @@ function getProductBuilding(productId) {
             if (code == 0) {
                 var data = output.data;
                 for (var i = 0; i < data.length; ++i) {
-                    $("table[name="+productId+"]").append('<tr><td>' + '</td><td class="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
+                    $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.school_id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.building_id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
                 }
                 getSchoolList();
@@ -899,7 +899,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
         +'<table name="productTable" class="table table-striped" >'
         +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th></tr></thead>'
         +'<tbody><tr><td><img src="'+img_uri+'"></td><td id="'+id+'"><div contenteditable="true">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td class="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td class="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
-      	+' <form id="productForm" method="post" enctype="multipart/form-data"><input type="file" name="image" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
+      	+' <form id="productForm" method="post" enctype="multipart/form-data"><input type="file" name="img" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
 　　    +'<input type="button" value="导出" class="btn btn-default" onclick="exportProduct(this)"/>'
@@ -993,6 +993,7 @@ function deleteBuildingProduct(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getProductBuilding(product_id);
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1020,8 +1021,7 @@ function createProductBuilding(f) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-				$("table[name="+product_id+"]").append('<tr><td>' + '</td><td class="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
-										+'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
+				getProductBuilding(product_id);
 	    	} else {
 	    		errorCode(code);
     		}
