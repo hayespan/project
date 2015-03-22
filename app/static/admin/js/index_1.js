@@ -423,7 +423,7 @@ function modifyAdmin2nd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
     var school_id;
-    if ($(temp[0]).has('select')) {
+    if ($(temp[0]).has('select').length > 0) {
   	    school_id = $(temp[0]).find("select option:selected").attr("class");
     } else {
         school_id = $(temp[0]).attr("class");
@@ -1263,7 +1263,7 @@ function clearDiv() {
 
 function clearList(selectName) {
 	if (selectName == 'schoolList') {
-		schools = $('select[name="schoolList"]');
+		var schools = $('select[name="schoolList"]');
 		for (var i = 0; i < schools.length; ++i) {
 			$(schools[i]).find('option[value!=-1]').remove();
 		}
