@@ -1335,7 +1335,7 @@ function clearTable(tableId) {
 }
 
 function clearProductBuildingTable(name) {
-    $("table[name=\""+ name + "\"]").find('tr').remove();
+    $("table[name=\""+ name + "\"]").find('tbody tr').remove();
 }
 
 function clearDiv() {
