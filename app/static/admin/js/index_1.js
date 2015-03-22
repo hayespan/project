@@ -1037,7 +1037,7 @@ function createProduct(f) {
 	var price = f.word[1].value;
 	var cat2_id = $("#cat2Select").find('option:selected').attr('class');
 	var url = "/admin/level1/product/create";
-    var img = $(f).find("#inputfile").files[0];
+    var img = $(f).find("#inputfile").val();
   	var formdata=new FormData();
     formdata.append("img", img);
     formdata.append("name", name);
