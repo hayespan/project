@@ -1075,6 +1075,7 @@ def get_product_list():
                 'quantity': pd_bd.quantity,
                 'timedelta': pd_bd.timedelta,
                 })
+        sn = pd.snapshots.order_by(Snapshot.id.desc()).limit(1).first()
         pds_info.append({
             'id': pd.id,
             'name': pd.name,
@@ -1142,7 +1143,6 @@ def create_product():
 @csrf_token_required
 def modify_product():
     form = ModifyProductForm()
-    print form.name.data
     if form.validate_on_submit():
         product_id = form.product_id.data
         name = form.name.data
@@ -1226,7 +1226,7 @@ def get_product_building_list():
     form = GetProductBuildingListForm()
     if form.validate_on_submit():
         pid = form.product_id.data
-        pd = Product.query.get(pd)
+        pd = Product.query.get(pid)
         if not pd:
             return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
         pd_bds = pd.product_buildings.all()
@@ -1265,7 +1265,7 @@ def create_product_building():
         bd = Building.query.get(b_id)
         if not bd:
             return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
-        if Product_building.query.filter(product_id==p_id, building_id==b_id).count():
+        if Product_building.query.filter(Product_building.product_id==p_id, Product_building.building_id==b_id).count():
             return jsonError(AdminErrno.PRODUCT_BUILDING_EXISTS)
         pd_bd = Product_building(
                 product=p,
@@ -1273,7 +1273,7 @@ def create_product_building():
                 quantity=qty,
                 timedelta=td,
                 )
-        db,session.add(pd_bd)
+        db.session.add(pd_bd)
         db.session.commit()
         return jsonResponse({
             'product_id': pd_bd.product_id,
@@ -1351,7 +1351,7 @@ def create_promotion():
         file_obj = savepic(form.img.data)
         p = Promotion(pic=f)
         db.session.add(p)
-        db.session.commit(p)
+        db.session.commit()
         return jsonResponse({'id': p.id})
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
