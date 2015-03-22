@@ -880,7 +880,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
 　　    +'<input type="button" value="导出" class="btn btn-default" onclick="exportProduct(this)"/>'
 		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control" onchange="checkSchool2nd(this)"><option value=-1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
-        +'<input type="text" class="form-control" name="word" placeholder="送货时间"/>\n<input type="button" value="添加" class="btn btn-default" /></div></form></div><div class="third" style="float:left; margin: 50px 0 0 0">'
+        +'<input type="text" class="form-control" name="word" placeholder="送货时间"/>\n<input type="button" value="添加" class="btn btn-default" onclick="createProductBuilding(this.form)"/></div></form></div><div class="third" style="float:left; margin: 50px 0 0 0">'
         +'<table name="'+id+'" class="table table-striped scrolled" >'
         +'<thead><tr><th>学校</th><th>楼栋</th><th>存货量</th><th>送货时间</th></tr></thead><tbody></tbody></table></div></div>');
 	for (var i = 0; i < asso.length; ++i) {
@@ -981,7 +981,7 @@ function createProductBuilding(f) {
 	var quantity = f.word[0].value;
 	var timedelta = f.word[1].value;
 	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
-	var building_id = $(f + " select[name='buildingList']").eq(0).attr('class');
+	var building_id = $(f + " select[name='buildingList']").eq(0).find('option:selected').attr('class');
 	var url = "/admin/level1/associate/create"
     var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
   	if (quantity != null) {
@@ -996,7 +996,7 @@ function createProductBuilding(f) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-				$("table[name="+id+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
+				$("table[name="+product_id+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
 										+'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
 	    	} else {
 	    		errorCode(code);
@@ -1076,7 +1076,7 @@ function modifyProduct(t) {
     } else {
         var cat2_id = $(temp[5].attr('class'));
     }
-    var url="/admin/level1/school/modify";
+    var url="/admin/level1/product/modify";
   	var formdata = new FormData($("#productForm")[0]);
     formdata.append("name", name);
     formdata.append("description", description);
