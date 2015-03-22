@@ -1110,6 +1110,7 @@ function modifyProduct(t) {
     else 
         var formdata = new FormData();
     formdata.append("name", name);
+    formdata.append("product_id", product_id);
     formdata.append("description", description);
     formdata.append("cat2_id", cat2_id);
     formdata.append("price", price);
