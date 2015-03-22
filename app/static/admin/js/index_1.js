@@ -882,7 +882,6 @@ function getProductBuilding(productId) {
             var code = output.code;
             if (code == 0) {
                 var data = output.data;
-                clearDiv();
                 for (var i = 0; i < data.length; ++i) {
                     $("table[name="+productId+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
