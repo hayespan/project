@@ -559,7 +559,11 @@ function createAdmin3rd(f) {
 function modifyAdmin3rd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var building_id = $(temp[1]).find("select option:selected").attr("class");
+    if ($(temp[1]).has('select').length > 0) {
+  	    var building_id = $(temp[1]).find("select option:selected").attr("class");
+    } else {
+        var building_id = $(temp[1]).attr('class');
+    }
   	var name = $(temp[2]).text();
   	var contact_info = $(temp[5]).text();
   	var username = $(temp[3]).text();
