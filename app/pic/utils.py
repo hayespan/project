@@ -31,8 +31,11 @@ def removepic(filename):
     '''
     remove file
     '''
-    os.remove('%s/%s' % (SAVE_PATH, filename))
-    f = File.query.filter_by(filename=filename).delete()
+    try:
+        os.remove('%s/%s' % (SAVE_PATH, filename))
+    except:
+        pass
+    File.query.filter_by(filename=filename).delete()
     db.session.commit()
 
 def copypic(product_obj):

@@ -1077,6 +1077,7 @@ def get_product_list():
                 })
         pds_info.append({
             'id': pd.id,
+            'name': pd.name,
             'description': pd.description,
             'img_uri': '/static/img/'+pd.pic.filename,
             'price': pd.price,
