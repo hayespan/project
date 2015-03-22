@@ -981,7 +981,7 @@ function createProductBuilding(f) {
 	var quantity = f.word[0].value;
 	var timedelta = f.word[1].value;
 	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
-	var building_id = $(f + " select[name='buildingList']").eq(0).find('option:selected').attr('class');
+	var building_id = $(f).find("select[name='buildingList']").eq(0).find('option:selected').attr('class');
 	var url = "/admin/level1/associate/create"
     var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
   	if (quantity != null) {
@@ -1074,7 +1074,7 @@ function modifyProduct(t) {
     if ($(temp[5]).has('select').length > 0) {
   	    var cat2_id =  $(temp[5]).find("select option:selected").attr('class');
     } else {
-        var cat2_id = $(temp[5].attr('class'));
+        var cat2_id = $(temp[5]).attr('class');
     }
     var url="/admin/level1/product/modify";
   	var formdata = new FormData($("#productForm")[0]);
