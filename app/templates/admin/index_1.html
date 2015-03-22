@@ -250,7 +250,7 @@
 
         <div class="tab-pane fade" id="product">
             <div class="container">
-                <form action="" class="form-inline">
+                <form action="" class="form-inline" id="create_product_meta_info">
                    <!-- <div class="form-group">
                         <input type="file" id="inputfile" class="btn btn-default">
                     </div>  -->
@@ -270,10 +270,8 @@
                     <br><br>
                     <input type="button" value="添加"  onclick="createProduct(this.form)" class="btn btn-default" />
                 </form>
-                <form id="imageForm" enctype ="multipart/form-data">
-                    <div class="form-group">
-                        <input type="file" id="inputfile" class="btn btn-default">
-                    </div>
+                <form id="imageForm" method="post" enctype="multipart/form-data">
+                    <input type="file" name="img" class="btn btn-default">
                 </form>
             </div>
             <div id="productList">

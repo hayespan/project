@@ -5,7 +5,7 @@ from hashlib import md5
 from .models import File
 from .. import db
 
-SAVE_PATH = os.path.dirname(os.path.abspath(__file__))+'../static/img'
+SAVE_PATH = os.path.dirname(os.path.abspath(__file__))+'/../static/img'
 
 def savepic(file_):
     '''

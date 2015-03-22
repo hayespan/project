@@ -530,7 +530,7 @@ def modify_building():
         if bd.name == name:
             pass
         else:
-            if Building.query.get(name=name).count():
+            if Building.query.filter_by(name=name).count():
                 return jsonError(AdminErrno.BUILDING_EXISTS)
             bd.name = name
             db.session.add(bd)
@@ -817,7 +817,8 @@ def modify_admin_3rd():
         ad.name = name
         ad.contact_info = contact_info
         if building_id is None:
-            ad.building = None
+            bd = None
+            ad.building = bd 
         else:
             bd = Building.query.get(building_id)
             if not bd:
@@ -992,7 +993,7 @@ def create_cat2():
         cat1 = Cat1.query.get(cat1_id)
         if not cat1:
             return jsonError(AdminErrno.CAT1_DOES_NOT_EXIST)
-        if Cat1.cat2s.filter_by(name=name).count():
+        if cat1.cat2s.filter_by(name=name).count():
             return jsonError(AdminErrno.CAT2_EXISTS)
         cat2 = Cat2(name=name)
         cat2.cat1 = cat1
@@ -1029,8 +1030,8 @@ def modify_cat2():
         db.session.add(cat2)
         db.session.commit()
         return jsonResponse({
-            'id': cat1.id,
-            'name': cat1.name,
+            'id': cat2.id,
+            'name': cat2.name,
             'cat1_info': {
                 'id': cat2.cat1.id,
                 'name': cat2.cat1.name,
@@ -1077,7 +1078,7 @@ def get_product_list():
         pds_info.append({
             'id': pd.id,
             'description': pd.description,
-            'img_uri': url_for('static', 'img/'+pd.pic.filename),
+            'img_uri': '/static/img/'+pd.pic.filename,
             'price': pd.price,
             'cat1_info': {
                 'id': pd.cat2.cat1.id,
@@ -1119,9 +1120,9 @@ def create_product():
         # create initial snapshot
         nf = copypic(p)
         sn = Snapshot(
-                product=product,
-                name=product.name,
-                description=product.description,
+                product=p,
+                name=p.name,
+                description=p.description,
                 cat1_rd=cat2.cat1.name,
                 cat2_rd=cat2.name,
                 price=price,

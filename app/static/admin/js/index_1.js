@@ -1037,7 +1037,7 @@ function createProduct(f) {
 	var price = f.word[1].value;
 	var cat2_id = $("#cat2Select").find('option:selected').attr('class');
 	var url = "/admin/level1/product/create";
-  	var formdata=new FormData($("#imageForm")[0]);
+  	var formdata = new FormData($("#imageForm")[0]);
     formdata.append("name", name);
     formdata.append("description", description);
     formdata.append("cat2_id", cat2_id);
@@ -1048,7 +1048,7 @@ function createProduct(f) {
   		type: 'POST',
   		data: formdata,
   		processData: false,
-  		contentType: 'multipart/form-data',
+        contentType: false,
   		success: function(msg) {
   			var output = msg;
       	    var code = output.code;
