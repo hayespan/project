@@ -17,10 +17,6 @@ div.first {
   display: inline;
 }
 
-td {
-  min-width: 150px;
-}
-
 td.description {
   width: 200px;
 }
