@@ -16,6 +16,11 @@ div.first {
   overflow: hidden;
   display: inline;
 }
+
+td {
+  min-width: 50px;
+}
+
 td.description {
   width: 200px;
 }

@@ -862,6 +862,7 @@ function getProductList() {
 	    		for (var i = 0; i < data.length; ++i) {
 	    			addToProductTable(data[i].id, data[i].name, data[i].description, data[i].img_uri, data[i].price, data[i].cat1_info.id, data[i].cat1_info.name, data[i].cat2_info.id, data[i].cat2_info.name, data[i].asso);
 	    		}
+                getSchoolList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -874,11 +875,11 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
         +'<table name="productTable" class="table table-striped" >'
         +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th></tr></thead>'
         +'<tbody><tr><td><img src="'+img_uri+'"></td><td id="'+id+'"><div contenteditable="true">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td class="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td class="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
-      	+'<input type="file" id="inputfile" enctype="multipart/form-data" id="image" class="btn btn-default" style="width:250px"><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
+      	+' <form id="productForm" method="post" enctype="multipart/form-data"><input type="file" name="image" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
 　　    +'<input type="button" value="导出" class="btn btn-default" onclick="exportProduct(this)"/>'
-		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control"><option value=1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
+		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control" onchange="checkSchool2nd(this)"><option value=-1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
         +'<input type="text" class="form-control" name="word" placeholder="送货时间"/>\n<input type="button" value="添加" class="btn btn-default" /></div></form></div><div class="third" style="float:left; margin: 50px 0 0 0">'
         +'<table name="'+id+'" class="table table-striped scrolled" >'
         +'<thead><tr><th>学校</th><th>楼栋</th><th>存货量</th><th>送货时间</th></tr></thead><tbody></tbody></table></div></div>');
@@ -1070,23 +1071,34 @@ function modifyProduct(t) {
   	var name = $(temp[1]).find("div").text();
   	var description = $(temp[2]).find("div").text();
   	var price = $(temp[3]).find("div").text();
-  	var cat2_id =  $(temp[5]).find("select option:selected").attr('class');
+    if ($(temp[5]).has('select').length > 0) {
+  	    var cat2_id =  $(temp[5]).find("select option:selected").attr('class');
+    } else {
+        var cat2_id = $(temp[5].attr('class'));
+    }
     var url="/admin/level1/school/modify";
-    var data = "product_id=" + product_id + "&name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
-  	$.ajax({
-  		url: url,
-  		type: 'POST',
-  		data: data + "&csrf_token="+token,
-  		success: function(msg) {
-  			var output = msg;
-      	    var code = output.code;
-      		if (code == 0) {
-      			getProductList();
-	    	} else {
-	    		errorCode(code);
-    		}
-  		}
-  	});
+  	var formdata = new FormData($("#productForm")[0]);
+    formdata.append("name", name);
+    formdata.append("description", description);
+    formdata.append("cat2_id", cat2_id);
+    formdata.append("price", price);
+    formdata.append("csrf_token", token);
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formdata,
+        processData: false,
+        contentType: false,
+        success: function(msg) {
+            var output = msg;
+            var code = output.code;
+            if (code == 0) {
+                getProductList();
+            } else {
+                errorCode(code);
+            }
+        }
+    });
 }
 
 function deleteProduct(t) {
@@ -1199,6 +1211,10 @@ function checkSchool(school, buildingId) {
 		}
 }
 
+function checkSchool2nd(t) {
+        var schoolId = $(t).find('option:selected').attr('class');
+        getBuildingList(schoolId);
+}
 function getBuildingTable(school) {
         var schoolId = $(school).find('option:selected').attr('class');
         getBuildingList(schoolId);
