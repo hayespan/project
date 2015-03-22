@@ -860,7 +860,6 @@ function getProductList() {
       			var data = output.data;
 	    		clearDiv();
 	    		for (var i = 0; i < data.length; ++i) {
-                    alert(data[i].name);
 	    			addToProductTable(data[i].id, data[i].name, data[i].description, data[i].img_uri, data[i].price, data[i].cat1_info.id, data[i].cat1_info.name, data[i].cat2_info.id, data[i].cat2_info.name, data[i].asso);
 	    		}
 	    	} else {
@@ -1094,7 +1093,6 @@ function deleteProduct(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var product_id = $(temp[1]).attr("id");
-  	$(t).parent().parent().parent().parent().parent().parent().remove();
     var url="/admin/level1/product/delete";
     var data = "product_id="+product_id;
   	$.ajax({
@@ -1105,6 +1103,7 @@ function deleteProduct(t) {
   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getProductList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1269,6 +1268,10 @@ function resetAdmin3rd() {
 
 function resetCat1() {
 	getCat1List();
+}
+
+function resetProduct() {
+    getProductList();
 }
 
 function resetCat2(cat1Id) {
