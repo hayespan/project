@@ -367,17 +367,19 @@ function getAdmin2ndList() {
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
+            var schoolId = "";
+            var schoolName = "";
       		if (code == 0) {
       			var data = output.data;
 	    		var password = "";
 	    		clearTable('managerTable');
 	    		for (var i = 0; i < data.length; ++i) {
                     if (data[i].school_info == null) {
-                        var schoolId = "";
-                        var schollName = "";
+                        schoolId = "";
+                        schoolName = "";
                     } else {
-                        var schoolId = data[i].school_info.id;
-                        var schoolName = data[i].school_info.name;
+                        schoolId = data[i].school_info.id;
+                        schoolName = data[i].school_info.name;
                     }
 	    			addToAdmin2ndTable(data[i].id, data[i].name, data[i].username, password, data[i].contact_info, schoolId, schoolName);
 	    		}
@@ -1176,6 +1178,11 @@ function checkSchool(school, buildingId) {
             var schoolId = $(school).find('select option:selected').attr('class');
 			getBuildingList(schoolId);
 		}
+}
+
+function getBuildingTable(school) {
+        var schoolId = $("#" + school).find('select option:selected').attr('class');
+        getBuildingList(schoolId);
 }
 
 function checkYear(year) {
