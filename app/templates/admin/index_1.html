@@ -209,7 +209,7 @@
 
         <div class="tab-pane fade" id="cat1">
             <div class="container">
-                <form name="cat1" method="post" action="" class="form-inline" role="form">
+                <form name="cat1" method="post" action="" class="form-inline" role="form" onchange="getCat2Table(this)">
 　　                <div class="form-group">
                         <input type="text" class="form-control" name="word" 
                         placeholder="一级类别" />
@@ -228,9 +228,9 @@
 
         <div class="tab-pane fade" id="cat2">
             <div class="container">
-                <form name="cat2" method="post" action="" class="form-inline" role="form">
+                <form name="cat2" method="post" action="" class="form-inline" role="form" onchange="checkCat(this)">
 　　                <div class="form-group">
-                        <select name="cat1List"  class="form-control" onchange="getCat2Table(this)">
+                        <select name="cat1List"  class="form-control">
                             <option selected = "selected" value = -1>请选择类别</option>
                         </select>
                         <input type="text" class="form-control" name="word" 

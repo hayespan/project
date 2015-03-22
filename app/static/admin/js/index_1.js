@@ -719,7 +719,7 @@ function deleteCat1(t) {
   	var cat1_id = $(temp[0]).attr("id");
   	var name = $(temp[0]).text();
   	var url="/admin/level1/cat1/delete"
-    var data = "admin_id=" + cat1_id+"&name="+name;
+    var data = "cat1_id=" + cat1_id+"&name="+name;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -1234,7 +1234,8 @@ function checkCat(cat1) {
 			$("#cat2").attr("disabled", "disabled");
 		} else if ($(cat1).val() != -1) {
 			$("#cat2").removeAttr("disabled");
-            getCat2List(cat1);
+            var cat1Id = $(cat1).find('option:selected').attr('class');
+            getCat2List(cat1Id);
 		}
 }
 
