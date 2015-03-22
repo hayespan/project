@@ -809,7 +809,7 @@ function modifyCat2(t, cat1Id) {
         var name = $(temp[0]).text();
     }
     var url="/admin/level1/cat2/modify";
-    var data ="cat2_id="+cat2_id +"&name" + name;
+    var data ="cat2_id="+cat2_id +"&name=" + name;
   	$.ajax({
    		type: "POST",
    		url: url,
