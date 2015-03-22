@@ -41,7 +41,7 @@
                 </ul>
             </li>
             <li>
-                <a href="#product" data-toggle="tab" onclick="getProductList()">
+                <a href="#product" data-toggle="tab" onclick="getProductList(); getCat1List()">
                     货品信息修改</a>
             </li>
             <li>
@@ -254,7 +254,7 @@
                     <select name="cat1List" onchange="checkCat(this);"  class="form-control">
                         <option selected = "selected" value = -1>请选择类别</option>
                     </select>
-                    <select id="cat2Select"  class="form-control" disabled="disabled">
+                    <select name = "cat2Select"  class="form-control" disabled="disabled">
                         <option value=-1>请选择二级类别</option>
                     </select>
                     <div class="form-group">
@@ -268,7 +268,7 @@
                     <div class="form-group">
                         <input type="file" id="inputfile" class="btn btn-default">
                     </div>
-                    <input type="button" value="添加"  class="btn btn-default" />
+                    <input type="button" value="添加"  onclick="createProduct(this.form)" class="btn btn-default" />
                 </form>
             </div>
             <div id="productList">
