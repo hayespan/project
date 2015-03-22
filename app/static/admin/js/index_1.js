@@ -861,6 +861,7 @@ function getProductList() {
 	    		clearDiv();
 	    		for (var i = 0; i < data.length; ++i) {
 	    			addToProductTable(data[i].id, data[i].name, data[i].description, data[i].img_uri, data[i].price, data[i].cat1_info.id, data[i].cat1_info.name, data[i].cat2_info.id, data[i].cat2_info.name, data[i].asso);
+                    getProductBuilding(data[i].id);
 	    		}
                 getSchoolList();
 	    	} else {
@@ -868,6 +869,30 @@ function getProductList() {
     		}
    		}
 	});
+}
+
+function getProductBuilding(productId) {
+    var token = window.localStorage.getItem("token");
+    $.ajax({
+        type: "POST",
+        url: "/admin/level1/associate/get_list",
+        data: "product_id=" + productId + "&csrf_token=" + token,
+        success: function(msg){
+            var output = msg;
+            var code = output.code;
+            if (code == 0) {
+                var data = output.data;
+                clearDiv();
+                for (var i = 0; i < data.length; ++i) {
+                    $("table[name="+productId+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
+                                        +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
+                }
+                getSchoolList();
+            } else {
+                errorCode(code);
+            }
+        }
+    });
 }
 
 function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Name, cat2Id, cat2Name, asso) {
@@ -980,7 +1005,7 @@ function createProductBuilding(f) {
   	var token = window.localStorage.getItem("token");
 	var quantity = f.word[0].value;
 	var timedelta = f.word[1].value;
-	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
+	var product_id = $(f).siblings().eq(0).find('td').eq(1).attr('id');
 	var building_id = $(f).find("select[name='buildingList']").eq(0).find('option:selected').attr('class');
 	var url = "/admin/level1/associate/create"
     var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
@@ -1033,14 +1058,14 @@ function exportProduct(t) {
 }
 
 function createProduct(f) {
-  	var token = window.localStorage.getItem("token");
-	var name = f.word[0].value;
-	var description = f.word[2].value; 
-	var price = f.word[1].value;
-	var cat2_id = $("#cat2Select").find('option:selected').attr('class');
-	var url = "/admin/level1/product/create";
+    var token = window.localStorage.getItem("token");
+    var name = f.word[0].value;
+    var description = f.word[2].value; 
+    var price = f.word[1].value;
+    var cat2_id = $("#cat2Select").find('option:selected').attr('class');
+    var url = "/admin/level1/product/create";
     if ($("#imageForm").val() != "") {
-  	    var formdata = new FormData($("#imageForm")[0]);
+        var formdata = new FormData($("#imageForm")[0]);
     } else {
         var formdata = new FormData();
     }
@@ -1049,24 +1074,23 @@ function createProduct(f) {
     formdata.append("cat2_id", cat2_id);
     formdata.append("price", price);
     formdata.append("csrf_token", token);
-  	$.ajax({
-  		url: url,
-  		type: 'POST',
-  		data: formdata,
-  		processData: false,
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formdata,
+        processData: false,
         contentType: false,
-  		success: function(msg) {
-  			var output = msg;
-      	    var code = output.code;
-      		if (code == 0) {
-      			getProductList();
-	    	} else {
-	    		errorCode(code);
-    		}
-  		}
-  	});
+        success: function(msg) {
+         var output = msg;
+         var code = output.code;
+         if (code == 0) {
+             getProductList();
+         } else {
+           errorCode(code);
+       }
+    }
+    });
 }
-
 
 function modifyProduct(t) {
   	var token = window.localStorage.getItem("token");
