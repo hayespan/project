@@ -1104,7 +1104,11 @@ function modifyProduct(t) {
         var cat2_id = $(temp[5]).attr('class');
     }
     var url="/admin/level1/product/modify";
-  	var formdata = new FormData($("#productForm")[0]);
+    var img = $("#productForm");
+    if(img.val())
+        var formdata = new FormData(img[0]);
+    else 
+        var formdata = new FormData()
     formdata.append("name", name);
     formdata.append("description", description);
     formdata.append("cat2_id", cat2_id);
