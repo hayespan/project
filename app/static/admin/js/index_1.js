@@ -663,7 +663,7 @@ function createCat1(f) {
   	var token = window.localStorage.getItem("token");
 	var name = f.word.value;
 	var url = "/admin/level1/cat1/create"
-    var dara = "name=" + name;
+    var data = "name=" + name;
 	$.ajax({
    		type: "POST",
    		url: url,
@@ -683,10 +683,10 @@ function createCat1(f) {
 function modifyCat1(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var cat1_id = $(temp[0]).attr('id');
+  	var cat1_id = $(temp[0]).attr('class');
   	var name = $(temp[0]).text();
     var url="/admin/level1/cat1/modify"
-    var dara = "cat1_id="+cat1_id+"&name="+name;
+    var data = "cat1_id="+cat1_id+"&name="+name;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -726,10 +726,9 @@ function deleteCat1(t) {
 	});
 }
 
-function getCat2List(cat1, cat2_id) {
+function getCat2List(cat1_id, cat2) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/cat2/get_list";
-    var cat1_id = $(cat1).find('select option:selected').attr('class');
   	if (cat1_id != undefined)
   		var data = "cat1_id="+ cat1_id;
   	$.ajax({
@@ -741,14 +740,14 @@ function getCat2List(cat1, cat2_id) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-	    		if (cat2_id == null) {
+	    		if (cat2 == null) {
 	    			clearTable("cat2Table");
 	    			for (var i = 0; i < data.length; ++i) {
-	    				addToCat2Table(data[i].id, data[i].name);
+	    				addToCat2Table(data[i].id, data[i].name, cat1_id);
 	    			}
 	    		} else {
 					for (var i = 0; i < data.length; ++i) {
-						addToCat2List(data[i].id, data[i].name, cat2_id);
+						addToCat2List(data[i].id, data[i].name, cat2);
 					}
 	    		}
 	    	} else {
@@ -758,15 +757,15 @@ function getCat2List(cat1, cat2_id) {
 	});
 }
 
-function addToCat2Table(id, name) {
+function addToCat2Table(id, name, cat1Id) {
 	$("#cat2Table").find('tbody').append('<tr><td class="'+ id + '><div contenteditable="true">' + name
-									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat1(this)"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat1(this)"/> \n'
-									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
+									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat2(this, \'' + cat1Id + '\')"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat2(this)"/> \n'
+									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat2(\'' + cat1Id + '\')"/></td></tr>');
 }
 
 function addToCat2List(id, name, t) {
-	$(t).find("select").append('<option class="' + id + '">' + name + '</option>'); 
+    $(t).find("select").append('<option class="' + id + '">' + name + '</option>');
 }
 
 function createCat2(f) {
@@ -790,10 +789,14 @@ function createCat2(f) {
 	});
 }
 
-function modifyCat2(t) {
+function modifyCat2(t, cat1Id) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var cat2_id = $(temp[0]).find("select option:selected").attr('class');
+    if ($(temp[0]).has('select').length > 0) {
+  	    var cat2_id = $(temp[0]).find("select option:selected").attr('class');
+    } else {
+        var cat2_id = $(temp[0]).attr('class');
+    }
     var url="/admin/level1/cat2/modify";
     var data ="cat2_id="+cat2_id;
   	$.ajax({
@@ -1190,6 +1193,11 @@ function getBuildingTable(school) {
         getBuildingList(schoolId);
 }
 
+function getCat2Table(cat1) {
+        var cat1Id = $(cat1).find('option:selected').attr('class');
+        getCat2List(cat1Id);
+}
+
 function checkYear(year) {
 	if ($(year).val() == -1) {
 			$("#quarter").val(-1);
@@ -1249,9 +1257,8 @@ function resetCat1() {
 	getCat1List();
 }
 
-function resetCat2() {
-	clearTable('cat2Table');
-	getAdmin2ndList();
+function resetCat2(cat1Id) {
+	getCat1List(cat1Id);
 }
 
 function clearTable(tableId) {
