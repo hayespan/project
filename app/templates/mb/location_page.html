@@ -1,0 +1,25 @@
+{% extends "mb/layout.html" %}
+{% block title %}用户初始化{% endblock %}
+
+{% block body %}
+<div class="banner" id="school-banner"><h2>选择学校</h2></div>
+<!-- this banner should be hide in the beginning -->
+<div class="banner" id="building-banner"><div class="back-btn"></div><h2>选择楼栋</h2></div>
+
+<div class="school-list-container">
+    <ul class="school-list">
+    </ul>
+</div>
+
+<!-- this list should be hide in the beginning -->
+<div class="building-list-container">
+    <ul class="building-list">
+        <li class="school-list-item"></li>
+    </ul>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/choose_school.js') }}"></script>
+{% endblock %}

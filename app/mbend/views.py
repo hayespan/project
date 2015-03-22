@@ -12,6 +12,7 @@ from ..user.models import User
 from ..util.csrf import init_csrf_token, csrf_token_required
 from ..user.utils import buyer_login_required
 from ..location.models import School, Building
+from ..pic.models import Promotion
 from . import mobilebp
 
 @mobilebp.route('/', methods=['GET', ])
@@ -21,21 +22,21 @@ def index():
     if user:
         user.name = u'匿名用户'
     promotions = [i.pic.filename for i in Promotion.query.all()]
-    return render_template('m/index.html', user=user, catx=_get_catx(), promotions=promotions)
+    return render_template('mb/index.html', user=user, catx=_get_catx(), promotions=promotions)
 
 @mobilebp.route('/locations', methods=['GET', ])
 def location_page():
     schools = School.query.all()
     locations = [[i, i.buildings.all()] for i in schools]
-    return render_template('m/choose_location.html', locations=locations)
+    return render_template('mb/location_page.html', locations=locations)
 
 @mobilebp.route('/cart', methods=['GET', ])
-@buyer_login_required(False, 'mbend.get_locations')
+@buyer_login_required(False, 'mbend.location_page')
 def cart_page():
-    return render_template('m/cart.html')
+    return render_template('mb/cart_page.html')
 
 @mobilebp.route('/order', methods=['GET', ])
-@buyer_login_required(False, 'mbend.get_locations')
+@buyer_login_required(False, 'mbend.location_page')
 def order_page():
     u = g.buyer
     orders = u.orders.order_by(db.case([(Order.status=='uncompleted', 1),], else_=0).desc()).all()
@@ -67,5 +68,5 @@ def order_page():
             items.append(item_meta)
         data['items'] = items
         order_data.append(data) 
-    return render_template('m/order.html', user=u, orders=order_data)
+    return render_template('mb/order_page.html', user=u, orders=order_data)
 
