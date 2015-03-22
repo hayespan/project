@@ -1175,13 +1175,13 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-            var schoolId = $(school).find('select option:selected').attr('class');
+            var schoolId = $(school).find('option:selected').attr('class');
 			getBuildingList(schoolId);
 		}
 }
 
 function getBuildingTable(school) {
-        var schoolId = $("#" + school).find('select option:selected').attr('class');
+        var schoolId = $(school).find('option:selected').attr('class');
         getBuildingList(schoolId);
 }
 
