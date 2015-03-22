@@ -716,10 +716,9 @@ function modifyCat1(t) {
 function deleteCat1(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var cat1_id = $(temp[0]).attr("id");
-  	var name = $(temp[0]).text();
+  	var cat1_id = $(temp[0]).attr("class");
   	var url="/admin/level1/cat1/delete"
-    var data = "cat1_id=" + cat1_id+"&name="+name;
+    var data = "cat1_id=" + cat1_id;
   	$.ajax({
    		type: "POST",
    		url: url,
