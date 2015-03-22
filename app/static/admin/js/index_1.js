@@ -873,7 +873,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 function toCat2Select(t) {
 	var cat2Td = $(t);
     cat2Td.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
-    if (cat2Td.prev().has('select')) {
+    if (cat2Td.prev().has('select').length > 0) {
         cat1Id = cat2Td.prev().find('option:selected').attr('class');
     } else {
         cat1lId = cat2Td.prev().attr('class');
