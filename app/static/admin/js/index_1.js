@@ -767,7 +767,7 @@ function getCat2List(cat1_id, cat2) {
 }
 
 function addToCat2Table(id, name, cat1Id) {
-	$("#cat2Table").find('tbody').append('<tr><td class="'+ id + '><div contenteditable="true">' + name
+	$("#cat2Table").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat2(this, \'' + cat1Id + '\')"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat2(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat2(\'' + cat1Id + '\')"/></td></tr>');
@@ -978,7 +978,7 @@ function createProductBuilding(f) {
 	var quantity = f.word[0].value;
 	var timedelta = f.word[1].value;
 	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
-	var building_id = $(f + " select[name='buildingList']").eq(0).attr('id');
+	var building_id = $(f + " select[name='buildingList']").eq(0).attr('class');
 	var url = "/admin/level1/associate/create"
   var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
   	if (quantity != null) {
@@ -1034,7 +1034,7 @@ function createProduct(f) {
 	var name = f.word[0].value;
 	var description = f.word[2].value; 
 	var price = f.word[1].value;
-	var cat2_id = $("#cat2").find('option:selected').attr('id');
+	var cat2_id = $("#cat2").find('option:selected').attr('class');
 	var url = "/admin/level1/product/create";
     var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	var formdata=new FormData(f);
@@ -1069,7 +1069,7 @@ function modifyProduct(t) {
   	var name = $(temp[1]).find("div").text();
   	var description = $(temp[2]).find("div").text();
   	var price = $(temp[3]).find("div").text();
-  	var cat2_id =  $(temp[5]).find("select option:selected").attr('id');
+  	var cat2_id =  $(temp[5]).find("select option:selected").attr('class');
     var url="/admin/level1/school/modify";
     var data = "product_id=" + product_id + "&name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
   	$.ajax({
