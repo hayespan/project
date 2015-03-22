@@ -634,7 +634,6 @@ function getCat1List(t) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-	    		var password_ = "";
                 if (t == null) {
 	    		    clearTable('cat1Table');
 	    		    clearList('cat1List');

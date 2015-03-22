@@ -37,7 +37,7 @@
                     类别编辑 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                     <li><a href="#cat1" tabindex="-1" data-toggle="tab" onclick="getCat1List()">一级类别</a></li>
-                    <li><a href="#cat2" tabindex="-1" data-toggle="tab">二级类别</a></li>
+                    <li><a href="#cat2" tabindex="-1" data-toggle="tab" onclick="getCat1List()">二级类别</a></li>
                 </ul>
             </li>
             <li>
@@ -209,7 +209,7 @@
 
         <div class="tab-pane fade" id="cat1">
             <div class="container">
-                <form name="cat1" method="post" action="" class="form-inline" role="form" onchange="getCat2Table(this)">
+                <form name="cat1" method="post" action="" class="form-inline" role="form">
 　　                <div class="form-group">
                         <input type="text" class="form-control" name="word" 
                         placeholder="一级类别" />
@@ -228,7 +228,7 @@
 
         <div class="tab-pane fade" id="cat2">
             <div class="container">
-                <form id="firstCat" method="post" action="" class="form-inline" role="form" onchange="checkCat(this)">
+                <form id="firstCat" method="post" action="" class="form-inline" role="form" onchange="getCat2Table(this)">
 　　                <div class="form-group">
                         <select name="cat1List"  class="form-control">
                             <option selected = "selected" value = -1>请选择类别</option>
