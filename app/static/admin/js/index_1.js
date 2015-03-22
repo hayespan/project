@@ -835,7 +835,7 @@ function deleteCat2(t) {
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
@@ -1231,12 +1231,13 @@ function checkBoth(a, b) {
 
 function checkCat(cat1) {
 		if ($(cat1).val() == -1) {
-			$("#cat2").val(-1);
-			$("#cat2").attr("disabled", "disabled");
+			$("#cat2Select").val(-1);
+			$("#cat2Select").attr("disabled", "disabled");
 		} else if ($(cat1).val() != -1) {
-			$("#cat2").removeAttr("disabled");
+			$("#cat2Select").removeAttr("disabled");
             var cat1Id = $(cat1).find('option:selected').attr('class');
-            getCat2List(cat1Id);
+            var cat2 = $("#cat2Select");
+            getCat2List(cat1Id, cat2);
 		}
 }
 
