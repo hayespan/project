@@ -1035,10 +1035,9 @@ function createProduct(f) {
 	var name = f.word[0].value;
 	var description = f.word[2].value; 
 	var price = f.word[1].value;
-	var cat2_id = $("#cat2").find('option:selected').attr('class');
+	var cat2_id = $("#cat2Select").find('option:selected').attr('class');
 	var url = "/admin/level1/product/create";
-    var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
-  	var formdata=new FormData(f);
+  	var formdata=new FormData($(f)[0]);
     formdata.append("name", name);
     formdata.append("description", description);
     formdata.append("cat2_id", cat2_id);
