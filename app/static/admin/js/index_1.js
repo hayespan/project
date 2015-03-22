@@ -984,14 +984,14 @@ function toBuildingSelect(t) {
 function deleteBuildingProduct(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().parent().parent().parent();
-  	var product_id = $(temp).attr("id");
+  	var product_id = $(temp).attr('name');
   	var building_id = $(t).parent().siblings().eq(1).attr('id');
   	var url=" /admin/level1/associate/delete";
     var data = "product_id="+product_id+"&building_id="+building_id;
   	$.ajax({
    		type: "POST",
    		url: url,
-   		data: data + "csrf_token=" + token,
+   		data: data + "&csrf_token=" + token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
