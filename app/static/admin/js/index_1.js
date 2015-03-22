@@ -420,7 +420,7 @@ function createAdmin2nd(f) {
 function modifyAdmin2nd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-    if (temp[0].has('select')) {
+    if ($(temp[0]).has('select')) {
   	    var school_id = $(temp[0]).find("select option:selected").attr("class");
     } else {
         var school_id = $(temp[0]).attr("class");
@@ -1017,11 +1017,16 @@ function createProduct(f) {
 	var cat2_id = $("#cat2").find('option:selected').attr('id');
 	var url = "/admin/level1/product/create";
     var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
-  	var formdata=new FormData();
+  	var formdata=new FormData(f);
+    formdata.append("name", name);
+    formdata.append("description", description);
+    formdata.append("cat2_id", cat2_id);
+    formdata.append("price", price);
+    formdata.append("csrf_token", token);
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata + "&" + data+"&csrf_token="+token,
+  		data: formdata,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
@@ -1116,12 +1121,16 @@ function addToPromotionTable(id, img_uri) {
 function createPromotion(f) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/promotion/create";
-    var data = "name="+name+"&description="+description+"&cat2_id="+cat2_id+"&price="+price;
-  	var formdata=new FormData();
+  	var formdata=new FormData(f);
+    formdata.append("description", description);
+    formdata.append("cat2_id", cat2_id);
+    formdata.append("price", price);
+    formdata.append("csrf_token", token);
+    formdata.append("name", name);
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: formdata+ "&" + data + "&csrf_token="+token,
+  		data: formdata,
   		processData: false,
   		contentType: 'multipart/form-data',
   		success: function(msg) {
