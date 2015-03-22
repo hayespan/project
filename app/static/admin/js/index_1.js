@@ -804,11 +804,13 @@ function modifyCat2(t, cat1Id) {
   	var temp = $(t).parent().siblings();
     if ($(temp[0]).has('select').length > 0) {
   	    var cat2_id = $(temp[0]).find("select option:selected").attr('class');
+        var name = $(temp[0]).find("select option:selected").text();
     } else {
         var cat2_id = $(temp[0]).attr('class');
+        var name = $(temp[0]).text();
     }
     var url="/admin/level1/cat2/modify";
-    var data ="cat2_id="+cat2_id;
+    var data ="cat2_id="+cat2_id +"&name" = name;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -980,7 +982,7 @@ function createProductBuilding(f) {
 	var product_id = $(f).siblings().eq(0).find('div').eq(0).attr('id');
 	var building_id = $(f + " select[name='buildingList']").eq(0).attr('class');
 	var url = "/admin/level1/associate/create"
-  var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
+    var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
   	if (quantity != null) {
   		data = data +"&quantity="+quantity;
   	}
