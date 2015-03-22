@@ -154,15 +154,15 @@ function addToSchoolList(id, name, t) {
 	if (t == null) {
 		schools = $('select[name="schoolList"]');
 		for (var i = 0; i < schools.length; ++i) {
-			$(schools[i]).append('<option id="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+			$(schools[i]).append('<option class="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
 		}
 	} else {
-		$(t).find("select").append('<option id="' + id + '">' + name + '</option>');
+		$(t).find("select").append('<option class="' + id + '">' + name + '</option>');
 	}
 }
 
 function addToSchoolTable(id, name) {
-	$("#schoolTable").find('tbody').append('<tr><td id="'+ id + '"><div contenteditable="true">' + name
+	$("#schoolTable").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifySchool(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteSchool(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetSchool()"/></td></tr>')
@@ -170,7 +170,7 @@ function addToSchoolTable(id, name) {
 
 function createSchool(f) {
 	var name = f.word.value;
-  var token = window.localStorage.getItem("token");
+    var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
    		url: "/admin/level1/school/create",
@@ -192,7 +192,7 @@ function createSchool(f) {
 function modifySchool(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var school_id = $(temp[0]).attr("id");
+  	var school_id = $(temp[0]).attr("class");
   	var name = $(temp[0]).text();
     var url="/admin/level1/school/modify";
     var data = "";
@@ -220,7 +220,7 @@ function modifySchool(t) {
 function deleteSchool(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var school_id = $(temp[0]).attr("id");
+  	var school_id = $(temp[0]).attr("class");
   	var url = "/admin/level1/school/delete";
   	$.ajax({
    		type: "POST",
@@ -237,13 +237,13 @@ function deleteSchool(t) {
 	});
 }
 
-function getBuildingList(schoolId, t) {
+function getBuildingList(school_id, t) {
 	//var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/building/get_list";
     var data = "";
-    if (schoolId != undefined) {
-        data = "school_id=" + schoolId + "&";
+    if (school_id != undefined) {
+        data = "school_id=" + school_id + "&";
     }
   	$.ajax({
    		type: "POST",
@@ -258,7 +258,7 @@ function getBuildingList(schoolId, t) {
 	    			clearList('buildingList');
 	    			clearTable('buildingTable');
 	    			for (var i = 0; i < data.length; ++i) {
-	    				addToBuildingTable(data[i].id, data[i].name, schoolId);
+	    				addToBuildingTable(data[i].id, data[i].name, school_id);
 	    				addToBuildingList(data[i].id, data[i].name);
 	    			}
 	    		} else {
@@ -275,14 +275,14 @@ function getBuildingList(schoolId, t) {
 
 function addToBuildingList(newId, newName, t) {
 	if (t == null) {
-		$("select[name='buildingList']").append('<option id="' + newId + '">' + newName + '</option>');
+		$("select[name='buildingList']").append('<option class="' + newId + '">' + newName + '</option>');
 	} else {
-		$(t).find("select").append('<option id="' + newId + '">' + newName + '</option>');
+		$(t).find("select").append('<option class="' + newId + '">' + newName + '</option>');
 	}
 }
 
 function addToBuildingTable(newId, newName, schoolId) {
-	$("#buildingTable").find('tbody').append('<tr><td id="'+ newId + '"><div contenteditable="true">' + newName
+	$("#buildingTable").find('tbody').append('<tr><td class="'+ newId + '"><div contenteditable="true">' + newName
 									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this,  \'' + schoolId + '\')"/> \n'
 									+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
 									+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + schoolId + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
@@ -291,7 +291,7 @@ function addToBuildingTable(newId, newName, schoolId) {
 function createBuilding(school, f) {
 	var url="/admin/level1/building/create";
  	var token = window.localStorage.getItem("token");
-    var school_id = $("#"+school).find("option:selected").attr('id');
+    var school_id = $("#"+school).find("option:selected").attr('class');
  	$.ajax({
    		type: "POST",
    		url: url,
@@ -312,7 +312,7 @@ function createBuilding(school, f) {
 function modifyBuilding(t, schoolId) {
     var token = window.localStorage.getItem("token");
     var temp = $(t).parent().siblings();
-    var building_id = $(temp[0]).attr("id");
+    var building_id = $(temp[0]).attr("class");
     var name = $(temp[0]).text();
     var data = "";
     if (building_id != undefined) {
@@ -339,7 +339,7 @@ function modifyBuilding(t, schoolId) {
 function deleteBuilding(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var building_id = $(temp[0]).attr("id");
+  	var building_id = $(temp[0]).attr("class");
   	var url="/admin/level1/building/delete";
   	$.ajax({
    		type: "POST",
@@ -394,7 +394,7 @@ function createAdmin2nd(f) {
 	var password = f.word[2].value;
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
-	var school_id = $(f).find('option:selected').attr('id');
+	var school_id = $(f).find('option:selected').attr('class');
 	var url = "/admin/level1/admin_2nd/create"
     var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&csrf_token=" + token
 	if (school_id != null) {
@@ -420,7 +420,8 @@ function createAdmin2nd(f) {
 function modifyAdmin2nd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var school_id = $(temp[0]).find("select option:selected").attr("id");
+    if (temp[0].has())
+  	var school_id = $(temp[0]).find("select option:selected").attr("class");
   	var name = $(temp[1]).text();
   	var contact_info = $(temp[4]).text();
   	var username = $(temp[2]).text();
@@ -471,7 +472,7 @@ function deleteAdmin2nd(t) {
 }
 
 function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId, schoolName) {
-	$("#managerTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect2nd(this)>' + schoolName + '</td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div  contenteditable="true">' + username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
+	$("#managerTable").find('tbody').append('<tr><td class="'+ schoolId + '" onclick=toSchoolSelect2nd(this)>' + schoolName + '</td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div  contenteditable="true">' + username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin2nd(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin2nd(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin2nd()"/></td></tr>');
@@ -479,7 +480,7 @@ function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId
 
 function getAdmin3rdList(school) {
   	var token = window.localStorage.getItem("token");
-    var school_id = $("#"+school).find("option:selected").attr('id');
+    var school_id = $("#"+school).find("option:selected").attr('class');
     var data = ""; 
     if (school_id == undefined) {
     } else {
@@ -526,7 +527,7 @@ function createAdmin3rd(f) {
 	var password = f.word[2].value;
 	var name = f.word[0].value;
 	var contact_info = f.word[3].value;
-	var building_id = $(f).find('#thirdBuilding option:selected').attr('id');
+	var building_id = $(f).find('#thirdBuilding option:selected').attr('class');
 	var url = "/admin/level1/admin_3rd/create"
     var data = "username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info;
 	if (building_id != undefined) {
@@ -552,20 +553,20 @@ function createAdmin3rd(f) {
 function modifyAdmin3rd(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var building_id = $(temp[1]).find("select option:selected").attr("id");
+  	var building_id = $(temp[1]).find("select option:selected").attr("class");
   	var name = $(temp[2]).text();
   	var contact_info = $(temp[5]).text();
   	var username = $(temp[3]).text();
   	var password = $(temp[4]).text();
   	var admin_id = $(temp[2]).attr('id');
+    var data = "admin_id=" + admin_id + "&username=" + username + "&name=" + name + "&contact_info=" + contact_info;
   	if (password == "") {
-  		password = null;
+  		data = data + "&password=" + password;
   	}
     if (building_id == null) {
-        building_id = null;
+        data = data + "&building_id=" + building_id;
     }
     var url="/admin/level1/admin_3rd/modify"
-    var data = "admin_id=" + admin_id + "&username=" + username + "&password=" + password + "&name=" + name + "&contact_info=" + contact_info + "&building_id=" + building_id;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -583,7 +584,7 @@ function modifyAdmin3rd(t) {
 }
 
 function addToAdmin3rdTable(id, name, username, password, contact_info, schoolId, schoolName, buildingId, buildingName) {
-	$("#hostTable").find('tbody').append('<tr><td id="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td id="'+ buildingId + '" onclick="toBuildingSelect(this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
+	$("#hostTable").find('tbody').append('<tr><td class="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td class="'+ buildingId + '" onclick="toBuildingSelect(this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
 									   		+ username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   		+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin3rd(this)"/> \n'
 									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin3rd(this)"/> \n'
@@ -638,21 +639,21 @@ function getCat1List() {
 }
 
 function addToCat1Table(id, name) {
-	$("#cat1Table").find('tbody').append('<tr><td id="'+ id + '"><div contenteditable="true">' + name
+	$("#cat1Table").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat1(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat1(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
 }
 
 function addToCat1List(id, name) {
-	$("select[name='cat1List']").append('<option id="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+	$("select[name='cat1List']").append('<option class="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
 }
 
 function createCat1(f) {
   	var token = window.localStorage.getItem("token");
 	var name = f.word.value;
 	var url = "/admin/level1/cat1/create"
-  var dara = "name=" + name;
+    var dara = "name=" + name;
 	$.ajax({
    		type: "POST",
    		url: url,
@@ -715,11 +716,12 @@ function deleteCat1(t) {
 	});
 }
 
-function getCat2List(cat1_id, cat2_id) {
+function getCat2List(cat1, cat2_id) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/cat2/get_list";
-  	if (cat2_id != null)
-  		var data = "cat2_id="+ cat2_id;
+    var cat1_id = $(cat1).find('select option:selected').attr('class');
+  	if (cat1_id != undefined)
+  		var data = "cat1_id="+ cat1_id;
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -747,21 +749,21 @@ function getCat2List(cat1_id, cat2_id) {
 }
 
 function addToCat2Table(id, name) {
-	$("#cat2Table").find('tbody').append('<tr><td id="'+ id + '><div contenteditable="true">' + name
+	$("#cat2Table").find('tbody').append('<tr><td class="'+ id + '><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat1(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat1(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
 }
 
 function addToCat2List(id, name, t) {
-	$(t).find("select").append('<option id="' + id + '">' + name + '</option>'); 
+	$(t).find("select").append('<option class="' + id + '">' + name + '</option>'); 
 }
 
 function createCat2(f) {
   	var token = window.sessionStorage.getItem("token");
 	var name = f.word.value;
 	var url = "/admin/level1/cat2/create"
-  var data = "name=" + name;
+    var data = "name=" + name;
 	$.ajax({
    		type: "POST",
    		url: url,
@@ -781,7 +783,7 @@ function createCat2(f) {
 function modifyCat2(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var cat2_id = $(temp[0]+ " select option:selected").attr('id');
+  	var cat2_id = $(temp[0]).find("select option:selected").attr('class');
     var url="/admin/level1/cat2/modify";
     var data ="cat2_id="+cat2_id;
   	$.ajax({
@@ -803,7 +805,7 @@ function modifyCat2(t) {
 function deleteCat2(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
-  	var cat2_id = $(temp[0]).attr("id");
+  	var cat2_id = $(temp[0]).attr("class");
   	var url="/admin/level1/cat2/delete"
     var data = "cat2_id=" + cat2_id;
   	$.ajax({
@@ -814,7 +816,6 @@ function deleteCat2(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
-      			getCat2List();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -848,7 +849,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 	$("#productList").append('<div class="first"><div class="second" style="float:left; margin: 50px 10px 0 1%">'
         +'<table name="productTable" class="table table-striped" >'
         +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th></tr></thead>'
-        +'<tbody><tr><td><img src="'+img_uri+'"></td><td><div contenteditable="true" id="'+id+'">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td id="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td id="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
+        +'<tbody><tr><td><img src="'+img_uri+'"></td><td><div contenteditable="true" id="'+id+'">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td class="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td class="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
       	+'<input type="file" id="inputfile" enctype="multipart/form-data" id="image" class="btn btn-default" style="width:250px"><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
@@ -867,9 +868,9 @@ function toCat2Select(t) {
 	var cat2Td = $(t);
     cat2Td.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
     if (cat2Td.prev().has('select')) {
-        cat1Id = cat2Td.prev().find('option:selected').attr('id');
+        cat1Id = cat2Td.prev().find('option:selected').attr('class');
     } else {
-        cat1lId = cat2Td.prev().attr('id');
+        cat1lId = cat2Td.prev().attr('class');
     }
     if (cat1Id == undefined || cat1Id == "") {
         clearList2nd(cat2Td);
@@ -884,8 +885,8 @@ function toCat1Select(t) {
     obj.html('<div class="form-group"><select class="form-control"><option>类别</option></select></div>')
     $(t).attr('onclick', "");
     $(t).change(function(){
-        varcat2Td = $(t).next();
-        toBuildingSelect(buildingTd);
+        var cat2Td = $(t).next();
+        toCat2Select(cat2Td);
     });
     getCat1List();
 }
@@ -914,9 +915,9 @@ function toBuildingSelect(t) {
     var schoolId;
 	buildingTd.html('<div class="form-group"><select class="form-control"><option>楼栋</option></select></div>')
     if (buildingTd.prev().has('select')) {
-        schoolId = buildingTd.prev().find('option:selected').attr('id');
+        schoolId = buildingTd.prev().find('select option:selected').attr('class');
     } else {
-        schoolId = buildingTd.prev().attr('id');
+        schoolId = buildingTd.prev().attr('class');
     }
     if (schoolId == undefined || schoolId == "") {
         clearList2nd(buildingTd);
@@ -1160,8 +1161,8 @@ function checkSchool(school, buildingId) {
 		} else if ($(school).val() != -1) {
 			$("#" + buildingId).val(-1);
 			$("#" + buildingId).removeAttr("disabled");
-      var school_id = $(school).find('option:selected').attr('id');
-			getBuildingList(school_id);
+            var schoolId = $(school).find('select option:selected').attr('class');
+			getBuildingList(schoolId);
 		}
 }
 
@@ -1191,6 +1192,7 @@ function checkCat(cat1) {
 			$("#cat2").attr("disabled", "disabled");
 		} else if ($(cat1).val() != -1) {
 			$("#cat2").removeAttr("disabled");
+            getCat2List(cat1);
 		}
 }
 
@@ -1201,35 +1203,25 @@ function deleteRow(t) {
 // initialize the page
 function initPage() {
 	getSchoolList();
-	getAdmin2ndList();
-	getAdmin3rdList();
-	getCat1List();
-	getProductList();
-	getPromotionList();
 }
 
 function resetBuilding(schoolId, tableId) {
-	clearTable(tableId);
 	getBuildingList(schoolId);
 }
 
 function resetSchool() {
-	clearTable('schoolTable');
 	getSchoolList();
 }
 
 function resetAdmin2nd() {
-	clearTable('managerTable');
 	getAdmin2ndList();
 }
 
 function resetAdmin3rd() {
-	clearTable('hostTable');
 	getAdmin3rdList();
 }
 
 function resetCat1() {
-	clearTable('cat1Table');
 	getCat1List();
 }
 

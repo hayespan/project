@@ -27,7 +27,7 @@
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                     <li><a href="#school" tabindex="-1" data-toggle="tab" onclick="getSchoolList()">学校</a></li>
                     <li><a href="#manager" tabindex="-1" data-toggle="tab" onclick="getAdmin2ndList()">主管</a></li>
-                    <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
+                    <li><a href="#building" tabindex="-1" data-toggle="tab" onclick="getBuildingList()">楼栋</a></li>
                     <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="getAdmin3rdList()">楼主</a></li>
                 </ul>
             </li>                                    
@@ -36,16 +36,16 @@
                     data-toggle="dropdown">
                     类别编辑 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                    <li><a href="#cat1" tabindex="-1" data-toggle="tab">一级类别</a></li>
-                    <li><a href="#cat2" tabindex="-1" data-toggle="tab">二级类别</a></li>
+                    <li><a href="#cat1" tabindex="-1" data-toggle="tab" onclick="getCat1List()">一级类别</a></li>
+                    <li><a href="#cat2" tabindex="-1" data-toggle="tab" onclick="getCat2List()">二级类别</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#product" data-toggle="tab">
+                <a href="#product" data-toggle="tab" onclick="getProductList()">
                     货品信息修改</a>
             </li>
             <li>
-                <a href="#promotion" data-toggle="tab">
+                <a href="#promotion" data-toggle="tab" onclick="getPromotionList()">
                     促销信息修改</a>
             </li>
         </ul>
@@ -112,7 +112,7 @@
                 <hr>
                 <form class="form-inline" name="manageTable">
                     <div class="form-group">
-                        <select name="schoolList" class="form-control">
+                        <select name="schoolList" class="form-control" id="managerSchoolSelect">
                             <option selected = "selected" value = -1>请选择学校</option>
                         </select>
                         <input type="text" class="form-control" name="word" placeholder="姓名"/>
@@ -163,7 +163,6 @@
                         <option selected = "selected" value = -1>请选择学校</option>
                     </select>
                     <input type="text" class="form-control" name="word" placeholder="楼栋"/>
-                    <input type="button" value="查询" onclick='getBuildingList("secondSchool");' class="btn btn-default" />
                     <input type="button" value="添加" onclick="createBuilding('secondSchool' ,this.form);" class="btn btn-default" />
                 </form>
             </div>
@@ -192,7 +191,7 @@
                         <hr>
                         <input type="text" class="form-control" name="word" placeholder="密码"/>
                         <input type="text" class="form-control" name="word" placeholder="联系方式"/>
-                        <input type="button" value="查询" onclick='getAdmin3rdList("thirdSchool");' class="btn btn-default" />
+                        <input type="button" value="查询" onclick="getAdmin3rdList('thirdSchool');" class="btn btn-default" />
                         <input type="button" value="添加" onclick="createAdmin3rd(this.form);" class="btn btn-default" />
                     </div>
                 </form>
@@ -236,7 +235,6 @@
                         </select>
                         <input type="text" class="form-control" name="word" 
                         placeholder="二级类别" />
-                        <input type="button" value="查询" onclick='getCat2List("cat1List");' class="btn btn-default" />
 　　                    <input type="button" value="增加" onclick="createCat2(this.form);" class="btn btn-default" />
                     </div>
 　　            </form>
