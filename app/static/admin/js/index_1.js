@@ -773,7 +773,7 @@ function addToCat2Table(id, name, cat1Id) {
 }
 
 function addToCat2List(id, name, t) {
-    $(t).find("select").append('<option class="' + id + '">' + name + '</option>');
+    $(t).append('<option class="' + id + '">' + name + '</option>');
 }
 
 function createCat2(cat1, f) {
@@ -1236,7 +1236,7 @@ function checkCat(cat1) {
 		} else if ($(cat1).val() != -1) {
 			$("#cat2Select").removeAttr("disabled");
             var cat1Id = $(cat1).find('option:selected').attr('class');
-            var cat2 = $("#cat2Select");
+            var cat2 = "#cat2Select";
             getCat2List(cat1Id, cat2);
 		}
 }
