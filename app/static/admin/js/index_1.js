@@ -1063,7 +1063,7 @@ function createProduct(f) {
     var price = f.word[1].value;
     var cat2_id = $("#cat2Select").find('option:selected').attr('class');
     var url = "/admin/level1/product/create";
-    if ($("#imageForm").val() != "") {
+    if ($("#imageForm").find("input").val() != "") {
         var formdata = new FormData($("#imageForm")[0]);
     } else {
         var formdata = new FormData();
@@ -1105,10 +1105,10 @@ function modifyProduct(t) {
     }
     var url="/admin/level1/product/modify";
     var img = $("#productForm");
-    if(img.val())
+    if(img.find("input").val())
         var formdata = new FormData(img[0]);
     else 
-        var formdata = new FormData()
+        var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("description", description);
     formdata.append("cat2_id", cat2_id);
