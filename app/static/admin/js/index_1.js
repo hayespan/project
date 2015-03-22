@@ -883,7 +883,7 @@ function getProductBuilding(productId) {
             if (code == 0) {
                 var data = output.data;
                 for (var i = 0; i < data.length; ++i) {
-                    $("table[name="+productId+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
+                    $("table[name="+productId+"]").append('<tr><td>' + '</td><td class="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
                 }
                 getSchoolList();
@@ -1020,7 +1020,7 @@ function createProductBuilding(f) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-				$("table[name="+product_id+"]").append('<tr><td>' + '</td><td id="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
+				$("table[name="+product_id+"]").append('<tr><td>' + '</td><td class="'+building_id+'">' + building_info.name + '</td><td>'+quantity+'</td><td>'+timedelta
 										+'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
 	    	} else {
 	    		errorCode(code);
