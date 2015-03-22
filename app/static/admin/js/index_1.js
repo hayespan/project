@@ -47,9 +47,12 @@ function errorCode(code) {
 		case -23:
 		 	alert("Category #2 does not exist.");
 		 	break;
-		 case -24:
+		case -24:
 		 	alert("Product does not exist.");
 		 	break;
+        case -25:
+            alert("Product has been associated with building.");
+            break;
 	}
 }
 
