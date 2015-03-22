@@ -886,7 +886,7 @@ function getProductBuilding(productId) {
             if (code == 0) {
                 var data = output.data;
                 for (var i = 0; i < data.length; ++i) {
-                    $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.school_id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.building_id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+timedelta
+                    $("table[name="+productId+"]").append('<tr><td class="'+data[i].school_info.school_id+'">' + data[i].school_info.name + '</td><td class="'+data[i].building_info.building_id+'">' + data[i].building_info.name + '</td><td>'+data[i].quantity+'</td><td>'+data[i].timedelta
                                         +'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
                 }
                 getSchoolList();
