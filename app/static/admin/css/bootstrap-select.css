@@ -20,6 +20,7 @@ div.first {
 td.description {
   width: 200px;
   word-wrap:break-word;
+  word-break:break-all;
   overflow:hidden; 
 }
 
