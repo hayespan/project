@@ -157,6 +157,7 @@
 
         <div class="tab-pane fade" id="building">
             <div class="container">
+                <hr>
                 <form action="" class="form-inline">
                     <select id="secondSchool" name="schoolList" class="form-control" onchange="getBuildingTable(this)">
                         <option selected = "selected" value = -1>请选择学校</option>
@@ -165,6 +166,7 @@
                     <input type="button" value="添加" onclick="createBuilding('secondSchool' ,this.form);" class="btn btn-default" />
                 </form>
             </div>
+            <hr>
             <div class="hero-unit">
                 <table name="mainTable" id="buildingTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
                     <thead><tr><th>楼层</th></tr></thead>
