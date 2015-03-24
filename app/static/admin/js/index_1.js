@@ -930,9 +930,9 @@ function toCat2Select(t) {
 	var cat2Td = $(t);
     cat2Td.html('<div class="form-group"><select class="form-control"><option>二级类别</option></select></div>')
     if (cat2Td.prev().has('select').length > 0) {
-        cat1Id = cat2Td.prev().find('option:selected').attr('class');
+        var cat1Id = cat2Td.prev().find('option:selected').attr('class');
     } else {
-        cat1lId = cat2Td.prev().attr('class');
+        var cat1Id = cat2Td.prev().attr('class');
     }
     if (cat1Id == undefined || cat1Id == "") {
         clearList2nd(cat2Td);
