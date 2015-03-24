@@ -52,11 +52,10 @@ function showOrders() {
         url: url,
         data: data,
         success: function(msg){
-            var json = JSON.parse(msg);
-            code = json.code;
+            code = msg.code;
             if (code == 0) {
                 clearTables('orders_table_body');
-                InsertOrdersContent(json);
+                InsertOrdersContent(msg);
             } else {
                 errorCode(code);
             }
@@ -75,11 +74,10 @@ function showReplenishment() {
         url: url,
         data: data,
         success: function(msg){
-            var json = JSON.parse(msg);
-            code = json.code;
+            code = msg.code;
             if (code == 0) {
                 clearTables('replenishment_table_body');
-                InsertRepleContent(json);
+                InsertRepleContent(msg);
             } else {
                 errorCode(code);
             }
@@ -96,11 +94,10 @@ function showTotal() {
         url: url,
         data: data,
         success: function(msg){
-            var json = JSON.parse(msg);
-            code = json.code;
+            code = msg.code;
             if (code == 0) {
                 clearTables('total_table_body');
-                InsertTotalContent(json);
+                InsertTotalContent(msg);
             } else {
                 errorCode(code);
             }
@@ -119,11 +116,10 @@ function showEvery() {
         url: url,
         data: data,
         success: function(msg) {
-            var json = JSON.parse(msg);
-            code = json.code;
+            code = msg.code;
             if (code == 0) {
                 clearTables('every_table_body');
-                InsertEveryContent(json);
+                InsertEveryContent(msg);
             } else {
                 errorCode(code);
             }
@@ -294,8 +290,7 @@ function operationBtnFunc() {
             url: url,
             data: data,
             success: function(msg) {
-                var json = JSON.parse(msg);
-                code = json.code;
+                code = msg.code;
                 if (code == 0) {
                     var origin = parseInt(this.parentNode.parentNode.childNodes[4].firstChild.nodeValue.replace('份', ''));
                     origin = origin + parseInt(amount);
@@ -331,11 +326,10 @@ function list_buildings() {
         url: url,
         data: data,
         success: function(msg) {
-            var json = JSON.parse(msg);
-            code = json.code;
+            code = msg.code;
             if (code == 0) {
                 clearModals();
-                InsertModals(json);
+                InsertModals(msg);
             } else {
                 errorCode(code);
             }
