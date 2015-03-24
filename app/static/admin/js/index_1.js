@@ -91,7 +91,7 @@ function showSales() {
 	var quarter = $("#quarter");
 	var export_ =	$("#export");
 	var str = "";
-
+    alert("okk");
 	if (school.value)
 		str += "school_id="+school.value;
 	if (building.value)
