@@ -90,29 +90,27 @@ function showSales() {
 	var month = $("#month");
 	var quarter = $("#quarter");
 	var export_ =	$("#export");
-	var str = "";
+    var token = window.localStorage.getItem("token");
+	var str = "csrf_token=" + token;
 	if (school.find('option:selected').attr("class") != undefined)
-		str += "school_id="+school.find('option:selected').attr('class');
+		str += "&school_id="+school.find('option:selected').attr('class');
 	if (building.find("option:selected").attr("class") != undefined)
 		str += "&building_id="+building.find('option:selected').attr('class');
 	if (year.val() != -1) {
-		if (str != "") str += "&";
-		str += "year="+year.val();
+		str += "&year="+year.val();
 	}
 	if (quarter.val() != -1)
 		str += "&quarter="+quarter.val();
 	if (month.val() != -1)
 		str += "&month="+month.val();
 	if (export_.val() == 1) {
-		if (str != "") str += "&";
-		str += "export="+1;
+		str += "&export="+1;
 	}
 	var url = "/admin/level1/total_sales";
-	var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: str + "&csrf_token=" +token,
+   		data: str,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
