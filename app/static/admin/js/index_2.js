@@ -210,6 +210,9 @@ function InsertRepleContent(json, buildId) {
                 var text = document.createTextNode(repleInfo[property]);
             }
             td.appendChild(text);
+            if (property == 'description') {
+                td.className += 'descriptions';
+            }
             tr.appendChild(td);
         }
         td = document.createElement("td");
@@ -284,13 +287,19 @@ function createInput(className) {
     return input;
 }
 
+// judge pure numbers with reg expression
+function isDigital(str) {
+    if (str.match(/^-?\d+$/) != null) return true;
+    return false;
+}
+
 // modify quantity
 function operationBtnFunc() {
-    var amount = this.parentNode.parentNode.childNodes[5].firstChild.value;
+    var amount = this.parentNode.parentNode.getElementsByClassName('descriptions')[0].value;
 
-    if (amount == "" || isNaN(amount)) {
+    if (amount == "" || !isDigital(amount)) {
         alert("Please input a valid number");
-        this.parentNode.parentNode.childNodes[5].firstChild.value = "";
+        this.parentNode.parentNode.getElementsByTagName("input")[0].value = "";
     } else {
         var url = "/admin/level2/modify_quantity";
         var building_id = document.getElementById('build2').parentNode.id;
