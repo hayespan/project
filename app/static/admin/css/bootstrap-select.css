@@ -44,7 +44,7 @@ table.scrolled thead, table.scrolled tbody tr{
 }
 
 table.scrolled thead {
-    width: calc( 90% - 1em );
+    width: calc( 75% - 1em );
 }
 
 div.second {
