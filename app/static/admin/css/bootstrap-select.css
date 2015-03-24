@@ -19,6 +19,8 @@ div.first {
 
 td.description {
   width: 200px;
+  word-wrap:break-word;
+  overflow:hidden; 
 }
 
 img {
@@ -32,15 +34,14 @@ table.scrolled tbody {
     overflow:auto;
 }
 
-table.scrolled thead {
+table.scrolled thead, tbody tr{
     display:table;
     table-layout:fixed;/* even columns width , fix width of table too*/
 }
 
 table.scrolled thead {
-    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+    width: calc( 100% - 1em );
 }
-
 
 div.second {
   width: 65%;

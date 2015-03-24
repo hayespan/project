@@ -20,6 +20,9 @@ function errorCode(code) {
 		case -10:
 			alert("Act beyond authority."); // 非一级管理员
 			break;
+        case -13:
+            alert("Product is not associated with request building.");
+            break;
 		case -14:
 			alert("School does not exist.");
 			break;
@@ -44,6 +47,9 @@ function errorCode(code) {
 		case -21:
 			alert("Building already has an admin.");
 			break;
+        case -22:
+            alert("Category #2 already exists.");
+            break;
 		case -23:
 		 	alert("Category #2 does not exist.");
 		 	break;
@@ -52,6 +58,9 @@ function errorCode(code) {
 		 	break;
         case -25:
             alert("Product has been associated with building.");
+            break;
+        case -26:
+            alert("Building already exists.");
             break;
 	}
 }
@@ -1041,17 +1050,13 @@ function exportProduct(t) {
   	$.ajax({
   		url: url,
   		type: 'POST',
-  		data: data + "csrf_token="+token,
+  		data: data + "&csrf_token="+token,
   		success: function(msg) {
   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
-      			if (!isNaN(data)) {
-	    			$("#sales").append(document.createTextNode(data));
-	    		} else {
-	    			$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
-	    		}
+	    		$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1189,22 +1194,23 @@ function addToPromotionTable(id, img_uri) {
 function createPromotion(f) {
   	var token = window.localStorage.getItem("token");
   	var url = "/admin/level1/promotion/create";
-  	var formdata=new FormData(f);
-    formdata.append("description", description);
-    formdata.append("cat2_id", cat2_id);
-    formdata.append("price", price);
+  	if ($("#promotionForm").find("input").val() != "") {
+        var formdata = new FormData($("#promotionForm")[0]);
+    } else {
+        return;
+    }
     formdata.append("csrf_token", token);
-    formdata.append("name", name);
   	$.ajax({
   		url: url,
   		type: 'POST',
   		data: formdata,
   		processData: false,
-  		contentType: 'multipart/form-data',
+        contentType: false,
   		success: function(msg) {
   			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getPromotionList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1216,7 +1222,6 @@ function deletePromotion(t) {
   	var token = window.localStorage.getItem("token");
   	var temp = $(t).parent().siblings();
   	var promotion_id = $(temp[0]).find("img").attr("id");
-  	$(t).parent().parent().parent().parent().parent().parent().remove();
     var url="/admin/level1/promotion/delete";
     var data = "promotion_id="+promotion_id;
   	$.ajax({
@@ -1227,6 +1232,7 @@ function deletePromotion(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getPromotionList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1358,6 +1364,3 @@ function clearList(selectName) {
 function clearList2nd(t) {
     $(t).find('option[value!=-1]').remove();
 }
-
-
-

@@ -281,12 +281,13 @@
 
         <div class="tab-pane fade" id="promotion">
             <div class="container">
-                <form id="promotionForm" method="post" action="" class="form-inline" role="form">
+                <form id="promotionForm" method="post" action="" class="form-inline" role="form" enctype="multipart/form-data">
                     <div class="form-group">
-                        <input type="file" id="input" class="btn btn-default">
+                        <input type="file" id="input" class="btn btn-default" name="img">
                     </div>
-　　                <input type="button" value="提交" onclick="createPromotion(this.form);" class="btn btn-default" />
 　　            </form>
+                <br>
+                 <input type="button" value="提交" onclick="createPromotion();" class="btn btn-default" />
             </div>
             <div class="hero-unit">
                 <table id="promotionTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
