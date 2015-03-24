@@ -355,8 +355,8 @@ function InsertModals(json) {
 
     var modals = $(".modal-body");
     for (var i = 0; i < modals.length; ++i) {
-        for (var build in buildings) {
-            var buildInfo = buildings[build];
+        for (var build in allBuildings) {
+            var buildInfo = allBuildings[build];
             var text = "";
             for (var property in buildInfo) {
                 if (property == "id") {
