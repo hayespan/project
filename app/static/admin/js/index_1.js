@@ -91,9 +91,9 @@ function showSales() {
 	var quarter = $("#quarter");
 	var export_ =	$("#export");
 	var str = "";
-	if (school.val())
+	if (school.val() != -1)
 		str += "school_id="+school.val();
-	if (building.val())
+	if (building.val() != -1)
 		str += "&building_id="+building.val();
 	if (year.val()) {
 		if (str != "") str += "&";
@@ -108,6 +108,7 @@ function showSales() {
 		str += "export="+1;
 	}
 	var url = "/admin/level1/total_sales?"+str;
+    alert(url);
 	var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
