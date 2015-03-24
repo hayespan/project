@@ -34,7 +34,7 @@ table.scrolled tbody {
     overflow:auto;
 }
 
-table.scrolled thead, tbody tr{
+table.scrolled thead, table.scrolled tbody tr{
     display:table;
     table-layout:fixed;/* even columns width , fix width of table too*/
 }
