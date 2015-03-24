@@ -24,8 +24,16 @@ def changepic(product_obj, file_):
     change product object 's pic
     '''
     filename = product_obj.pic.filename
-    os.remove('%s/%s' % (SAVE_PATH, filename))
+    try:
+        os.remove('%s/%s' % (SAVE_PATH, filename))
+    except:
+        pass
+    fm = file_.filename.rsplit('.', 1)[1]
+    filename = md5(os.urandom(64)).hexdigest()+'.'+fm
     file_.save('%s/%s' % (SAVE_PATH, filename))
+    product_obj.pic.filename = filename
+    db.session.add(product_obj)
+    db.session.commit()
 
 def removepic(filename):
     '''

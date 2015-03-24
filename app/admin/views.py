@@ -90,59 +90,62 @@ def _admin_level_3():
         return jsonError(AdminErrno.NO_BUILDING_IN_CHARGE)
     time_ = _get_time_()
     
-    # get order list
-    in_charge_order = []
-    get_order_list = request.args.get('get_order_list', 0, type=int)
-    if get_order_list:
-        orders = admin_building.orders.\
-                filter(Order.released_time>=time_).\
-                order_by(db.case([(Order.status=='uncompleted', 1), ],
-                    else_=0).desc()).all()
-        for o in orders:
-            order = {
-                    'number': o.ticketid,
-                    'details': [],
-                    'receiver_info': {
-                        'name': o.receiver,
-                        'location': o.addr,
-                        'phone': o.phone
-                        },
-                    'status': o.status,
-                    'released_time': datetime_2_unixstamp(o.released_time),
-                    'timedelta': timedelta_2_second(o.timedelta),
-                    'timeout': o.released_time+datetime.timedelta(hours=o.timedelta)<datetime.datetime.now(),
-                    }
-            snapshots = o.order_snapshots
-            details = []
-            for snapshot in snapshots:
-                sn = Snapshot.query.filter_by(id = int(snapshot.snapshot_id)).first()
-                product = {
-                        'name': sn.name,
-                        'price': sn.price,
-                        'quantity': snapshot.quantity,
+    form = AdminLevel3Form()
+    if form.validate_on_submit():
+        # get order list
+        in_charge_order = []
+        get_order_list = form.get_order_list.data
+        if get_order_list:
+            orders = admin_building.orders.\
+                    filter(Order.released_time>=time_).\
+                    order_by(db.case([(Order.status=='uncompleted', 1), ],
+                        else_=0).desc()).all()
+            for o in orders:
+                order = {
+                        'number': o.ticketid,
+                        'details': [],
+                        'receiver_info': {
+                            'name': o.receiver,
+                            'location': o.addr,
+                            'phone': o.phone
+                            },
+                        'status': o.status,
+                        'released_time': datetime_2_unixstamp(o.released_time),
+                        'timedelta': timedelta_2_second(o.timedelta),
+                        'timeout': o.released_time+datetime.timedelta(hours=o.timedelta)<datetime.datetime.now(),
                         }
-                details.append(product)
-            order['details'] = details
-            in_charge_order.append(order)
+                snapshots = o.order_snapshots
+                details = []
+                for snapshot in snapshots:
+                    sn = Snapshot.query.filter_by(id = int(snapshot.snapshot_id)).first()
+                    product = {
+                            'name': sn.name,
+                            'price': sn.price,
+                            'quantity': snapshot.quantity,
+                            }
+                    details.append(product)
+                order['details'] = details
+                in_charge_order.append(order)
 
-    # get inventory
-    inventory = []
-    get_inventory_list = request.args.get('get_inventory_list', 0, type=int)
-    if get_inventory_list:
-        products = admin_building.product_buildings.all()
-        for product in products:
-            pd = Product.query.filter_by(id = int(product.product_id)).first()
-            data = {
-                    'name': pd.name,
-                    'description': pd.description,
-                    'quantity': product.quantity,
-                    }
-            inventory.append(data)
+        # get inventory
+        inventory = []
+        get_inventory_list = form.get_inventory_list.data
+        if get_inventory_list:
+            products = admin_building.product_buildings.all()
+            for product in products:
+                pd = Product.query.filter_by(id = int(product.product_id)).first()
+                data = {
+                        'name': pd.name,
+                        'description': pd.description,
+                        'quantity': product.quantity,
+                        }
+                inventory.append(data)
 
-    return jsonResponse({
-        'orders': in_charge_order,
-        'inventory': inventory,
-        })
+        return jsonResponse({
+            'orders': in_charge_order,
+            'inventory': inventory,
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 @adminbp.route('/level3/handle_order', methods=['POST', ])
 @admin_login_required(True)
@@ -200,111 +203,113 @@ def _admin_level_2():
     if not admin_school:
         return jsonError(AdminErrno.NO_SCHOOL_IN_CHARGE)
 
-    # get the id of building which the front-end wants to query the order
-    get_building_list = request.args.get('get_building_list', None, type=int)
-    building_data = []
-    if get_building_list is not None:
-        # return all the building's name and id in this school to the front-end
-        for building in admin_buildings:
-            building_data.append({
-                'id': building.id,
-                'name': building.name, 
-                })
-
-    # get orders
-    order_building = request.args.get('get_order_list', None, type=int)
-    orders_in_charge = []
-    if order_building is not None:
-        # if there is a building been selected
-        sc = admin_school
-        if order_building >= 0:
-            bd = sc.buildings.filter_by(id=order_building.id).first()
-            # building not in your charge
-            if not bd:
-                return jsonError(AdminErrno.PERMISSION_DENIED)
-            order_base_q = bd.orders
-        # if < 0, not filter
-        else:
-            orders_base_q = Order.query.filter(Order.building_id.in_([i.id for i in admin_buildings]))
-        # order
-        orders = order_base_q.filter_by(Order.released_time>=time_).\
-                    order_by(Order.released_time.desc()).all()
-        for order in orders:
-            orders_in_charge.append({
-                'released_time': datetime_2_unixstamp(order.released_time),
-                'receiver_info': {
-                    'name': order.receiver,
-                    'location': order.addr,
-                    'phone': order.phone
-                    },
-                 'money': order.tot_price_rd,
-                 'status': order.status
-                 })
-
-    # get inventory
-    inventory_building = request.args.get('get_inventory_list',None, type=int)
-    inventory_info = []
-    if inventory_building is not None:
-        # get the inventory information
-        sc = admin_school
-        if inventory_building >= 0:
-            bd = sc.buildings.filter_by(id=order_building.id).first()
-            # building not in your charge
-            if not bd:
-                return jsonError(AdminErrno.PERMISSION_DENIED)
-            pd_bd_base_q = bd.product_buildings
-        else:
-            pd_bd_base_q = Product_building.query.filter(Product_building.building_id.in_([i.id for i in admin_buildings]))
-        pd_bds = pd_bd_base_q.order_by(Product_building.quantity).all()
-        for pd_bd in pd_bds:
-            pd = pd_bd.product
-            inventory_info.append({
-                'id': pd.id,
-                'name': pd.name,
-                'description': pd.name, 
-                'price': pd.price,
-                'quantity': pd_bd.quantity
-                })
-
-    # get the total sales
-    total_sales_building = request.args.get('get_total_sales', None, type=int)
-    money = 0
-    amount = 0
-    now = datetime.datetime.now()
-    if total_sales_building is not None:
-        # all building
-        if total_sales_building == -1:
+    form = AdminLevel2Form()
+    if form.validate_on_submit():
+        get_building_list = form.get_building_list.data
+        building_data = []
+        if get_building_list is not None:
+            # return all the building's name and id in this school to the front-end
             for building in admin_buildings:
-                orders = building.orders.filter(
-                            Order.status=='completed',
-                            db.func.year(Order.released_time)==now.year,
-                            db.func.month(Order.released_time)==now.month).all()
-                amount = amount + len(orders)
+                building_data.append({
+                    'id': building.id,
+                    'name': building.name, 
+                    })
+
+        # get orders
+        order_building = form.get_order_list.data
+        orders_in_charge = []
+        if order_building is not None:
+            # if there is a building been selected
+            sc = admin_school
+            if order_building >= 0:
+                bd = sc.buildings.filter_by(id=order_building.id).first()
+                # building not in your charge
+                if not bd:
+                    return jsonError(AdminErrno.PERMISSION_DENIED)
+                order_base_q = bd.orders
+            # if < 0, not filter
+            else:
+                orders_base_q = Order.query.filter(Order.building_id.in_([i.id for i in admin_buildings]))
+            # order
+            orders = order_base_q.filter_by(Order.released_time>=time_).\
+                        order_by(Order.released_time.desc()).all()
+            for order in orders:
+                orders_in_charge.append({
+                    'released_time': datetime_2_unixstamp(order.released_time),
+                    'receiver_info': {
+                        'name': order.receiver,
+                        'location': order.addr,
+                        'phone': order.phone
+                        },
+                     'money': order.tot_price_rd,
+                     'status': order.status
+                     })
+
+        # get inventory
+        inventory_building = form.get_inventory_list.data
+        inventory_info = []
+        if inventory_building is not None:
+            # get the inventory information
+            sc = admin_school
+            if inventory_building >= 0:
+                bd = sc.buildings.filter_by(id=order_building.id).first()
+                # building not in your charge
+                if not bd:
+                    return jsonError(AdminErrno.PERMISSION_DENIED)
+                pd_bd_base_q = bd.product_buildings
+            else:
+                pd_bd_base_q = Product_building.query.filter(Product_building.building_id.in_([i.id for i in admin_buildings]))
+            pd_bds = pd_bd_base_q.order_by(Product_building.quantity).all()
+            for pd_bd in pd_bds:
+                pd = pd_bd.product
+                inventory_info.append({
+                    'id': pd.id,
+                    'name': pd.name,
+                    'description': pd.name, 
+                    'price': pd.price,
+                    'quantity': pd_bd.quantity
+                    })
+
+        # get the total sales
+        total_sales_building = form.get_total_sales.data
+        money = 0
+        amount = 0
+        now = datetime.datetime.now()
+        if total_sales_building is not None:
+            # all building
+            if total_sales_building == -1:
+                for building in admin_buildings:
+                    orders = building.orders.filter(
+                                Order.status=='completed',
+                                db.func.year(Order.released_time)==now.year,
+                                db.func.month(Order.released_time)==now.month).all()
+                    amount = amount + len(orders)
+                    for order in orders:
+                        money = money + order.tot_price_rd
+            else:
+                sc = admin_school
+                bd = sc.buildings.filter(Building.id==total_sales_building).first()
+                # building not in your charge
+                if not bd:
+                    return jsonError(AdminErrno.PERMISSION_DENIED)
+                orders = bd.orders.filter(
+                        Order.status=='completed',
+                        db.func.year(Order.released_time)==now.year,
+                        db.func.month(Order.released_time)==now.month).all()
+                amount = len(orders)
                 for order in orders:
                     money = money + order.tot_price_rd
-        else:
-            sc = admin_school
-            bd = sc.buildings.filter(Building.id==total_sales_building).first()
-            # building not in your charge
-            if not bd:
-                return jsonError(AdminErrno.PERMISSION_DENIED)
-            orders = bd.orders.filter(
-                    Order.status=='completed',
-                    db.func.year(Order.released_time)==now.year,
-                    db.func.month(Order.released_time)==now.month).all()
-            amount = len(orders)
-            for order in orders:
-                money = money + order.tot_price_rd
 
-    return jsonResponse({
-        'buildings': building_data,
-        'orders': orders_in_charge,
-        'inventory': inventory_info,
-        'total_sales': {
-            'amount': amount,
-            'money': money
-            },
-        })
+        return jsonResponse({
+            'buildings': building_data,
+            'orders': orders_in_charge,
+            'inventory': inventory_info,
+            'total_sales': {
+                'amount': amount,
+                'money': money
+                },
+            })
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 @adminbp.route('/level2/modify_quantity', methods=['POST', ])
 @admin_login_required(True)
@@ -352,56 +357,59 @@ def get_total_sales():
     month:
     export:
     '''
-    school_id = request.args.get('school_id', None, type=int)
-    if school_id is None:
-        q1 = Order.query
-    else:
-        sc = School.query.filter_by(id=school_id).first()
-        if not sc:
-            return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
-        q1 = db.session.query(Order).\
-                join(Building, Order.building_id==Building.id).\
-                join(School, Building.school_id==School.id).\
-                filter(School.id==sc.id)
+    form = GetTotalSalesForm()
+    if form.validate_on_submit():
+        school_id = form.school_id.data
+        if school_id is None:
+            q1 = Order.query
+        else:
+            sc = School.query.filter_by(id=school_id).first()
+            if not sc:
+                return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+            q1 = db.session.query(Order).\
+                    join(Building, Order.building_id==Building.id).\
+                    join(School, Building.school_id==School.id).\
+                    filter(School.id==sc.id)
 
-    building_id = request.args.get('building_id', None ,type=int)
-    if building_id is None:
-        q2 = q1
-    else:
-        bd = Building.query.filter_by(id=building_id).first()
-        if not bd:
-            return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
-        q2 = q1.filter(Order.building_id==bd.id)
+        building_id = form.building_id.data
+        if building_id is None:
+            q2 = q1
+        else:
+            bd = Building.query.filter_by(id=building_id).first()
+            if not bd:
+                return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+            q2 = q1.filter(Order.building_id==bd.id)
 
-    year = request.args.get('year', None, type=int)
-    if year is None:
-        q3 = q2
-    else:
-        q3 = q2.filter(db.func.year(Order.released_time)==year)
+        year = form.year.data
+        if year is None:
+            q3 = q2
+        else:
+            q3 = q2.filter(db.func.year(Order.released_time)==year)
 
-    quarter = request.args.get('quarter', None, type=int)
-    if quarter is None:
-        q4 = q3
-    else:
-        q4 = q3.filter(db.func.month(Order.released_time).in_(parse_quarter_2_month(quarter)))
+        quarter = form.quarter.data
+        if quarter is None:
+            q4 = q3
+        else:
+            q4 = q3.filter(db.func.month(Order.released_time).in_(parse_quarter_2_month(quarter)))
 
-    month = request.args.get('month', None, type=int)
-    if month is None:
-        q5 = q4
-    else:
-        q5 = q4.filter(db.func.month(Order.released_time)==(month-1)%12+1)
-    # export order excel
-    export = request.args.get('export', 0, type=int)
-    if export == 1:
-        orders = q5.order_by(Order.released_time).all()
-        fn = export_xls(orders)
-        return jsonResponse(url_for('static', filename='tmp/'+fn))
-    # get total sales
-    orders = q5.filter(status=='completed').all()
-    total_sales = 0
-    for i in orders:
-        total_sales += i.tot_price_rd
-    return jsonResponse(total_sales)
+        month = form.month.data
+        if month is None:
+            q5 = q4
+        else:
+            q5 = q4.filter(db.func.month(Order.released_time)==(month-1)%12+1)
+        # export order excel
+        export = form.export.data
+        if export == 1:
+            orders = q5.order_by(Order.released_time).all()
+            fn = export_xls(orders)
+            return jsonResponse(url_for('static', filename='tmp/'+fn))
+        # get total sales
+        orders = q5.filter(Order.status=='completed').all()
+        total_sales = 0
+        for i in orders:
+            total_sales += i.tot_price_rd
+        return jsonResponse(total_sales)
+    return jsonError(AdminErrno.INVALID_ARGUMENT)
 
 # School ---- get, insert, modify, delete
 @adminbp.route('/level1/school/get_list', methods=['POST', ])
@@ -1192,6 +1200,7 @@ def delete_product():
         p = Product.query.get(product_id)
         if p and p.pic:
             removepic(p.pic.filename)
+        p.product_buildings.delete()
         db.session.delete(p)
         db.session.commit()
         return jsonResponse(None)
@@ -1209,8 +1218,8 @@ def export_product():
         if not pd:
             return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
         items = db.session.query(Order, Order_snapshot, Snapshot).\
+                join(Order_snapshot, Order_snapshot.order_id==Order.id).\
                 join(Snapshot, Order_snapshot.snapshot_id==Snapshot.id).\
-                join(Order, Order_snapshot.order_id==Order.id).\
                 filter(Snapshot.product_id==pd.id).\
                 order_by(Order.id).all()
         fn = export_product_xls(items, pd.name)
@@ -1348,7 +1357,7 @@ def get_promotion_list():
 def create_promotion():
     form = CreatePromotionForm()
     if form.validate_on_submit():
-        file_obj = savepic(form.img.data)
+        f = savepic(form.img.data)
         p = Promotion(pic=f)
         db.session.add(p)
         db.session.commit()
