@@ -18,7 +18,7 @@ function bindingFuncWithQuery() {
 
 	query_orders.onclick = function() {
 		
-		var url = "/admin/levels/query";   //set the url to get all orders
+		var url = "/admin/level3/query";   //set the url to get all orders
 		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1";
 
 		$.ajax({
@@ -38,7 +38,7 @@ function bindingFuncWithQuery() {
 	}
 
 	query_items.onclick = function() {
-		var url = "/admin/levels/query";   //set the url to get all inventory
+		var url = "/admin/level3/query";   //set the url to get all inventory
 		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_inventory_list=1";
 
 		$.ajax({
@@ -106,7 +106,7 @@ function refreshPerMin() {
 //refresh the page
 function refresh() {
 	//create a request
-	var url = "/admin/levels/query";   //set the url to get all orders 
+	var url = "/admin/level3/query";   //set the url to get all orders 
 	var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1&get_inventory_list=1";
 	
   	$.ajax({
