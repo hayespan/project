@@ -92,7 +92,7 @@ function showSales() {
 	var export_ =	$("#export");
 	var str = "";
 	if (school.val())
-		str += "school_id="+school.find('option:selected')attr('class');
+		str += "school_id="+school.find('option:selected').attr('class');
 	if (building.val() != -1)
 		str += "&building_id="+building.find('option:selected').attr('class');
 	if (year.val()) {
