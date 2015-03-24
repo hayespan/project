@@ -6,21 +6,68 @@ function initPage() {
 	// bootstrap plugins initilization
     pluginsOn();
     refreshPerMin();
+    bindingFuncWithQuery();
     //showTable(); //testing
     logout();  //enable the logout ajax
+}
+
+//binding the onclick function with the tabs
+function bindingFuncWithQuery() {
+	var query_orders = document.getElementById("query_orders");
+	var query_items = document.getElementById("query_items");
+
+	query_orders.onclick = function() {
+		
+		var url = "/admin/levels/query";   //set the url to get all orders
+		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1";
+
+		$.ajax({
+   			type: "POST",
+   			url: url,
+   			data: data,
+   			success: function(msg){
+      			code = msg.code;
+      			if (code == 0) {
+      				clearTablesContent();
+      				insertIntoDataTable(msg.data.orders)
+    			} else {
+    				errorCode(code);
+    			}
+   			}
+		});
+	}
+
+	query_items.onclick = function() {
+		var url = "/admin/levels/query";   //set the url to get all inventory
+		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_inventory_list=1";
+
+		$.ajax({
+   			type: "POST",
+   			url: url,
+   			data: data,
+   			success: function(msg){
+      			code = msg.code;
+      			if (code == 0) {
+      				clearTablesContent();
+      				insertIntoItemTable(msg.data.inventory);
+    			} else {
+    				errorCode(code);
+    			}
+   			}
+		});
+	}
 }
 
 function logout() {
 	document.getElementById("logout").onclick = function() {
 		url = "/admin/logout";
-		data = "_csrf_token="+window.localStorage.getItem("token");
+		data = "csrf_token="+window.localStorage.getItem("token");
 
   		$.ajax({
    			type: "POST",
    			url: "/admin/logout",
    			data: data,
    			success: function(msg){
-   				msg = JSON.parse(msg);
       			code = msg.code;
       			if (code == 0) {
       			window.location.href="admin/login"; 
@@ -53,21 +100,20 @@ function pluginsOn() {
 //refresh the page per minute
 function refreshPerMin() {
 	refresh();
-	setTimeOut(refreshPerMin, 60*1000);
+	setTimeout(refreshPerMin, 60*1000);
 }
 
 //refresh the page
 function refresh() {
 	//create a request
-	url = "/admin/levels/query?get_order_list=1&get_inventory_list=1";   //set the url to get all orders 
-	data = "_csrf_token=" + window.localStorage.getItem("token");
+	var url = "/admin/levels/query";   //set the url to get all orders 
+	var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1&get_inventory_list=1";
 	
   	$.ajax({
    			type: "POST",
    			url: url,
    			data: data,
    			success: function(msg){
-   				msg = JSON.parse(msg);
       			code = msg.code;
 
       			if (code == 0) {
@@ -293,7 +339,6 @@ function validation(password, order_id, operation) {
    		url: url,
    		data: sendData,
    		success: function(msg){
-   			msg = JSON.parse(msg);
       		code = msg.code;
 
       		if (code == 0) {
