@@ -117,7 +117,7 @@ function showSales() {
       		if (code == 0) {
       			var data = output.data;
       			if (!isNaN(data)) {
-	    			$("#sales").append(document.createTextNode(data));
+	    			$("#sale").append(document.createTextNode(data));
 	    		} else {
 	    			$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
 	    		}
