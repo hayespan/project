@@ -23,6 +23,10 @@ td.description {
   overflow:hidden; 
 }
 
+td {
+  min-width: 80px;
+}
+
 img {
   height: 100px;
   width: 100px;
