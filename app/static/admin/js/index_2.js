@@ -39,8 +39,8 @@ function clearTables(text) {
 /**
  * Four get info functions with ajax post
  */
-function showOrders() {
-    var buildId = this.id.split('-')[1];
+function showOrders(id) {
+    var buildId = id;
     if (buildId == '楼栋') return;
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_order_list=" + buildId;
@@ -62,8 +62,8 @@ function showOrders() {
     
 }
 
-function showReplenishment() {
-    var buildId = this.id.split('-')[1];
+function showReplenishment(id) {
+    var buildId = id;
     if (buildId == '楼栋') return;
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_inventory_list=" + buildId;
@@ -105,8 +105,8 @@ function showTotal() {
 
 }
 
-function showEvery() {
-    var buildId = this.id.split('-')[1];
+function showEvery(id) {
+    var buildId = id;
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_total_sales=" + buildId;
 
@@ -304,17 +304,17 @@ function operationBtnFunc(buildId) {
 }
 
 // after choose a building, the button"s text will change. (More friendly)
-function buildingChoose() {
+function buildingChoose(buildId) {
     var text = this.innerHTML;
     if (this.className.indexOf("tab1") >= 0) {
         document.getElementById("build1").innerHTML = this.innerHTML;
-        showOrders();
+        showOrders(buildId);
     } else if (this.className.indexOf("tab2") >= 0) {
         document.getElementById("build2").innerHTML = this.innerHTML;
-        showReplenishment();
+        showReplenishment(buildId);
     } else if (this.className.indexOf("tab3") >= 0) {
         document.getElementById("build3").innerHTML = this.innerHTML;
-        showEvery();
+        showEvery(buildId);
     }
 }
 
@@ -357,7 +357,7 @@ function InsertModals(json) {
         for (var build in allBuildings) {
             var buildInfo = allBuildings[build];
             var name = "";
-            var bid = "id-";
+            var bid = "";
             for (var property in buildInfo) {
                 if (property == "id") {
                     bid += buildInfo[property];
@@ -373,10 +373,9 @@ function InsertModals(json) {
             // for link style btn
             btn.setAttribute("class", className);
             btn.setAttribute("data-dismiss", "modal");
-            btn.id = bid;
 
             btn.appendChild(document.createTextNode(name));
-            btn.onclick = buildingChoose;
+            btn.onclick = buildingChoose(bid);
         }
     }
 }
