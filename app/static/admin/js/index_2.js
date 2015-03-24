@@ -21,6 +21,25 @@ function pluginsOn() {
     })});
 }
 
+function login() {
+    var data = "csrf_token=" + window.localStorage.getItem("token");
+    document.getElementById("logout").onclick = function() {
+        $.ajax({
+            type: "POST",
+            url: "/login",
+            data: token,
+            success: function(msg){
+                code = msg.code;
+                if (code == 0) {
+                } else {
+                    errorCode(code);
+                }
+            }
+        });
+    };
+}
+
+
 function isArray(arg) {
     if (typeof arg == "object") {
         var criteria = arg.constructor.toString.match(/array/i);
@@ -265,17 +284,11 @@ function createInput(className) {
     return input;
 }
 
-// judge pure numbers with reg expression
-function isDigital(str) {
-    if (str.match(/^-?\d+$/) != null) return true;
-    return false;
-}
-
 // modify quantity
 function operationBtnFunc() {
     var amount = this.parentNode.parentNode.childNodes[5].firstChild.value;
 
-    if (amount == "" || !isDigital(amount)) {
+    if (amount == "" || isNaN(amount)) {
         alert("Please input a valid number");
         this.parentNode.parentNode.childNodes[5].firstChild.value = "";
     } else {
