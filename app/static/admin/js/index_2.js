@@ -248,7 +248,7 @@ function createBtn(className, buildId) {
     text = document.createTextNode("补货");
     btn.appendChild(text);
 
-    btn.onclick = operationBtnFunc(buildId);
+    btn.onclick = operationBtnFunc;
 
     return btn;
 }
@@ -272,7 +272,7 @@ function isDigital(str) {
 }
 
 // modify quantity
-function operationBtnFunc(buildId) {
+function operationBtnFunc() {
     var amount = this.parentNode.parentNode.childNodes[5].firstChild.value;
 
     if (amount == "" || !isDigital(amount)) {
@@ -280,7 +280,7 @@ function operationBtnFunc(buildId) {
         this.parentNode.parentNode.childNodes[5].firstChild.value = "";
     } else {
         var url = "/admin/level2/modify_quantity";
-        var building_id = buildId;
+        var building_id = document.getElementById('build2').parentNode.id;
         var product_id = this.parentNode.parentNode.childNodes[0].firstChild.nodeValue;
         var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "building_id=" + building_id + "&" + "product_id=" + product_id + "&" + "quantity=" + parseInt(amount);
 
@@ -308,15 +308,15 @@ function buildingChoose() {
     var text = this.innerHTML;
     if (this.className.indexOf("tab1") >= 0) {
         document.getElementById("build1").innerHTML = this.innerHTML;
-        buildId = document.getElementById("build1").parentNode.id;
+        var buildId = document.getElementById("build1").parentNode.id;
         showOrders(buildId);
     } else if (this.className.indexOf("tab2") >= 0) {
         document.getElementById("build2").innerHTML = this.innerHTML;
-        buildId = document.getElementById("build2").parentNode.id;
+        var buildId = document.getElementById("build2").parentNode.id;
         showReplenishment(buildId);
     } else if (this.className.indexOf("tab3") >= 0) {
         document.getElementById("build3").innerHTML = this.innerHTML;
-        buildId = document.getElementById("build3").parentNode.id;
+        var buildId = document.getElementById("build3").parentNode.id;
         showEvery(buildId);
     }
 }
