@@ -910,7 +910,7 @@ function getProductBuilding(productId) {
 function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Name, cat2Id, cat2Name, asso) {
 	$("#productList").append('<div class="first"><div class="second" style="float:left; margin: 50px 10px 0 1%">'
         +'<table name="productTable" class="table table-striped" >'
-        +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th></tr></thead>'
+        +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th><th>图片添加与操作</th></tr></thead>'
         +'<tbody><tr><td><img src="'+img_uri+'"></td><td id="'+id+'"><div contenteditable="true">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td class="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td class="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
       	+' <form id="productForm" method="post" enctype="multipart/form-data"><input type="file" name="img" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
@@ -919,7 +919,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control" onchange="checkSchool2nd(this)"><option value=-1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
         +'<input type="text" class="form-control" name="word" placeholder="送货时间"/>\n<input type="button" value="添加" class="btn btn-default" onclick="createProductBuilding(this.form)"/></div></form></div><div class="third" style="float:left; margin: 50px 0 0 0">'
         +'<table name="'+id+'" class="table table-striped scrolled" >'
-        +'<thead><tr><th>学校</th><th>楼栋</th><th>存货量</th><th>送货时间</th></tr></thead><tbody></tbody></table></div></div>');
+        +'<thead><tr><th>学校</th><th>楼栋</th><th>存货量</th><th>送货时间</th><th>操作</th></tr></thead><tbody></tbody></table></div></div>');
 	for (var i = 0; i < asso.length; ++i) {
 		$("table[name="+id+"]").append('<tr><td id="'+asso[i].school_info.id+'">' + asso[i].school_info.name + '</td><td id="'+asso[i].building_info.id+'">' + asso[i].building_info.name + '</td><td>'+asso[i].quantity+'</td><td>'+asso[i].timedelta
 										+'</td><td><input type="button" value="删除" class="btn btn-default"  onclick="deleteBuildingProduct(this)"/></td></tr>');
