@@ -91,11 +91,11 @@ function showSales() {
 	var quarter = $("#quarter");
 	var export_ =	$("#export");
 	var str = "";
-	if (school.val())
+	if (school.find('option:selected').attr("class") != undefined)
 		str += "school_id="+school.find('option:selected').attr('class');
-	if (building.val() != -1)
+	if (building.find("option:selected").attr("class") != undefined)
 		str += "&building_id="+building.find('option:selected').attr('class');
-	if (year.val()) {
+	if (year.val() != -1) {
 		if (str != "") str += "&";
 		str += "year="+year.val();
 	}
