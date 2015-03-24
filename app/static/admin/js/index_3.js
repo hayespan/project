@@ -70,7 +70,7 @@ function logout() {
    			success: function(msg){
       			code = msg.code;
       			if (code == 0) {
-      			window.location.href="admin/login"; 
+      			window.location.href="login"; 
     			} else {
     				errorCode(code);
     			}
