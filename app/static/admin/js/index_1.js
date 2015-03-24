@@ -91,17 +91,17 @@ function showSales() {
 	var quarter = $("#quarter");
 	var export_ =	$("#export");
 	var str = "";
-	if (school.val() != -1)
-		str += "school_id="+school.val();
+	if (school.val())
+		str += "school_id="+school.attr('class');
 	if (building.val() != -1)
-		str += "&building_id="+building.val();
+		str += "&building_id="+building.attr('class');
 	if (year.val()) {
 		if (str != "") str += "&";
 		str += "year="+year.val();
 	}
-	if (quarter.val())
+	if (quarter.val() != -1)
 		str += "&quarter="+quarter.val();
-	if (month.val())
+	if (month.val() != -1)
 		str += "&month="+month.val();
 	if (export_.val() == 1) {
 		if (str != "") str += "&";
