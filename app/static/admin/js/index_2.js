@@ -210,8 +210,8 @@ function InsertRepleContent(json, buildId) {
                 var text = document.createTextNode(repleInfo[property]);
             }
             td.appendChild(text);
-            if (property == 'description') {
-                td.className += 'descriptions';
+            if (property == 'id') {
+                td.className += 'productId';
             }
             tr.appendChild(td);
         }
@@ -295,7 +295,7 @@ function isDigital(str) {
 
 // modify quantity
 function operationBtnFunc() {
-    var amount = this.parentNode.parentNode.getElementsByClassName('descriptions')[0].value;
+    var amount = this.parentNode.parentNode.getElementsByTagName("input")[0].value;
 
     if (amount == "" || !isDigital(amount)) {
         alert("Please input a valid number");
@@ -303,7 +303,7 @@ function operationBtnFunc() {
     } else {
         var url = "/admin/level2/modify_quantity";
         var building_id = document.getElementById('build2').parentNode.id;
-        var product_id = this.parentNode.parentNode.childNodes[0].firstChild.nodeValue;
+        var product_id = this.parentNode.parentNode.getElementsByClassName("productId")[0].nodeValue;
         var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "building_id=" + building_id + "&" + "product_id=" + product_id + "&" + "quantity=" + parseInt(amount);
 
         $.ajax({
