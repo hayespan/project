@@ -84,8 +84,8 @@ function logout() {
 }
 
 function showSales() {
-	var school = $("#school_id");
-	var building = $("#building_id");
+	var school = $("#firstSchool");
+	var building = $("#firstBuilding");
 	var year = $("#year");
 	var month = $("#month");
 	var quarter = $("#quarter");
@@ -102,7 +102,6 @@ function showSales() {
 	if (quarter.val() != -1)
 		str += "&quarter="+quarter.val();
 	if (month.val() != -1)
-        alert(month.val());
 		str += "&month="+month.val();
 	if (export_.val() == 1) {
 		if (str != "") str += "&";
