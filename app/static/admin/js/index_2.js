@@ -7,10 +7,6 @@ function initPage() {
     document.getElementById("build1").onclick = list_buildings;
     document.getElementById("build2").onclick = list_buildings;
     document.getElementById("build3").onclick = list_buildings;
-    document.getElementById("li_orders").onclick = showOrders;
-    document.getElementById("li_replenishment").onclick = showReplenishment;
-    document.getElementById("li_all").onclick = showTotal;
-    document.getElementById("li_one").onclick = showEvery;
 }
 
 // bootstrap tab plugins
@@ -44,7 +40,7 @@ function clearTables(text) {
  * Four get info functions with ajax post
  */
 function showOrders() {
-    var buildId = document.getElementById("build1").firstChild.nodeValue.split("-")[0];
+    var buildId = this.id.split('-')[1];
     if (buildId == '楼栋') return;
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_order_list=" + buildId;
@@ -67,7 +63,7 @@ function showOrders() {
 }
 
 function showReplenishment() {
-    var buildId = document.getElementById("build2").firstChild.nodeValue.split("-")[0];
+    var buildId = this.id.split('-')[1];
     if (buildId == '楼栋') return;
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_inventory_list=" + buildId;
@@ -80,7 +76,7 @@ function showReplenishment() {
             code = msg.code;
             if (code == 0) {
                 clearTables("replenishment_table_body");
-                InsertRepleContent(msg);
+                InsertRepleContent(msg, buildId);
             } else {
                 errorCode(code);
             }
@@ -110,7 +106,7 @@ function showTotal() {
 }
 
 function showEvery() {
-    var buildId = document.getElementById("build3").firstChild.nodeValue.split("-")[0];
+    var buildId = this.id.split('-')[1];
     var url = "/admin/level2/query";
     var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "get_total_sales=" + buildId;
 
@@ -175,7 +171,7 @@ function InsertOrdersContent(json) {
     }
 }
 
-function InsertRepleContent(json) {
+function InsertRepleContent(json, buildId) {
     var repleDetails = json.data.inventory;
     var tableContainer = document.getElementById("replenishment_table_body");
 
@@ -201,7 +197,7 @@ function InsertRepleContent(json) {
         td.appendChild(createInput("replenishInput"));
         tr.appendChild(td);
         td = document.createElement("td");
-        td.appendChild(createBtn("replenishBtn"));
+        td.appendChild(createBtn("replenishBtn"), buildId);
         tr.appendChild(td);
     }
 }
@@ -242,7 +238,7 @@ function InsertEveryContent(json) {
 }
 
 // create a dynamic button
-function createBtn(className) {
+function createBtn(className, buildId) {
     var btn = document.createElement("button");
     var text;
 
@@ -252,7 +248,7 @@ function createBtn(className) {
     text = document.createTextNode("补货");
     btn.appendChild(text);
 
-    btn.onclick = operationBtnFunc;
+    btn.onclick = operationBtnFunc(buildId);
 
     return btn;
 }
@@ -276,7 +272,7 @@ function isDigital(str) {
 }
 
 // modify quantity
-function operationBtnFunc() {
+function operationBtnFunc(buildId) {
     var amount = this.parentNode.parentNode.childNodes[5].firstChild.value;
 
     if (amount == "" || !isDigital(amount)) {
@@ -284,7 +280,7 @@ function operationBtnFunc() {
         this.parentNode.parentNode.childNodes[5].firstChild.value = "";
     } else {
         var url = "/admin/level2/modify_quantity";
-        var building_id = document.getElementById("build2").firstChild.nodeValue.split("-")[0];
+        var building_id = buildId;
         var product_id = this.parentNode.parentNode.childNodes[0].firstChild.nodeValue;
         var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "building_id=" + building_id + "&" + "product_id=" + product_id + "&" + "quantity=" + parseInt(amount);
 
@@ -312,10 +308,13 @@ function buildingChoose() {
     var text = this.innerHTML;
     if (this.className.indexOf("tab1") >= 0) {
         document.getElementById("build1").innerHTML = this.innerHTML;
+        showOrders();
     } else if (this.className.indexOf("tab2") >= 0) {
         document.getElementById("build2").innerHTML = this.innerHTML;
+        showReplenishment();
     } else if (this.className.indexOf("tab3") >= 0) {
         document.getElementById("build3").innerHTML = this.innerHTML;
+        showEvery();
     }
 }
 
@@ -357,13 +356,13 @@ function InsertModals(json) {
     for (var i = 0; i < modals.length; ++i) {
         for (var build in allBuildings) {
             var buildInfo = allBuildings[build];
-            var text = "";
+            var name = "";
+            var bid = "id-";
             for (var property in buildInfo) {
                 if (property == "id") {
-                    text += buildInfo[property];
-                    text += "-"
+                    bid += buildInfo[property];
                 } else if (property == "name") {
-                    text += buildInfo[property];
+                    name += buildInfo[property];
                 }
             }
             var btn = document.createElement("button");
@@ -374,8 +373,9 @@ function InsertModals(json) {
             // for link style btn
             btn.setAttribute("class", className);
             btn.setAttribute("data-dismiss", "modal");
+            btn.id = bid;
 
-            btn.appendChild(document.createTextNode(text));
+            btn.appendChild(document.createTextNode(name));
             btn.onclick = buildingChoose;
         }
     }
