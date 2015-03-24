@@ -912,7 +912,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
         +'<table name="productTable" class="table table-striped" >'
         +'<thead><tr><th>图片</th><th>名称</th><th>描述</th><th>价格</th><th>类别</th><th>二级类别</th><th>图片添加与操作</th></tr></thead>'
         +'<tbody><tr><td><img src="'+img_uri+'"></td><td id="'+id+'"><div contenteditable="true">'+name+'</div></td><td class="description"><div contenteditable="true">'+description+'</div></td><td><div contenteditable="true">'+price+'</div></td><td class="'+cat1Id+'" onclick="toCat1Select(this)">'+cat1Name+'</td><td class="'+cat2Id+'" onclick="toCat2Select(this)">'+cat2Name+'</td><td>'
-      	+' <form id="productForm" method="post" enctype="multipart/form-data"><input type="file" name="img" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
+      	+' <form name="'+id+'" method="post" enctype="multipart/form-data"><input type="file" name="img" class="btn btn-default"></form><br><input type="button" value="确认" class="btn btn-default" onclick="modifyProduct(this)"/>' + "\n"
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
 　　    +'<input type="button" value="导出" class="btn btn-default" onclick="exportProduct(this)"/>'
@@ -1112,7 +1112,7 @@ function modifyProduct(t) {
         var cat2_id = $(temp[5]).attr('class');
     }
     var url="/admin/level1/product/modify";
-    var img = $("#productForm");
+    var img = $("form[name="+product_id+"]");
     if(img.find("input").val())
         var formdata = new FormData(img[0]);
     else 
