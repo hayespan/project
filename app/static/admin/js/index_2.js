@@ -304,16 +304,19 @@ function operationBtnFunc(buildId) {
 }
 
 // after choose a building, the button"s text will change. (More friendly)
-function buildingChoose(buildId) {
+function buildingChoose() {
     var text = this.innerHTML;
     if (this.className.indexOf("tab1") >= 0) {
         document.getElementById("build1").innerHTML = this.innerHTML;
+        buildId = document.getElementById("build1").parentNode.id;
         showOrders(buildId);
     } else if (this.className.indexOf("tab2") >= 0) {
         document.getElementById("build2").innerHTML = this.innerHTML;
+        buildId = document.getElementById("build2").parentNode.id;
         showReplenishment(buildId);
     } else if (this.className.indexOf("tab3") >= 0) {
         document.getElementById("build3").innerHTML = this.innerHTML;
+        buildId = document.getElementById("build3").parentNode.id;
         showEvery(buildId);
     }
 }
@@ -373,9 +376,10 @@ function InsertModals(json) {
             // for link style btn
             btn.setAttribute("class", className);
             btn.setAttribute("data-dismiss", "modal");
+            document.getElementById('build'+(i+1)).parentNode.id = bid;
 
             btn.appendChild(document.createTextNode(name));
-            btn.onclick = buildingChoose(bid);
+            btn.onclick = buildingChoose;
         }
     }
 }
