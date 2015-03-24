@@ -107,12 +107,12 @@ function showSales() {
 		if (str != "") str += "&";
 		str += "export="+1;
 	}
-	var url = "/admin/level1/total_sales?"+str;
+	var url = "/admin/level1/total_sales";
 	var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: "csrf_token=" +token,
+   		data: str + "csrf_token=" +token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
