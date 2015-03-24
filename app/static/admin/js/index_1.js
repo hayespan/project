@@ -92,9 +92,9 @@ function showSales() {
 	var export_ =	$("#export");
 	var str = "";
 	if (school.val())
-		str += "school_id="+school.attr('class');
+		str += "school_id="+school.find('option:selected')attr('class');
 	if (building.val() != -1)
-		str += "&building_id="+building.attr('class');
+		str += "&building_id="+building.find('option:selected').attr('class');
 	if (year.val()) {
 		if (str != "") str += "&";
 		str += "year="+year.val();
@@ -108,7 +108,6 @@ function showSales() {
 		str += "export="+1;
 	}
 	var url = "/admin/level1/total_sales?"+str;
-    alert(url);
 	var token = window.localStorage.getItem("token");
 	$.ajax({
    		type: "POST",
