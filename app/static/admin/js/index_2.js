@@ -44,8 +44,8 @@ function clearTables(text) {
 function showOrders() {
 
     var buildId = document.getElementById('build1').firstChild.nodeValue.split('-')[0];
-    var url = '/admin/level2/query?get_order_list=' + buildId;
-    var data = "_csrf_token=" + window.localStorage.getItem("token");
+    var url = '/admin/level2/query';
+    var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'get_order_list=' + buildId;
 
     $.ajax({
         type: "POST",
@@ -66,8 +66,8 @@ function showOrders() {
 
 function showReplenishment() {
     var buildId = document.getElementById('build2').firstChild.nodeValue.split('-')[0];
-    var url = '/admin/level2/query?get_inventory_list=' + buildId;
-    var data = "_csrf_token=" + window.localStorage.getItem("token");
+    var url = '/admin/level2/query';
+    var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'get_inventory_list=' + buildId;
 
     $.ajax({
         type: "POST",
@@ -86,8 +86,8 @@ function showReplenishment() {
 }
 
 function showTotal() {
-    var url = '/admin/level2/query?get_total_sales=-1';
-    var data = "_csrf_token=" + window.localStorage.getItem("token");
+    var url = '/admin/level2/query';
+    var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'get_total_sales=-1';
 
     $.ajax({
         type: "POST",
@@ -108,8 +108,8 @@ function showTotal() {
 
 function showEvery() {
     var buildId = document.getElementById('build3').firstChild.nodeValue.split('-')[0];
-    var url = '/admin/level2/query?get_total_sales=' + buildId;
-    var data = "_csrf_token=" + window.localStorage.getItem("token");
+    var url = '/admin/level2/query';
+    var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'get_total_sales=' + buildId;
 
     $.ajax({
         type: "POST",
@@ -283,7 +283,7 @@ function operationBtnFunc() {
         var url = '/admin/level2/modify_quantity';
         var building_id = document.getElementById('build2').firstChild.nodeValue.split('-')[0];
         var product_id = this.parentNode.parentNode.childNodes[0].firstChild.nodeValue;
-        var data = "_csrf_token=" + window.localStorage.getItem("token") + '&' + 'building_id=' + building_id + '&' + 'product_id=' + product_id + '&' + 'quantity=' + parseInt(amount);
+        var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'building_id=' + building_id + '&' + 'product_id=' + product_id + '&' + 'quantity=' + parseInt(amount);
 
         $.ajax({
             type: "POST",
@@ -318,8 +318,8 @@ function buildingChoose() {
 
 // get all buildings info with ajax post
 function list_buildings() {
-    var url = '/admin/level2/query?get_building_list=1';
-    var data = "_csrf_token=" + window.localStorage.getItem("token");
+    var url = '/admin/level2/query';
+    var data = "csrf_token=" + window.localStorage.getItem("token") + '&' + 'get_building_list=1';
 
     $.ajax({
         type: "POST",
