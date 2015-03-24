@@ -102,6 +102,7 @@ function showSales() {
 	if (quarter.val() != -1)
 		str += "&quarter="+quarter.val();
 	if (month.val() != -1)
+        alert(month.val());
 		str += "&month="+month.val();
 	if (export_.val() == 1) {
 		if (str != "") str += "&";
@@ -112,7 +113,7 @@ function showSales() {
 	$.ajax({
    		type: "POST",
    		url: url,
-   		data: str + "csrf_token=" +token,
+   		data: str + "&csrf_token=" +token,
    		success: function(msg){
    			var output = msg;
       	    var code = output.code;
