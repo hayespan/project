@@ -117,6 +117,7 @@ function showSales() {
       		if (code == 0) {
       			var data = output.data;
       			if (!isNaN(data)) {
+                    $("#sales").children()[0].remove();
 	    			$("#sales").append("销售额: <strong>" + data + "<strong>");
 	    		} else {
 	    			$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
