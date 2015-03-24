@@ -5,7 +5,7 @@ ul {
 }
 
 @media screen and (max-width: 500px) {
-  #not-seen-on-phone {
+  .not-seen-on-phone {
   	display: none;
   }
 }
