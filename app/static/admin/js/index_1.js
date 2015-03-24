@@ -802,7 +802,7 @@ function createCat2(cat1, f) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
-      			getCat2List();
+      			getCat2List(cat1_id);
 	    	} else {
 	    		errorCode(code);
     		}
