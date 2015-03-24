@@ -303,7 +303,7 @@ function operationBtnFunc() {
     } else {
         var url = "/admin/level2/modify_quantity";
         var building_id = document.getElementById('build2').parentNode.id;
-        var product_id = this.parentNode.parentNode.getElementsByClassName("productId")[0].nodeValue;
+        var product_id = this.parentNode.parentNode.getElementsByClassName("productId")[0].firstChild.nodeValue;
         var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "building_id=" + building_id + "&" + "product_id=" + product_id + "&" + "quantity=" + parseInt(amount);
 
         $.ajax({
