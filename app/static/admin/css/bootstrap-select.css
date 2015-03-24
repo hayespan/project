@@ -39,6 +39,7 @@ table.scrolled tbody {
 }
 
 table.scrolled thead, table.scrolled tbody tr{
+    display:table;
     table-layout:fixed;/* even columns width , fix width of table too*/
 }
 
