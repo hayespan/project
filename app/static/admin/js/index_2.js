@@ -309,12 +309,15 @@ function buildingChoose() {
     var buildId = this.id;
     if (this.className.indexOf("tab1") >= 0) {
         document.getElementById("build1").innerHTML = this.innerHTML;
+        document.getElementById("build1").parentNode.id = this.id;
         showOrders(buildId);
     } else if (this.className.indexOf("tab2") >= 0) {
         document.getElementById("build2").innerHTML = this.innerHTML;
+        document.getElementById("build2").parentNode.id = this.id;
         showReplenishment(buildId);
     } else if (this.className.indexOf("tab3") >= 0) {
         document.getElementById("build3").innerHTML = this.innerHTML;
+        document.getElementById("build3").parentNode.id = this.id;
         showEvery(buildId);
     }
 }
@@ -370,7 +373,7 @@ function InsertModals(json) {
             modals[i].appendChild(btn);
 
             btn.setAttribute("type", "button");
-            var className = "btn btn-link chooseBuild tab" + (i+1);
+            var className = "btn btn-link modalBtn chooseBuild tab" + (i+1);
             // for link style btn
             btn.setAttribute("class", className);
             btn.setAttribute("data-dismiss", "modal");
