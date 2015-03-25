@@ -33,7 +33,7 @@ function logout() {
             success: function(msg){
                 code = msg.code;
                 if (code == 0) {
-                    window.location.href = "/login";
+                    window.location.href = "/admin/login";
                     window.localStorage.removeItem("token");
                 } else {
                     errorCode(code);
