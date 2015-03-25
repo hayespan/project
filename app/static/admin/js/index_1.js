@@ -1328,7 +1328,7 @@ function checkCat(cat1) {
 function getYearList() {
   var date = new Date();
   for (var i = 2015; i <= date.getFullYear(); ++i) {
-    $("#year").append("<option>" + i + "<option>");
+    $("#year").append("<option>" + i + "</option>");
   }
 }
 
