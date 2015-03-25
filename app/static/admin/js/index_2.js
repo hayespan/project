@@ -32,7 +32,8 @@ function logout() {
             success: function(msg){
                 code = msg.code;
                 if (code == 0) {
-                    window.location.href = "login";
+                    window.location.href = "/admin/login";
+                    window.localStorage.removeItem("token");
                 } else {
                     errorCode(code);
                 }
@@ -343,7 +344,7 @@ function operationBtnFunc() {
         var building_id = document.getElementById('build2').parentNode.id;
         var product_id = this.parentNode.parentNode.getElementsByClassName("productId")[0].firstChild.nodeValue;
         var data = "csrf_token=" + window.localStorage.getItem("token") + "&" + "building_id=" + building_id + "&" + "product_id=" + product_id + "&" + "quantity=" + parseInt(amount);
-
+        var that = this;
         $.ajax({
             type: "POST",
             url: url,
@@ -351,7 +352,7 @@ function operationBtnFunc() {
             success: function(msg) {
                 code = msg.code;
                 if (code == 0) {
-                    this.parentNode.parentNode.getElementsByClassName("productQuantity")[0].firstChild.nodeValue = msg.data + "份";
+                    that.parentNode.parentNode.getElementsByClassName("productQuantity")[0].firstChild.nodeValue = msg.data + "份";
                 } else {
                     errorCode(code);
                 }
