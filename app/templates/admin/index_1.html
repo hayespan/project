@@ -7,16 +7,11 @@
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/admin/css/bootstrap-select.css">
-    <style>
-        body {
-        padding-top: 70px;
-        }
-    </style>
  
 </head>
 <body>
-
     <div id="page-wrapper">
+        <button type="button" class="btn btn-default" onclick="logout()">用户登出</button>
         <hr>
         <ul id="myTab" class="nav nav-tabs">
             <li><a href="#sale" data-toggle="tab">销售额</a></li>
@@ -65,34 +60,13 @@
                         </select>
                         <select id="year" class="form-control" onchange="checkYear(this);">
                             <option selected = "selected" value = -1>请选择年份</option>
-                            <option>2015</option>
-                            <option>2014</option>
-                            <option>2013</option>
-                            <option>2012</option>
-                            <option>2011</option>
                         </select>
                         <select id="quarter" class="form-control" title="输入季度" disabled="disabled" onchange="checkBoth('quarter', 'month');">
                             <option selected = "selected" value = -1>请选择季度</option>
-                            <option value = 1>第一季度</option>
-                            <option value = 2>第二季度</option>
-                            <option value = 3>第三季度</option>
-                            <option value = 4>第四季度</option>
                         </select>
                         <hr>
                         <select id="month" class="form-control" disabled="disabled" onchange="checkBoth('month', 'quarter');">
                             <option selected = "selected" value = -1>请选择月份</option>
-                            <option　value = 1>一月</option>
-                            <option value = 2>二月</option>
-                            <option value = 3>三月</option>
-                            <option value = 4>四月</option>
-                            <option value = 5>五月</option>
-                            <option value = 6>六月</option>
-                            <option value = 7>七月</option>
-                            <option value = 8>八月</option>
-                            <option value = 9>九月</option>
-                            <option value = 10>十月</option>
-                            <option value = 11>十一月</option>
-                            <option value = 12>十二月</option>
                         </select>
                         <select id="export" class="form-control">
                             <option value = -1>是否导出</option>
@@ -104,8 +78,11 @@
                     <input type="button" value="查询" class="btn btn-default" onclick = "showSales()"></input>
                 </form>
                 <br>
-                <span id="sales">
-                </span>
+                <p>销售额:
+                    <span id="sales"><strong>
+                        ---
+                    </span></strong>
+                </p>
                 <br>
             </div>
         </div>

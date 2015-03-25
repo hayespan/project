@@ -67,7 +67,6 @@ function errorCode(code) {
 
 function logout() {
 	var token = window.localStorage.getItem("token");
-	document.getElementById("logout").onclick = function() {
 		$.ajax({
    			type: "POST",
    			url: "/admin/logout",
@@ -80,7 +79,6 @@ function logout() {
     			}
    			}
 		});
-	};
 }
 
 function showSales() {
@@ -117,9 +115,7 @@ function showSales() {
       		if (code == 0) {
       			var data = output.data;
       			if (!isNaN(data)) {
-                    if ($("#sales").children().length > 0)
-                    $("#sales").children()[0].remove();
-	    			$("#sales").append("销售额: <strong>" + data + "<strong>");
+	    			$("#sales").text(data);
 	    		} else {
 	    			$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
 	    		}
@@ -581,7 +577,7 @@ function modifyAdmin3rd(t) {
   	var password = $(temp[4]).text();
   	var admin_id = $(temp[2]).attr('id');
     var data = "admin_id=" + admin_id + "&username=" + username + "&name=" + name + "&contact_info=" + contact_info;
-  	if (password == "") {
+  	if (password != "") {
   		data = data + "&password=" + password;
   	}
     if (building_id != null) {
@@ -1266,12 +1262,44 @@ function getCat2Table(cat1) {
 }
 
 function checkYear(year) {
+    $("#month").find("option[value!=-1]").remove();
+    $("#quarter").find("option[value!=-1]").remove();
 	if ($(year).val() == -1) {
 			$("#quarter").val(-1);
 			$("#month").val(-1);
 			$("#month").attr("disabled", "disabled");
 			$("#quarter").attr("disabled", "disabled");
 		} else if ($(year).val() != -1) {
+            var date = new Date();
+            var month_ = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+            var quarter_ = ["第一季度", "第二季度", "第三季度", "第四季度"];
+            if ($("#year").val() == date.getFullYear()) {
+                for (var i = 1; i <= date.getMonth() + 1; ++i) {
+                    $("#month").append("<option value=" + i + ">" + month_[i - 1] + "</option>");
+                    if (i == 1) {
+                        $("#quarter").append("<option value=1>" + quarter_[0] + "</option>");
+                    } else if (i == 4) {
+                        $("#quarter").append("<option value=2>" + quarter_[1] + "</option>");
+                    } else if (i == 7) {
+                        $("#quarter").append("<option value=3>" + quarter_[2] + "</option>");
+                    } else if (i == 10) {
+                        $("#quarter").append("<option value=4>" + quarter_[3] + "</option>");
+                    }
+                }
+            } else {
+                for (var i = 1; i <= 12; ++i) {
+                    $("#month").append("<option value=" + i + ">" + month_[i - 1] + "</option>");
+                    if (i == 1) {
+                        $("#quarter").append("<option value=1>" + quarter_[0] + "</option>");
+                    } else if (i == 4) {
+                        $("#quarter").append("<option value=2>" + quarter_[1] + "</option>");
+                    } else if (i == 7) {
+                        $("#quarter").append("<option value=3>" + quarter_[2] + "</option>");
+                    } else if (i == 10) {
+                        $("#quarter").append("<option value=4>" + quarter_[3] + "</option>");
+                    }
+                }
+            }
 			$("#month").removeAttr("disabled");
 			$("#quarter").removeAttr("disabled");
 		}
@@ -1297,13 +1325,17 @@ function checkCat(cat1) {
 		}
 }
 
-function deleteRow(t) {
-	$(t).parent().parent().remove();
+function getYearList() {
+  var date = new Date();
+  for (var i = 2015; i <= date.getFullYear(); ++i) {
+    $("#year").append("<option>" + i + "</option>");
+  }
 }
 
 // initialize the page
 function initPage() {
 	getSchoolList();
+  getYearList();
 }
 
 function resetBuilding(schoolId, tableId) {
