@@ -60,7 +60,7 @@ function bindingFuncWithQuery() {
 
 function logout() {
 	document.getElementById("logout").onclick = function() {
-		var url = "admin/logout";
+		var url = "/edadmin/logout";
 		var data = "csrf_token="+window.localStorage.getItem("token");
 
   		$.ajax({
@@ -323,7 +323,7 @@ function insertIntoItemTable(items) {
 
 		// insert all the tds in the tdsArray into the tr
 		for (var i = 0; i < tdsArray.length; i++)
-			tr.appendChild(itemTds[i])
+			tr.appendChild(tdsArray[i])
 	}
 }
 
