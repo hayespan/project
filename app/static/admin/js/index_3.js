@@ -195,7 +195,7 @@ function insertIntoOrderTable(orders) {
 		tableContainer.appendChild(tr);
 
 		//create a tds Array
-		for (var i = 0; i < orderKeys.length; i++) {
+		for (var i = 0; i < 5; i++) {  				// bad-code !!!!
 			var td = document.createElement("td");
 			tdsArray.push(td);
 		}
@@ -309,7 +309,7 @@ function insertIntoItemTable(items) {
 
 		tableContainer.appendChild(tr);
 
-		for (var i = 0 ; i < itemKeys.length; i++) {
+		for (var i = 0 ; i < 3; i++) {      // bad-code
 			var td = document.createElement("td");
 			tdsArray.push(td);
 		}
