@@ -3,6 +3,7 @@ window.onload = initPage();
 // initialize the page
 function initPage() {
     pluginsOn();
+    logout();
 
     document.getElementById("build1").onclick = list_buildings;
     document.getElementById("build2").onclick = list_buildings;
