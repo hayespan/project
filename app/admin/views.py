@@ -222,7 +222,7 @@ def _admin_level_2():
             # if there is a building been selected
             sc = admin_school
             if order_building >= 0:
-                bd = sc.buildings.filter_by(id=order_building.id).first()
+                bd = sc.buildings.filter_by(id=order_building).first()
                 # building not in your charge
                 if not bd:
                     return jsonError(AdminErrno.PERMISSION_DENIED)
@@ -231,7 +231,7 @@ def _admin_level_2():
             else:
                 orders_base_q = Order.query.filter(Order.building_id.in_([i.id for i in admin_buildings]))
             # order
-            orders = order_base_q.filter_by(Order.released_time>=time_).\
+            orders = order_base_q.filter(Order.released_time>=time_).\
                         order_by(Order.released_time.desc()).all()
             for order in orders:
                 orders_in_charge.append({
@@ -252,7 +252,7 @@ def _admin_level_2():
             # get the inventory information
             sc = admin_school
             if inventory_building >= 0:
-                bd = sc.buildings.filter_by(id=order_building.id).first()
+                bd = sc.buildings.filter_by(id=inventory_building).first()
                 # building not in your charge
                 if not bd:
                     return jsonError(AdminErrno.PERMISSION_DENIED)
@@ -265,7 +265,7 @@ def _admin_level_2():
                 inventory_info.append({
                     'id': pd.id,
                     'name': pd.name,
-                    'description': pd.name, 
+                    'description': pd.description, 
                     'price': pd.price,
                     'quantity': pd_bd.quantity
                     })
