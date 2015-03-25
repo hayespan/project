@@ -171,7 +171,7 @@ function addToSchoolList(id, name, t) {
 function addToSchoolTable(id, name) {
 	$("#schoolTable").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifySchool(this)"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteSchool(this)"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteSchool(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetSchool()"/></td></tr>')
 }
 
@@ -237,6 +237,7 @@ function deleteSchool(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getSchoolList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -291,7 +292,7 @@ function addToBuildingList(newId, newName, t) {
 function addToBuildingTable(newId, newName, schoolId) {
 	$("#buildingTable").find('tbody').append('<tr><td class="'+ newId + '"><div contenteditable="true">' + newName
 									+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this,  \'' + schoolId + '\')"/> \n'
-									+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
+									+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteBuilding(this)"/> \n'
 									+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + schoolId + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
 }
 
@@ -348,6 +349,7 @@ function deleteBuilding(t) {
   	var temp = $(t).parent().siblings();
   	var building_id = $(temp[0]).attr("class");
   	var url="/admin/level1/building/delete";
+    var school_id = $("#secondSchool").find("option:selected").attr("class");
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -357,6 +359,7 @@ function deleteBuilding(t) {
       	    var code = output.code;
       		if (code == 0) {
       			var data = output.data;
+                getBuildingList(school_id);
 	    	} else {
 	    		errorCode(code);
     		}
@@ -477,6 +480,7 @@ function deleteAdmin2nd(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getAdmin2ndList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -487,7 +491,7 @@ function deleteAdmin2nd(t) {
 function addToAdmin2ndTable(id, name, username, password, contact_info, schoolId, schoolName) {
 	$("#managerTable").find('tbody').append('<tr><td class="'+ schoolId + '" onclick=toSchoolSelect2nd(this)>' + schoolName + '</td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div  contenteditable="true">' + username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin2nd(this)"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin2nd(this)"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteAdmin2nd(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin2nd()"/></td></tr>');
 }
 
@@ -604,7 +608,7 @@ function addToAdmin3rdTable(id, name, username, password, contact_info, schoolId
 	$("#hostTable").find('tbody').append('<tr><td class="'+ schoolId + '" onclick=toSchoolSelect(this)><div  contenteditable="true">' + schoolName + '</div></td><td class="'+ buildingId + '" onclick="toBuildingSelect(this)"><div contenteditable="true">' + buildingName +'</div></td><td id="'+ id + '"><div contenteditable="true">' + name + '</div></td><td><div contenteditable="true">' 
 									   		+ username + '</div></td><td><div contenteditable="true">' + password + '</div></td><td><div contenteditable="true">' + contact_info
 									   		+'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin3rd(this)"/> \n'
-									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin3rd(this)"/> \n'
+									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteAdmin3rd(this)"/> \n'
 									   		+'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin3rd()"/></td></tr>');
 }
 
@@ -622,6 +626,7 @@ function deleteAdmin3rd(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getAdmin3rdList();
 	    	} else {
 	    		errorCode(code);
     		}
@@ -663,7 +668,7 @@ function getCat1List(t) {
 function addToCat1Table(id, name) {
 	$("#cat1Table").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat1(this)"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat1(this)"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteCat1(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
 }
 
@@ -775,7 +780,7 @@ function getCat2List(cat1_id, cat2) {
 function addToCat2Table(id, name, cat1Id) {
 	$("#cat2Table").find('tbody').append('<tr><td class="'+ id + '"><div contenteditable="true">' + name
 									   +'</div></td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat2(this, \'' + cat1Id + '\')"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat2(this)"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteCat2(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat2(\'' + cat1Id + '\')"/></td></tr>');
 }
 
@@ -839,6 +844,7 @@ function deleteCat2(t) {
   	var cat2_id = $(temp[0]).attr("class");
   	var url="/admin/level1/cat2/delete"
     var data = "cat2_id=" + cat2_id;
+    var cat1_id = $("#firstCat").find("option:selected").attr("class");
   	$.ajax({
    		type: "POST",
    		url: url,
@@ -847,6 +853,7 @@ function deleteCat2(t) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
+                getCat2List(cat1_id);
 	    	} else {
 	    		errorCode(code);
     		}
@@ -1327,7 +1334,6 @@ function checkCat(cat1) {
 
 function getYearList() {
   var date = new Date();
-  alert(date.getFullYear());
   for (var i = 2015; i <= date.getFullYear(); ++i) {
     $("#year").append("<option>" + i + "</option>");
   }
