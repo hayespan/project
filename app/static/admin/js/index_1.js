@@ -822,6 +822,7 @@ function modifyCat2(t, cat1Id) {
         var cat2_id = $(temp[0]).attr('class');
         var name = $(temp[0]).text();
     }
+    var cat1_id = $("#firstCat").find("option:selected").attr("class");
     var url="/admin/level1/cat2/modify";
     var data ="cat2_id="+cat2_id +"&name=" + name;
   	$.ajax({
@@ -832,7 +833,7 @@ function modifyCat2(t, cat1Id) {
    			var output = msg;
       	    var code = output.code;
       		if (code == 0) {
-      			getCat2List();
+      			getCat2List(cat1_id);
 	    	} else {
 	    		errorCode(code);
     		}
