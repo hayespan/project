@@ -317,7 +317,7 @@ function insertIntoItemTable(items) {
 		for (var property in items[k]) {
 			var text = document.createTextNode(items[k][property]);
 
-			if (itemKeys[property])   //if itemKeys[property] != undefined
+			if (itemKeys[property] != undefined)   //if itemKeys[property] != undefined
 				tdsArray[itemKeys[property]].appendChild(text);
 		}
 
