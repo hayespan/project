@@ -1327,6 +1327,7 @@ function checkCat(cat1) {
 
 function getYearList() {
   var date = new Date();
+  alert(data.getFullYear());
   for (var i = 2015; i <= date.getFullYear(); ++i) {
     $("#year").append("<option>" + i + "</option>");
   }
@@ -1335,9 +1336,9 @@ function getYearList() {
 // initialize the page
 function initPage() {
 	getSchoolList();
-  getYearList();
+    getYearList();
 }
-
+    
 function resetBuilding(schoolId, tableId) {
 	getBuildingList(schoolId);
 }
