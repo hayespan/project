@@ -7,7 +7,7 @@ function initPage() {
     document.getElementById("build1").onclick = list_buildings;
     document.getElementById("build2").onclick = list_buildings;
     document.getElementById("build3").onclick = list_buildings;
-    document.getElementById("li_total").onclick = showTotal;
+    document.getElementById("li_all").onclick = showTotal;
 }
 
 // bootstrap tab plugins
@@ -237,7 +237,7 @@ function InsertRepleContent(json, buildId) {
                 td.className += 'description';
             }
             if (property == 4) {
-                td.className += 'price';
+                td.className += 'productQuantity';
             }
             tr.appendChild(td);
         }
@@ -351,10 +351,7 @@ function operationBtnFunc() {
             success: function(msg) {
                 code = msg.code;
                 if (code == 0) {
-                    var origin = parseInt(this.parentNode.parentNode.getElementsByClassName("price")[0].firstChild.nodeValue.replace("份", ""));
-                    origin = origin + parseInt(amount);
-                    this.parentNode.parentNode.getElementsByClassName("price")[0].firstChild.nodeValue = origin+"份";
-                    this.parentNode.parentNode.getElementsByTagName("input")[0].value = "";
+                    this.parentNode.parentNode.getElementsByClassName("productQuantity")[0].firstChild.nodeValue = msg.data + "份";
                 } else {
                     errorCode(code);
                 }
