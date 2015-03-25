@@ -21,13 +21,13 @@ function pluginsOn() {
     })});
 }
 
-function login() {
+function logout() {
     var data = "csrf_token=" + window.localStorage.getItem("token");
     document.getElementById("logout").onclick = function() {
         $.ajax({
             type: "POST",
             url: "/login",
-            data: token,
+            data: data,
             success: function(msg){
                 code = msg.code;
                 if (code == 0) {
@@ -152,7 +152,7 @@ function InsertOrdersContent(json) {
     var ordersDetails = json.data.orders;
     var tableContainer = document.getElementById("orders_table_body");
 
-    /*
+
     var orders = json.data.orders;
     var tableContainer = document.getElementById("orders_table_body");
     for (var i = 0; i < orders.length; ++i) {
@@ -193,7 +193,7 @@ function InsertOrdersContent(json) {
             tr.appendChild(td);
         }
     }
-    */
+    /*
 
     for (var order in ordersDetails) {
         var orderInfo = ordersDetails[order];
@@ -231,11 +231,12 @@ function InsertOrdersContent(json) {
             tr.appendChild(td);
         }
     }
+    */
 }
 
 function InsertRepleContent(json, buildId) {
 
-    /*
+    
     var reples = json.data.inventory;
     var tableContainer = document.getElementById("replenishment_table_body");
     
@@ -282,7 +283,7 @@ function InsertRepleContent(json, buildId) {
         td.appendChild(createBtn("replenishBtn"), buildId);
         tr.appendChild(td);
     }
-    */
+    /*
     var repleDetails = json.data.inventory;
     var tableContainer = document.getElementById("replenishment_table_body");
 
@@ -314,10 +315,11 @@ function InsertRepleContent(json, buildId) {
         td.appendChild(createBtn("replenishBtn"), buildId);
         tr.appendChild(td);
     }
+    */
 }
 
 function InsertTotalContent(json) {
-    /*
+    
     var sales = json.data.total_sales;
     var tableContainer = document.getElementById("total_table_body");
     var tr = document.createElement("tr");
@@ -337,8 +339,8 @@ function InsertTotalContent(json) {
         td.appendChild(text);
         tr.appendChild(td);
     }
-    */
-
+    
+    /*
     var allDetails = json.data.total_sales;
     var tableContainer = document.getElementById("total_table_body");
     var tr = document.createElement("tr");
@@ -354,11 +356,12 @@ function InsertTotalContent(json) {
         td.appendChild(text);
         tr.appendChild(td);
     }
+    */
 
 }
 
 function InsertEveryContent(json) {
-    /*
+    
     var sales = json.data.total_sales;
     var tableContainer = document.getElementById("every_table_body");
     var tr = document.createElement("tr");
@@ -378,8 +381,8 @@ function InsertEveryContent(json) {
         td.appendChild(text);
         tr.appendChild(td);
     }
-    */
-
+    
+    /*
     var allDetails = json.data.total_sales;
     var tableContainer = document.getElementById("every_table_body");
 
@@ -393,6 +396,7 @@ function InsertEveryContent(json) {
         td.appendChild(text);
         tr.appendChild(td);
     }
+    */
 }
 
 // create a dynamic button
