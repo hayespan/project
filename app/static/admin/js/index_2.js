@@ -28,12 +28,12 @@ function logout() {
     document.getElementById("logout").onclick = function() {
         $.ajax({
             type: "POST",
-            url: "admin/logout",
+            url: "/admin/logout",
             data: data,
             success: function(msg){
                 code = msg.code;
                 if (code == 0) {
-                    window.location.href = "/admin/login";
+                    window.location.href = "/login";
                     window.localStorage.removeItem("token");
                 } else {
                     errorCode(code);
