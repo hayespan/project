@@ -60,7 +60,7 @@ function bindingFuncWithQuery() {
 
 function logout() {
 	document.getElementById("logout").onclick = function() {
-		var url = "/edadmin/logout";
+		var url = "/admin/logout";
 		var data = "csrf_token="+window.localStorage.getItem("token");
 
   		$.ajax({
@@ -70,7 +70,7 @@ function logout() {
    			success: function(msg){
       			code = msg.code;
       			if (code == 0) {
-      			window.location.href="login"; 
+      			window.location.href="/admin/login"; 
     			} else {
     				errorCode(code);
     			}
