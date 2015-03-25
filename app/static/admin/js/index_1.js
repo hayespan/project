@@ -74,6 +74,7 @@ function logout() {
    			success: function(msg){
       	    	code = msg.code;
       			if (code == 0) {
+                    window.location.href="/admin/login";
     			} else {
     				errorCode(code);
     			}
