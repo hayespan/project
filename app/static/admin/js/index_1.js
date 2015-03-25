@@ -56,7 +56,7 @@ function errorCode(code) {
 		case -24:
 		 	alert("Product does not exist.");
 		 	break;
-        case -25:
+        case -25: 
             alert("Product has been associated with building.");
             break;
         case -26:
