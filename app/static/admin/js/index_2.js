@@ -156,7 +156,7 @@ function InsertOrdersContent(json) {
     var orders = json.data.orders;
     var tableContainer = document.getElementById("orders_table_body");
     for (var i = 0; i < orders.length; ++i) {
-        var tr = document,createElement("tr");
+        var tr = document.createElement("tr");
         tableContainer.appendChild(tr);
         for (var property = 0; property < 4; ++property) {
             var td = document.createElement("td");

@@ -13,7 +13,7 @@ from .utils import admin_login_required, is_in_same_quarter, is_in_same_month, a
 from .. import db
 from ..util.common import jsonError, jsonResponse, datetime_2_unixstamp, timedelta_2_second, viaMobile
 from ..util.errno import AdminErrno
-from ..util.csrf import init_csrf_token, csrf_token_required
+from ..util.csrf import init_admin_csrf_token, csrf_token_required
 from ..util.exportxls import export_xls, export_product_xls
 from ..location.models import Building, School
 from ..order.models import Order, Order_snapshot
@@ -23,14 +23,14 @@ from ..pic.utils import savepic, changepic, removepic, copypic
 from ..pic.models import Promotion
 
 # store the admin's information in the session
-# session['admin_id'], session['_csrf_token']
+# session['admin_id'], session['admin_csrf_token']
 # return the csrf token
 # the privilege is 1, 2, 4 and if the privilege is 1, the admin got the highest priority
 @adminbp.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
         # admin_id = session.get('admin_id')
-        # csrf_token = session.get('_csrf_token')
+        # csrf_token = session.get('admin_csrf_token')
         # if (admin_id and csrf_token and Admin.query.filter_by(id=admin_id).count()):
             # return redirect(url_for('.index'))
         return render_template('admin/login.html')
@@ -44,7 +44,7 @@ def login():
                 if viaMobile() and admin.privilege in [1, 2, ]:
                     return jsonError(AdminErrno.PERMISSION_DENIED)
                 session['admin_id'] = admin.id
-                init_csrf_token()
+                init_admin_csrf_token()
                 return jsonResponse({'_csrf_token': session['_csrf_token']})
             return jsonError(AdminErrno.AUTHENTICATION_FAILED)
         return jsonError(AdminErrno.INVALID_ARGUMENT)
@@ -56,7 +56,7 @@ def login():
 @csrf_token_required
 def logout():
     session.pop('admin_id', None)
-    session.pop('_csrf_token', None)
+    session.pop('admin_csrf_token', None)
     return jsonResponse(None)
 
 @adminbp.route('/index', methods=['GET',])
