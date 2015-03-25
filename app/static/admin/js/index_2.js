@@ -7,6 +7,7 @@ function initPage() {
     document.getElementById("build1").onclick = list_buildings;
     document.getElementById("build2").onclick = list_buildings;
     document.getElementById("build3").onclick = list_buildings;
+    document.getElementById("li_total").onclick = showTotal;
 }
 
 // bootstrap tab plugins
@@ -26,11 +27,12 @@ function logout() {
     document.getElementById("logout").onclick = function() {
         $.ajax({
             type: "POST",
-            url: "/login",
+            url: "/admin/logout",
             data: data,
             success: function(msg){
                 code = msg.code;
                 if (code == 0) {
+                    window.location.href = "login";
                 } else {
                     errorCode(code);
                 }
@@ -242,11 +244,12 @@ function InsertRepleContent(json, buildId) {
     
     for (var i = 0; i < reples.length; ++i) {
         var tr = document.createElement("tr");
-        var td = document.createElement("td");
+        var td;
         tableContainer.appendChild(tr);
 
         for (var property = 0; property < 5; ++property) {
             var text;
+            td = document.createElement("td");
             switch(property) {
                 case 0:
                     text = document.createTextNode(reples[i]["id"]);
