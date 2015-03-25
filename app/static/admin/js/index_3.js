@@ -60,12 +60,12 @@ function bindingFuncWithQuery() {
 
 function logout() {
 	document.getElementById("logout").onclick = function() {
-		var url = "/admin/logout";
+		var url = "/logout";
 		var data = "csrf_token="+window.localStorage.getItem("token");
 
   		$.ajax({
    			type: "POST",
-   			url: "/admin/logout",
+   			url: url,
    			data: data,
    			success: function(msg){
       			code = msg.code;
