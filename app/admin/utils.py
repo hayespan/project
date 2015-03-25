@@ -20,7 +20,7 @@ def admin_login_required(api, view_path=None):
         @wraps(func)
         def _wrapped(*args, **kwargs):
             adminid = session.get('admin_id')
-            _csrf_token = session.get('_csrf_token')
+            _csrf_token = session.get('admin_csrf_token')
             if not (adminid and _csrf_token and Admin.query.filter_by(id=adminid).count()):
                 if api:
                     return jsonError(AdminErrno.ADMIN_OFFLINE)

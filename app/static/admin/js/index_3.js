@@ -6,24 +6,71 @@ function initPage() {
 	// bootstrap plugins initilization
     pluginsOn();
     refreshPerMin();
+    bindingFuncWithQuery();
     //showTable(); //testing
     logout();  //enable the logout ajax
 }
 
+//binding the onclick function with the tabs
+function bindingFuncWithQuery() {
+	var query_orders = document.getElementById("query_orders");
+	var query_items = document.getElementById("query_items");
+
+	query_orders.onclick = function() {
+		
+		var url = "/admin/level3/query";   //set the url to get all orders
+		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1";
+
+		$.ajax({
+   			type: "POST",
+   			url: url,
+   			data: data,
+   			success: function(msg){
+      			code = msg.code;
+      			if (code == 0) {
+      				clearTablesContent();
+      				insertIntoOrderTable(msg.data.orders)
+    			} else {
+    				errorCode(code);
+    			}
+   			}
+		});
+	}
+
+	query_items.onclick = function() {
+		var url = "/admin/level3/query";   //set the url to get all inventory
+		var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_inventory_list=1";
+
+		$.ajax({
+   			type: "POST",
+   			url: url,
+   			data: data,
+   			success: function(msg){
+      			code = msg.code;
+      			if (code == 0) {
+      				clearTablesContent();
+      				insertIntoItemTable(msg.data.inventory);
+    			} else {
+    				errorCode(code);
+    			}
+   			}
+		});
+	}
+}
+
 function logout() {
 	document.getElementById("logout").onclick = function() {
-		url = "/admin/logout";
-		data = "_csrf_token="+window.localStorage.getItem("token");
+		var url = "admin/logout";
+		var data = "csrf_token="+window.localStorage.getItem("token");
 
   		$.ajax({
    			type: "POST",
-   			url: "/admin/logout",
+   			url: url,
    			data: data,
    			success: function(msg){
-   				msg = JSON.parse(msg);
       			code = msg.code;
       			if (code == 0) {
-      			window.location.href="admin/login"; 
+      			window.location.href="login"; 
     			} else {
     				errorCode(code);
     			}
@@ -53,21 +100,20 @@ function pluginsOn() {
 //refresh the page per minute
 function refreshPerMin() {
 	refresh();
-	setTimeOut(refreshPerMin, 60*1000);
+	setTimeout(refreshPerMin, 60*1000);
 }
 
 //refresh the page
 function refresh() {
 	//create a request
-	url = "/admin/levels/query?get_order_list=1&get_inventory_list=1";   //set the url to get all orders 
-	data = "_csrf_token=" + window.localStorage.getItem("token");
+	var url = "/admin/level3/query";   //set the url to get all orders 
+	var data = "csrf_token=" + window.localStorage.getItem("token") + "&get_order_list=1&get_inventory_list=1";
 	
   	$.ajax({
    			type: "POST",
    			url: url,
    			data: data,
    			success: function(msg){
-   				msg = JSON.parse(msg);
       			code = msg.code;
 
       			if (code == 0) {
@@ -120,32 +166,55 @@ function InsertTablesContent(data) {
 	var orders = data.orders;
 	var items = data.inventory;
 
-	insertIntoDataTable(orders);
+	insertIntoOrderTable(orders);
 	insertIntoItemTable(items);
 	
 }
 
+//create td array
+function createKeyArray(array) {
+	var keyArray = []; // create an empty Array for keys
+
+	for (var i = 0; i < array.length; i++) {
+		keyArray[array[i]] = i;
+	}
+
+	return keyArray;
+}
+
 // insert into the orders table
-function insertIntoDataTable(orders) {
+function insertIntoOrderTable(orders) {
 	var tableContainer = document.getElementById("orders_table_body");
+	
 
 	for (var k = 0; k < orders.length; k++) {
 		var tr = document.createElement("tr");
+		var orderKeys = createKeyArray(["number", "details", "receiver_info", "status", "timedelta"]);  //create keyss except the one for buttons
+		var tdsArray = [];
+
 		tableContainer.appendChild(tr);
 
+		//create a tds Array
+		for (var i = 0; i < orderKeys.length; i++) {
+			var td = document.createElement("td");
+			tdsArray.push(td);
+		}
+
 		for (var property in orders[k]) {
-			if (property == "number" || property == "details" || property == "receiver_info" || property == "status" || property == "timedelta") {
-				var td = document.createElement("td");
-				tr.appendChild(td);
-			}
+			/*   abandon
+			*if (property == "number" || property == "details" || property == "receiver_info" || property == "status" || property == "timedelta") {
+			*	var td = document.createElement("td");
+			*	tr.appendChild(td);
+			*}
+			*/
 
 			if (property == "number") {
 				var textNode = document.createTextNode(orders[k]["number"]);
-				td.appendChild(textNode);
+				tdsArray[orderKeys["number"]].appendChild(textNode);       //orderKeys get the index through the key
 			} else if (property == "details") {
 				for (var i = 0; i < orders[k][property].length; i++) { 
 					var ul = document.createElement("ul");
-					td.appendChild(ul);
+					tdsArray[orderKeys["details"]].appendChild(ul);
 
 					for (var s_porperty in orders[k][property][i]) {
 						var li = document.createElement("li");
@@ -166,7 +235,7 @@ function insertIntoDataTable(orders) {
 				}	
 			} else if (property == "receiver_info") {
 				var ul = document.createElement("ul");
-				td.appendChild(ul);
+				tdsArray[orderKeys["receiver_info"]].appendChild(ul);
 
 				for (var s_porperty in orders[k][property]) {
 					var li = document.createElement("li");
@@ -198,7 +267,7 @@ function insertIntoDataTable(orders) {
 					text += "(超时)";
 				}
 				var textNode = document.createTextNode(text);
-				td.appendChild(textNode);
+				tdsArray[orderKeys["status"]].appendChild(textNode);
 			} else if (property == "timedelta") {
 				var text = "";
 				var currentTime = new Date();
@@ -207,8 +276,13 @@ function insertIntoDataTable(orders) {
 				text = restTime>0 ? [restTime.getUTCHours(), restTime.getUTCMinutes(), restTime.getUTCSeconds()].join(":") :0;
 				
 				var textNode = document.createTextNode(text);
-				td.appendChild(textNode);
+				tdsArray[orderKeys["timedelta"]].appendChild(textNode);
 			}
+		}
+
+		//add all tds in tdsArray into the table
+		for (var i = 0; i < tdsArray.length; i++) {
+			tr.appendChild(tdsArray[i]);
 		}
 
 		//add operation button into the chart
@@ -230,15 +304,26 @@ function insertIntoItemTable(items) {
 	for (var k = 0; k < items.length; k++) {
 		var tr = document.createElement("tr");
 		var text;
+		var itemKeys = createKeyArray(["name", "description", "quantity"]);  //create the keys array for items
+		var tdsArray = [];  //create a tds array for items
+
 		tableContainer.appendChild(tr);
 
-		for (var property in items[k]) {
+		for (var i = 0 ; i < itemKeys.length; i++) {
 			var td = document.createElement("td");
-			tr.appendChild(td);
-
-			text = document.createTextNode(items[k][property]);
-			td.appendChild(text);
+			tdsArray.push(td);
 		}
+
+		for (var property in items[k]) {
+			var text = document.createTextNode(items[k][property]);
+
+			if (itemKeys[property])   //if itemKeys[property] != undefined
+				tdsArray[itemKeys[property]].appendChild(text);
+		}
+
+		// insert all the tds in the tdsArray into the tr
+		for (var i = 0; i < tdsArray.length; i++)
+			tr.appendChild(itemTds[i])
 	}
 }
 
@@ -293,7 +378,6 @@ function validation(password, order_id, operation) {
    		url: url,
    		data: sendData,
    		success: function(msg){
-   			msg = JSON.parse(msg);
       		code = msg.code;
 
       		if (code == 0) {

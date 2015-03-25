@@ -11,6 +11,9 @@ from wtforms.validators import Required, Length, Optional, ValidationError, Rege
 from .common import jsonError
 from .errno import Errno
 
+def init_admin_csrf_token():
+    session['admin_csrf_token'] = md5(os.urandom(64)).hexdigest()
+
 def init_csrf_token():
     session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
