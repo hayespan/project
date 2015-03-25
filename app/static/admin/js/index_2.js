@@ -152,6 +152,49 @@ function InsertOrdersContent(json) {
     var ordersDetails = json.data.orders;
     var tableContainer = document.getElementById("orders_table_body");
 
+    /*
+    var orders = json.data.orders;
+    var tableContainer = document.getElementById("orders_table_body");
+    for (var i = 0; i < orders.length; ++i) {
+        var tr = document,createElement("tr");
+        tableContainer.appendChild(tr);
+        for (var property = 0; property < 4; ++property) {
+            var td = document.createElement("td");
+            var text;
+            switch (property) {
+                case 0:
+                    var unixTimestamp = new Date(orders[i]["released_time"] * 1000);
+                    text = document.createTextNode(unixTimestamp.toLocaleString());
+                    break;
+                case 1:
+                    var list = document.createElement("ul");
+                    list.setAttribute("style", "list-style: none; padding: 0;");
+                    for (var info in order[i]["receiver_info"]) {
+                        var li = document.createElement("li");
+                        var pre;
+                        if (info == "name") pre = "姓名：";
+                        else if (info == "location") pre = "地址：";
+                        else if (info == "phone") pre = "电话：";
+                        li.appendChild(document.createTextNode(pre + orders[i]["receiver_info"][info]));
+                        list.appendChild(li);
+                    }
+                    text = list;
+                    break;
+                case 2:
+                    text = document.createTextNode(orders[i]["money"] + "元");
+                    break;
+                case 3:
+                    if (orders[i]["status"] == "uncompleted") text = document.createTextNode("未完成");
+                    else if (orders[i]["status"] == "completed") text = document.createTextNode("已完成");
+                    else if (orders[i]["status"] == "cancelled") text = document.createTextNode("已取消");
+                    break;
+            }
+            td.appendChild(text);
+            tr.appendChild(td);
+        }
+    }
+    */
+
     for (var order in ordersDetails) {
         var orderInfo = ordersDetails[order];
         var tr = document.createElement("tr");
@@ -191,6 +234,55 @@ function InsertOrdersContent(json) {
 }
 
 function InsertRepleContent(json, buildId) {
+
+    /*
+    var reples = json.data.inventory;
+    var tableContainer = document.getElementById("replenishment_table_body");
+    
+    for (var i = 0; i < reples.length; ++i) {
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        tableContainer.appendChild(tr);
+
+        for (var property = 0; property < 5; ++property) {
+            var text;
+            switch(property) {
+                case 0:
+                    text = document.createTextNode(reples[i]["id"]);
+                    break;
+                case 1:
+                    text = document.createTextNode(reples[i]["name"]);
+                    break;
+                case 2:
+                    text = document.createTextNode(reples[i]["description"]);
+                    break;
+                case 3:
+                    text = document.createTextNode(reples[i]["price"] + "元");
+                    break;
+                case 4:
+                    text = document.createTextNode(reples[i]["quantity"] + "份");
+                    break;
+            }
+            td.appendChild(text);
+            if (property == 0) {
+                td.className += 'productId';
+            }
+            if (property == 2) {
+                td.className += 'description';
+            }
+            if (property == 4) {
+                td.className += 'price';
+            }
+            tr.appendChild(td);
+        }
+        td = document.createElement("td");
+        td.appendChild(createInput("replenishInput"));
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.appendChild(createBtn("replenishBtn"), buildId);
+        tr.appendChild(td);
+    }
+    */
     var repleDetails = json.data.inventory;
     var tableContainer = document.getElementById("replenishment_table_body");
 
@@ -225,6 +317,28 @@ function InsertRepleContent(json, buildId) {
 }
 
 function InsertTotalContent(json) {
+    /*
+    var sales = json.data.total_sales;
+    var tableContainer = document.getElementById("total_table_body");
+    var tr = document.createElement("tr");
+    tableContainer.appendChild(tr);
+
+    for (var property = 0; property < 2; ++property) {
+        var td = document.createElement("td");
+        var text;
+        switch(property) {
+            case 0:
+                text = document.createTextNode(sales["amount"] + "份");
+                break;
+            case 1:
+                text = document.createTextNode(sales["money"] + "份");
+                break;
+        }
+        td.appendChild(text);
+        tr.appendChild(td);
+    }
+    */
+
     var allDetails = json.data.total_sales;
     var tableContainer = document.getElementById("total_table_body");
     var tr = document.createElement("tr");
@@ -244,6 +358,28 @@ function InsertTotalContent(json) {
 }
 
 function InsertEveryContent(json) {
+    /*
+    var sales = json.data.total_sales;
+    var tableContainer = document.getElementById("every_table_body");
+    var tr = document.createElement("tr");
+    tableContainer.appendChild(tr);
+
+    for (var property = 0; property < 2; ++property) {
+        var td = document.createElement("td");
+        var text;
+        switch(property) {
+            case 0:
+                text = document.createTextNode(sales["amount"] + "份");
+                break;
+            case 1:
+                text = document.createTextNode(sales["money"] + "份");
+                break;
+        }
+        td.appendChild(text);
+        tr.appendChild(td);
+    }
+    */
+
     var allDetails = json.data.total_sales;
     var tableContainer = document.getElementById("every_table_body");
 
@@ -313,10 +449,10 @@ function operationBtnFunc() {
             success: function(msg) {
                 code = msg.code;
                 if (code == 0) {
-                    var origin = parseInt(this.parentNode.parentNode.childNodes[4].firstChild.nodeValue.replace("份", ""));
+                    var origin = parseInt(this.parentNode.parentNode.getElementsByClassName("price")[0].firstChild.nodeValue.replace("份", ""));
                     origin = origin + parseInt(amount);
-                    this.parentNode.parentNode.childNodes[4].firstChild.nodeValue = origin+"份";
-                    this.parentNode.parentNode.childNodes[5].firstChild.value = "";
+                    this.parentNode.parentNode.getElementsByClassName("price")[0].firstChild.nodeValue = origin+"份";
+                    this.parentNode.parentNode.getElementsByTagName("input")[0].value = "";
                 } else {
                     errorCode(code);
                 }
