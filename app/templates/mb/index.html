@@ -37,7 +37,7 @@
             <img src="{{ url_for('static', filename='mb/img/icon/iconfont-goods.png') }}" class="img_left" alt="logo">
             <div class="list-item-right">
                 <span class="arrow arrow-right"></span>
-                <a href="m/product/list?cat1={{ cat1[0].id }}&cat2={{ cat2.id }}">{{ cat2.name }}</a>
+                <a href="/m/product/list?cat1={{ cat1[0].id }}&cat2={{ cat2.id }}">{{ cat2.name }}</a>
             </div>
         </div>
         {% endfor %}
