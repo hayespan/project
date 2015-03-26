@@ -13,6 +13,7 @@ from ..util.csrf import init_csrf_token, csrf_token_required
 from ..user.utils import buyer_login_required
 from ..location.models import School, Building
 from ..pic.models import Promotion
+from ..product.views import _get_product_list
 from . import mobilebp
 
 @mobilebp.route('/', methods=['GET', ])
@@ -34,6 +35,24 @@ def location_page():
 @buyer_login_required(False, 'mbend.location_page')
 def cart_page():
     return render_template('mb/cart_page.html')
+
+@mobilebp.route('/product', methods=['GET', ])
+@buyer_login_required(False, 'mbend.location_page')
+def product_page():
+    u = g.buyer
+    bd = u.building
+    cat2_id = request.args.get('cat1', type=int, None)
+    if cat2_id is None:
+        abort(404)
+    try:
+        cat2 = Cat2.query.get(cat2_id)
+        if cat2 is None:
+            abort(404)
+        cat1 = cat2.cat1
+        pds, current_cat1 = _get_product_list(bd, cat2_id)
+    except:
+        abort(404)
+    return render_template('mb/product_page.html', user=u, current_cat1=cat1, current_cat2=cat2, products=pds)
 
 @mobilebp.route('/order', methods=['GET', ])
 @buyer_login_required(False, 'mbend.location_page')

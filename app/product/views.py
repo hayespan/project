@@ -13,7 +13,6 @@ from ..category.utils import _get_catx
 @productbp.route('/list', methods=['GET', ])
 @buyer_login_required(False, 'main.index')
 def get_product_list_by_catx_render():
-    return 'GET'
     u = g.buyer
     bd = u.building
     cat1_id = request.args.get('cat1', type=int)
@@ -94,5 +93,5 @@ def _get_product_list(building, cat1_id=None, cat2_id=None, page=None, per_page=
         return pq, current_cat1 # pagination obj
     else:
         pds = sq.all()
-        return pds, current_cat1
+        return pds, cat1
 
