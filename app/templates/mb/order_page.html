@@ -46,7 +46,7 @@
 
     {% for item in order['items'] %}
     <div class="order-item">
-        <img class="order-item-img" src="{{ url_for('static', filename='mb/img/'+item['filename']) }}">
+        <img class="order-item-img" src="{{ url_for('static', filename='img/'+item['filename']) }}">
         <p>{{ item['name'] }}</p>
         <p>{{ item['quantity'] }}件 ￥{{ "%.2f" % item['price'] }}</p>
     </div>
@@ -68,7 +68,7 @@
     </div>
     {% for item in order['items'] %}
     <div class="order-item">
-        <img class="order-item-img" src="{{ url_for('static', filename='mb/img/'+item['filename']) }}">
+        <img class="order-item-img" src="{{ url_for('static', filename='img/'+item['filename']) }}">
         <p>{{ item['name'] }}</p>
         <p>{{ item['quantity'] }}件 ￥{{ "%.2f" % item['price'] }}</p>
     </div>
