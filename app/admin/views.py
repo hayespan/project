@@ -324,7 +324,7 @@ def admin_2nd_modify_quantity():
         return jsonError(AdminErrno.NO_SCHOOL_IN_CHARGE)
     form = ModifyQuantityForm()
     if form.validate_on_submit():
-        product_id = form.producct_id.data
+        product_id = form.product_id.data
         quantity = form.quantity.data
         building_id = form.building_id.data
         if not sc.buildings.filter(Building.id==building_id).count():
