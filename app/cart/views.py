@@ -11,7 +11,7 @@ from ..util.common import jsonResponse, jsonError, viaMobile
 from ..util.csrf import csrf_token_required
 from ..util.errno import CartErrno
 from ..user.utils import buyer_login_required
-from ..product.models import Product
+from ..product.models import Product, Product_building
 
 # ajax
 @cartbp.route('/cnt', methods=['POST', ])
@@ -59,8 +59,11 @@ def create_cart():
                     quantity=quantity,
                     )
         db.session.add(cart)
-        db.commit()
-        return jsonResponse(cart.id)
+        db.session.commit()
+        return jsonResponse({
+            'product_id': cart.product_id,
+            'building_id': cart.building_id,
+            })
     return jsonError(CartErrno.INVALID_ARGUMENT)
     
 # ajax
