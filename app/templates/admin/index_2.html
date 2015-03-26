@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>项目 - 二级管理页面</title>
+
+    <link href="../../static/admin/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="../../static/admin/css/metisMenu.min.css" rel="stylesheet">
+
+    <link href="../../static/admin/css/sb-admin-2.css" rel="stylesheet">
+    
+    <link href="../../static/admin/css/font-awesome.css" rel="stylesheet" type="text/css">
+
+    <link href="../../static/admin/css/index_2.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="#">SB Admin v2.0</a>
+            </div>
+
+            <!-- /.navbar-header -->
+
+            <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a id="logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Tab Navigation -->
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active" id="li_orders">
+                    <a href="#orders" data-toggle="tab">订单</a>
+                </li>
+                <li id="li_replenishment">
+                    <a href="#replenishment" data-toggle="tab">补货</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" id="total" class="dropdown-toggle" 
+                         data-toggle="dropdown">销售总额 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="total">
+                        <li id="li_all">
+                            <a href="#all" tabindex="-1" data-toggle="tab">所有楼栋</a>
+                         </li>
+                         <li id="li_one">
+                            <a href="#one" tabindex="-1" data-toggle="tab">各个楼栋</a>
+                         </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Tab Navigation -->
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="orders">
+                    <!-- 当月所有订单 -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <caption>订单总览（请按楼栋按钮选择要查看的楼栋）</caption>
+                            <tbody>
+                                <tr>
+                                    <td style="vertical-align: middle; text-align: center">
+                                        <button class="btn getBuilding" id="build1" data-toggle="modal" data-target="#myModal1">楼栋</button>
+                                    </td>
+                                    <td style="padding: 0px">
+                                        <table class="table" style="margin-bottom: 0px">
+                                            <thead>
+                                                <tr>
+                                                    <th>时间</th>
+                                                    <th>购买用户信息</th>
+                                                    <th>总金额</th>
+                                                    <th>订单状态</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="orders_table_body">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="replenishment">
+                    <!-- 货物库存 -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <caption>货物总览（请按楼栋按钮选择要查看的楼栋）</caption>
+                            <tbody>
+                                <tr>
+                                    <td style="vertical-align: middle; text-align: center">
+                                        <button class="btn getBuilding" id="build2" data-toggle="modal" data-target="#myModal2">楼栋</button>
+                                    </td>
+                                    <td style="padding: 0px">
+                                        <table class="table" style="margin-bottom: 0px">
+                                            <thead>
+                                                <tr>
+                                                    <th>商品编号</th>
+                                                    <th>商品名称</th>
+                                                    <th>商品信息</th>
+                                                    <th>商品价格</th>
+                                                    <th>现有数量</th>
+                                                    <th>补货个数</th>
+                                                    <th>提交</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="replenishment_table_body">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+
+                <div class="tab-pane fade" id="all">
+                    <!-- 所有楼栋销售总额 -->
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>当月所有楼栋销售总额</caption>
+                            <thead>
+                                <tr>
+                                    <th>订单总数量</th>
+                                    <th>销售总金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="total_table_body">
+                            </tbody>
+                        </table>
+                    </div>      
+                </div>
+
+                <div class="tab-pane fade" id="one">
+                    <!-- 各楼栋销售总额 -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <caption>当月各楼栋销售总额（请按楼栋按钮选择要查看的楼栋）</caption>
+                            <tbody>
+                                <tr>
+                                    <td style="vertical-align: middle; text-align: center">
+                                        <button class="btn getBuilding" id="build3" data-toggle="modal" data-target="#myModal3">楼栋</button>
+                                    </td>
+                                    <td style="padding: 0px">
+                                        <table class="table" style="margin-bottom: 0px">
+                                            <thead>
+                                                <tr>
+                                                    <th>订单总数量</th>
+                                                    <th>销售总金额</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="every_table_body">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>      
+                </div>
+
+            </div>
+            <!-- Tab Content -->
+        </div>
+        <!-- Content -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" 
+       aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" 
+                   aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   请选择要查看的楼层
+                </h4>
+             </div>
+             <div class="modal-body"></div>
+          </div>
+          <!-- /.modal-content -->
+       </div>
+       <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" 
+       aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" 
+                   aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   请选择要补货的楼层
+                </h4>
+             </div>
+             <div class="modal-body"></div>
+          </div>
+          <!-- /.modal-content -->
+       </div>
+       <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" 
+       aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" 
+                   aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   请选择要查看的楼层
+                </h4>
+             </div>
+             <div class="modal-body"></div>
+          </div>
+          <!-- /.modal-content -->
+       </div>
+       <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../../static/admin/js/jquery.min.js"></script>
+    <script src="../../static/admin/js/bootstrap.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script type="text/javascript" src="../../static/admin/js/json2.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/sb-admin-2.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/utils.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/index_2.js"></script>
+
+
+</body>
+
+</html>
