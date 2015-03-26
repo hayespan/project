@@ -27,7 +27,7 @@ $(function() {
                             html_content = 
                                 "<div id={0} class=\"item-valid\">" +
                                     "<div class=\"radio not-checked\"></div>" +
-                                    "<img src=\"/static/mb/img/{1}\" class=\"item-pic\" alt=\"picture\">" +
+                                    "<img src=\"/static/img/{1}\" class=\"item-pic\" alt=\"picture\">" +
                                     "<div class=\"item-detail\">" +
                                         "<p>{2}</p>" +
                                         "<p class=\"item-price\">￥{3}</p>" +
@@ -43,7 +43,7 @@ $(function() {
                             html_content = 
                                 "<div id={0} class=\"item-invalid\">" +
                                     "<div class=\"text-invalid\">失效</div>" +
-                                    "<img src=\"/static/mb/img/{1}\" class=\"item-pic\" alt=\"picture\">" +
+                                    "<img src=\"/static/img/{1}\" class=\"item-pic\" alt=\"picture\">" +
                                     "<div class=\"item-detail\">" +
                                         "<p>{2}</p>" +
                                         "<p class=\"item-price\">￥{3}</p>"+
