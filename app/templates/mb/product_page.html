@@ -14,16 +14,16 @@
 
 <div class="product-top-bar">
     <a href="javascript:history.go(-1)" class="back-btn"></a>
-    <h3 class="text-center product-title">一级分类 - 二级分类</h3>
+    <h3 class="text-center product-title">{{ current_cat1.name }} - {{ current_cat2.name }}</h3>
 </div><!-- top-bar end -->
 
 <div class="item-container">
     <!-- 商品列表 -->
     {% for product in products %}
     <div class="product-item">
-            <img src="/static/mb/img/{{ product[0].pic.filename }}" class="product-item-pic" alt="picture">
+            <img src="/static/img/{{ product[0].pic.filename }}" class="product-item-pic" alt="picture">
             {% if product[1].quantity > 0 %}
-            <button type="button" id="32224" class="btn-put-in">加入购物车</button>
+            <button type="button" id="{{ product[0].id }}" class="btn-put-in">加入购物车</button>
             {% else %}
             <button type="button" class="btn-sold-out">售罄</button>
             {% endif  %}
