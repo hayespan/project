@@ -15,8 +15,26 @@ class HandleOrderForm(Form):
 
 class ModifyQuantityForm(Form):
     building_id = IntegerField(validators=[Required(), ])
-    producct_id = IntegerField(validators=[Required(), ])
+    product_id = IntegerField(validators=[Required(), ])
     quantity = IntegerField(validators=[Required(), ])
+
+class AdminLevel2Form(Form):
+    get_building_list = IntegerField(validators=[Optional(), ])
+    get_order_list = IntegerField(validators=[Optional(), ])
+    get_inventory_list = IntegerField(validators=[Optional(), ])
+    get_total_sales = IntegerField(validators=[Optional(), ])
+
+class AdminLevel3Form(Form):
+    get_order_list = IntegerField(validators=[Optional(), ])
+    get_inventory_list = IntegerField(validators=[Optional(), ])
+
+class GetTotalSalesForm(Form):
+    school_id = IntegerField(validators=[Optional(), ])
+    building_id = IntegerField(validators=[Optional(), ])
+    year = IntegerField(validators=[Optional(), ])
+    quarter = IntegerField(validators=[Optional(), ])
+    month = IntegerField(validators=[Optional(), ])
+    export = IntegerField(validators=[Optional(), ])
 
 class CreateSchoolForm(Form):
     name = StringField(validators=[Required(), Length(1, 32), ])
