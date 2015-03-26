@@ -19,4 +19,15 @@ $(function() {
             }
         }
     }).eq(0).trigger("mouseover");
+
+
+    $(".cat1").on("click", function() {   
+        var item = $(this).closest(".list-item");
+        var cat2 = item.children(".cat2");
+        cat2.toggle();
+        $(this).find(".arrow").toggleClass("arrow-bottom");
+        $(this).find(".arrow").toggleClass("arrow-fold");
+    });
+
+
 });

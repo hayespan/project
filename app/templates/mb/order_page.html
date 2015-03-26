@@ -1,5 +1,5 @@
 {% extends "mb/layout.html" %}
-{% block title %}清单{% endblock %}
+{% block title %}我的订单{% endblock %}
 
 
 {% block body %}
@@ -14,8 +14,10 @@
 
 
 <div class="list-top-bar">
-    <a class="list-top-item list-top-item-active" id="all-order-btn" href="#">全部订单<span class="list-top-item-border">|</span></a>
-    <a class="list-top-item" id="coming-order-btn" href="#">配送中<span class="list-top-item-border">|</span></a>
+    <a class="list-top-item list-top-item-active" id="all-order-btn" href="#">全部订单</a>
+    <div class="list-top-item-border"></div>
+    <a class="list-top-item" id="coming-order-btn" href="#">配送中</a>
+    <div class="list-top-item-border"></div>
     <a class="list-top-item" id="finish-order-btn" href="#">已完成</a>
 </div><!-- list-top-bar end -->
 

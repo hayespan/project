@@ -17,7 +17,7 @@ $(function() {
         return str;
     };
 
-    $.post("/cart/", 
+    $.post("/cart", 
             {csrf_token: localStorage["_csrf_token"]},
             function(data) {
                 if (data.code == 0) {
@@ -38,7 +38,6 @@ $(function() {
                                             "<div class=\"btn-increase\">+</div>" +
                                         "</div>" +
                                     "</div>" +
-                                    "<span class=\"arrow\"></span>" +
                                 "</div>";
                         } else {    
                             html_content = 
@@ -50,7 +49,6 @@ $(function() {
                                         "<p class=\"item-price\">￥{3}</p>"+
                                         "<p>数量：{4}</p>" +
                                     "</div>" +
-                                    "<span class=\"arrow\"></span>"
                                 "</div>";
                         }
                         var html_format_str = stringFormat(
@@ -72,17 +70,15 @@ $(function() {
 
     function bindEvent() {  
         // 商品单选按钮点击
-        $(".item-container > * > .radio").click(function() {  
-            $(this).toggleClass("not-checked");
-            $(this).toggleClass("checked");
+        $(".item-container > * > .radio").on("click", function() {  
+            $(this).toggleClass("not-checked").toggleClass("checked");
             calculateTotalPrice(); // 重新计算价格
             changeBtnStatus();
         });
 
         // 点击全选按钮
-        $(".check-all > .radio").click(function() {
-            $(this).toggleClass("not-checked");
-            $(this).toggleClass("checked");
+        $(".check-all > .radio").on("click", function() {
+            $(this).toggleClass("not-checked").toggleClass("checked");
 
             if ($(this).hasClass("not-checked")) {
                 $(".item-container > * > .radio").removeClass("checked");
@@ -95,7 +91,7 @@ $(function() {
             changeBtnStatus();
         });
 
-        $(".btn-decrease").click(function() {   
+        $(".btn-decrease").on("click", function() {   
             var item = $(this).closest(".item-valid");
             if (parseInt(item.find(".input-number").val()) > 1) {   
                 var product_id = item.attr("id");
@@ -113,7 +109,7 @@ $(function() {
             }
         });
 
-        $(".btn-increase").click(function() {   
+        $(".btn-increase").on("click", function() {   
             var item = $(this).closest(".item-valid");
             if (parseInt(item.find(".input-number").val()) < 9999) {   
                 var product_id = item.attr("id");
@@ -189,7 +185,7 @@ $(function() {
     }
 
     // 清除选中项目
-    $("#delete-items").click(function() {   
+    $("#delete-items").on("click", function() {   
         $(".item-valid").each(function() {
             if ($(this).children().hasClass("checked")) {    
                 var product_id = $(this).attr("id");
@@ -209,7 +205,7 @@ $(function() {
         });
     });
 
-    $("#clear-invalid").click(function() {   
+    $("#clear-invalid").on("click", function() {   
         $(".item-invalid").each(function() {
             var product_id = $(this).attr("id");
             var obj = $(this);
@@ -225,17 +221,30 @@ $(function() {
         });
     });
 
-    $(".pay-btn").click(function() {    
+    $(".pay-btn").on("click", function() {    
         if ($(this).hasClass("pay-btn-active")) {   
-            $(".modal").show();
+            $(".modal-set-info").show();
         }
     });
 
-    $("#order-cancel").click(function() {   
+    $("#order-cancel").on("click", function() {   
         $(".modal").hide();
     });
 
-    $("#order-save").click(function() { 
+    $("#order-save").on("click", function() { 
+        $(".modal-confirm").show();
+        $(".modal-set-info").hide();
+        $("#c-name").val($("#name").val());
+        $("#c-phone").val($("#phone").val());
+        $("#c-addr").val($("#addr").val());
+    });
+
+    $("#order-modify").on("click", function() {   
+        $(".modal-set-info").show();
+        $(".modal-confirm").hide();
+    });
+
+    $("#order-submit").on("click", function() { 
         var product_ids = "";
         $(".item-valid").each(function() {
             if ($(this).find(".radio").hasClass("checked")) {

@@ -23,36 +23,26 @@
 </div>
 
 <div class="list-link">
+    {% for cat1 in catx %}
     <div class="list-item">
-        <img src="{{ url_for('static', filename='mb/img/icon.png') }}" class="img_left" alt="logo">
-        <div class="list-item-right">
-            <span class="arrow"></span>
-            <a href="/1">分类分类分类</a>
+        <div class="cat1">
+            <img src="{{ url_for('static', filename='mb/img/icon/iconfont-shopping.png') }}" class="img_left" alt="logo">
+            <div class="list-item-right">
+                <span class="arrow arrow-bottom"></span>
+                <a>{{ cat1[0].name }}</a>
+            </div>
         </div>
-    </div>
-    <div class="list-item">
-        <img src="{{ url_for('static', filename='mb/img/icon.png') }}" class="img_left" alt="logo">
-        <div class="list-item-right">
-            <span class="arrow"></span>
-            <a href="/2">分类</a>
+        {% for cat2 in cat1[1] %}
+        <div class="cat2">
+            <img src="{{ url_for('static', filename='mb/img/icon/iconfont-goods.png') }}" class="img_left" alt="logo">
+            <div class="list-item-right">
+                <span class="arrow arrow-right"></span>
+                <a href="/product/list?cat1={{ cat1[0].id }}&cat2={{ cat2.id }}">{{ cat2.name }}</a>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    <div class="list-item">
-        <img src="{{ url_for('static', filename='mb/img/icon.png') }}" class="img_left" alt="logo">
-        <div class="list-item-right">
-            <span class="arrow"></span>
-            <a href="/3">分类分类类目</a>
-        </div>
-    </div>
-    
-    <div class="list-item">
-        <img src="{{ url_for('static', filename='mb/img/icon.png') }}" class="img_left">
-        <div class="list-item-right">
-            <span class="arrow"></span>
-            <a href="/1">分类分类分类分类分类分类</a>
-        </div>
-    </div>
-
+    {% endfor %}
 </div><!-- end list-link -->
 
 
