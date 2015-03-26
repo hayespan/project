@@ -17,7 +17,7 @@ $(function() {
         return str;
     };
 
-    $.post("/cart/list", 
+    $.post("/cart/list/", 
             {csrf_token: localStorage["_csrf_token"]},
             function(data) {
                 if (data.code == 0) {
