@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from flask import g 
+from flask import g, render_template
 
 from . import cartbp
 from .models import Cart
@@ -12,6 +12,12 @@ from ..util.csrf import csrf_token_required
 from ..util.errno import CartErrno
 from ..user.utils import buyer_login_required
 from ..product.models import Product, Product_building
+
+@cartbp.route('/', methods=['GET', ])
+@buyer_login_required(False, 'main.index')
+def shopping_cart():
+    u = g.buyer
+    return render_template('pc/shopping_cart_page.html', user=u)
 
 # ajax
 @cartbp.route('/cnt', methods=['POST', ])

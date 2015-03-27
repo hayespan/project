@@ -2,7 +2,7 @@
 import datetime
 import time
 
-from flask import render_template ,g 
+from flask import render_template, g, session
 
 from . import orderbp
 from .models import Order, Order_snapshot
@@ -51,6 +51,7 @@ def create_order():
                 sender_name_rd=bd.admin.name,
                 sender_contact_info_rd=bd.admin.contact_info,
                 )
+        session['buyer_contact_info'] = [form.name.data, form.phone.data, form.addr.data]
         # get most recent snapshot for association and calculate total price
         tot_price = 0
         od_sn_list = []
@@ -88,9 +89,10 @@ def order_page():
         data['sender_name'] = i.sender_name_rd
         data['sender_contact_info'] = i.sender_contact_info_rd
         data['price'] = i.tot_price_rd
-        data['released_time'] = i.released_time,
+        data['released_time'] = int(time.mktime(time.strptime(str(i.released_time), '%Y-%m-%d %H:%M:%S')))
+        data['released_time_str'] = i.released_time.strftime('%Y-%m-%d')
         td =  datetime.timedelta(hours=i.timedelta)
-        data['timedelta'] = td
+        data['timedelta'] = i.timedelta*3600
         data['delivery_timestamp'] = int(time.mktime(time.strptime(str(i.released_time+td), '%Y-%m-%d %H:%M:%S')))
         data['timeout'] = i.released_time+td<=datetime.datetime.now()
         data['password'] = i.password
@@ -108,7 +110,7 @@ def order_page():
             items.append(item_meta)
         data['items'] = items
         order_data.append(data) 
-    return render_template('', user=u, orders=order_data)
+    return render_template('pc/orders_list_page.html', user=u, orders=order_data)
 
 @orderbp.route('/list', methods=['POST', ])
 @buyer_login_required(True)

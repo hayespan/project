@@ -38,5 +38,5 @@ def index():
                 limit(10).\
                 all()
     promotions = [i.pic.filename for i in Promotion.query.all()]
-    return render_template('', user=user, catx=_get_catx(), hot_products=hot_products, promotions=promotions, locations=locations)
+    return render_template('pc/main_page.html', user=user, catx=_get_catx(), hot_products=hot_products, promotions=promotions, locations=locations)
 

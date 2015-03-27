@@ -4,6 +4,7 @@ from . import productbp
 from .models import Product
 from .forms import *
 from .. import db
+from ..user.models import User
 from ..util.common import jsonError, jsonResponse, viaMobile     
 from ..util.errno import ProductErrno
 from ..user.utils import buyer_login_required 
@@ -22,13 +23,12 @@ def get_product_list_by_catx_render():
         pds, current_cat1 = _get_product_list(bd, cat1_id, cat2_id)
     except:
         abort(404)
-    return render_template('', user=u, catx=_get_catx(), current_cat1=current_cat1, products=pds)
+    return render_template('pc/products_list_page.html', user=u, catx=_get_catx(), current_cat1=current_cat1, products=pds)
 
 # ajax
 @productbp.route('/list', methods=['POST', ])
 @buyer_login_required(True)
 def get_product_list_by_catx_ajax():
-    return 'POST'
     u = g.buyer
     bd = u.building
     form = CatxPageForm()
@@ -55,8 +55,8 @@ def get_product_list_by_catx_ajax():
         return jsonResponse({
             'products': products,
             'current_cat1': {
-                current_cat1.id,
-                current_cat1.name,
+                'id': current_cat1.id,
+                'name': current_cat1.name,
                 },
             })
     return jsonError(ProductErrno.INVALID_ARGUMENT)
