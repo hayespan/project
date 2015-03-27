@@ -1,0 +1,91 @@
+{% extends "pc/base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pc/css/shopping_cart.css') }}">
+{% endblock %}
+
+{% block title %}购物车{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="top-bar">
+        <div class="left">
+            <img src="{{ url_for('static', filename='pc/images/shopping-car.png') }}">
+            <span class="top-bar-word">购物车</span>
+        </div>
+        <div class="right">
+            已选商品：<span class="price" data-bind="text: checkedProductsTotal">￥0.00</span>
+            <span class="settle-btn btn">结算</span>
+        </div>
+    </div>
+    <div class="no-cart-obj" data-bind="style: {display: cartObjsLength() < 1 ? 'block' : 'none'}">您的购物车还是空的，赶紧行动吧！</div>
+    <div class="products-list-container" data-bind="style: {display: cartObjsLength() > 0 ? 'block' : 'none'}">
+        <div class="products-list">
+            <div class="products-list-header">
+                <span class="check-all"><input type="checkbox" data-bind="event: { change: checkAllProducts}, checked: is_all_checked"><label>全选</label></span>
+                <span class="product-info">商品信息</span>
+                <span class="price">单价（元）</span>
+                <span class="quantity">数量</span>
+                <span class="total">价格（元）</span>
+            </div>
+            <ul class="cart-objs" data-bind="foreach: cartObjs">
+                <li class="cart-obj">
+                    <div class="cart-obj-invalid" data-bind="ifnot: is_valid">已失效</div>
+                    <div class="cart-obj-valid" data-bind="if: is_valid"><input data-bind="checked: is_checked" type="checkbox"></div>
+                    <img class="cart-obj-pic" data-bind="attr: {src: filename}">
+                    <div class="cart-obj-name" data-bind="text: name"></div>
+                    <div class="cart-obj-price" data-bind="text: price"></div>
+                    <div class="cart-obj-interact">
+                        <div class="reduce-btn btn" data-bind="click: $data.reduce">-</div>
+                        <input data-bind="value: quantity, textInput: quantity, event: {blur: setQuantity}">
+                        <div class="add-btn btn" data-bind="click: $data.add">+</div>
+                    </div>
+                    <div class="cart-obj-total" data-bind="text: formattedPrice()"></div>
+                    <div class="remove-btn btn" data-bind="click: $data.removeSelf">删除</div>
+                    <!-- <div class="product-mask" data-bind="css: validStatus"></div> -->
+                </li>
+            </ul>
+            <div class="products-list-footer">
+                <span class="check-all"><input type="checkbox", data-bind="event:{change: checkAllProducts}, checked: is_all_checked"><label>全选</label></span>
+                <span class="delete-products btn" data-bind="click: deleteCheckedProducts">删除</span>
+                <span class="delete-invalid btn" data-bind="click: deleteInvalidProducts">清除失效商品</span>
+                <span class="settle-btn btn">结算</span>
+                <span class="total">合计：<b data-bind="text: checkedProductsTotal()"></b></span>
+                <span class="check-products">已选商品 <b data-bind="text: checkedProductsLength()">0</b> 件</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block mask %}
+<div class="contact-info-confirm">
+    <div class="contact-header">
+        <span class="title">订单信息编辑</span>
+        <span class="confirm-btn btn">确认订单</span>
+        <span class="change-btn btn">修改信息</span>
+    </div>
+    <div class="contact-info-detail">
+        <p class="name">姓名：<span data-bind="text: contactInfo.name"></span></p>
+        <p class="phone">手机号：<span data-bind="text: contactInfo.phone"></span></p>
+        <p class="address">地址：<span data-bind="text: contactInfo.addr"></span></p>
+    </div>
+</div>
+
+<div class="contact-info-change">
+    <div class="contact-header">
+        <span class="title">订单信息确认</span>
+        <span class="cancel-btn btn">取消</span>
+        <span class="save-btn btn">保存</span>
+    </div>
+    <form class="contact-info-detail">
+        <p class="name"><label>姓名</label><input data-bind="value: contactInfo.name" type="text"></p>
+        <p class="phone"><label>手机号</label><input data-bind="value: contactInfo.phone" type="text"></p>
+        <p class="address"><label>地址</label><input data-bind="value: contactInfo.addr" type="text"></p>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='pc/js/cart.js')}}"></script>
+{% endblock %}

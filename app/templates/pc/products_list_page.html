@@ -1,0 +1,45 @@
+{% extends "pc/base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pc/css/products_list.css') }}" />
+{% endblock %}
+
+{% block title %}商品列表{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% include "pc/_location.html" %}
+    <div class="nav">
+        <div class="products-kind-list">
+            <div class="all-kind">全部分类</div>
+            <ul class="kinds-container">
+                {% for cat in catx %}
+                <li class="kind-container" data-bind="css: {chosen : currentCat1Id() == {{cat[0].id}}}">
+                    <div class="kind" data-cat1="{{cat[0].id}}" >
+                        {{ cat[0].name }}
+                    </div>
+                    <div class="cat2s">
+                        <ul>
+                            {% for cat2 in cat[1] %}
+                            <li class="cat2" data-cat2="{{cat2.id}}">{{ cat2.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="hot-products" style="display: none" data-bind="visible: true">
+        {% include "pc/_products.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block mask %}
+    {% include "pc/_location_select.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='pc/js/products_list.js') }}"></script>
+{% endblock %}

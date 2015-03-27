@@ -1,0 +1,217 @@
+@import "_constants";
+@import "_components";
+
+@gray: #e6e6e6;
+@darkerOrange: #ff4400;
+
+.top-bar {
+    .top-bar-style;
+}
+
+.no-cart-obj {
+    display: none;
+    font-style: 20px;
+    color: #838383;
+    line-height: 100px;
+}
+
+.products-list-container {
+    width: 1000px;
+    display: none;
+}
+
+.products-list-header {
+    margin: 20px 0 10px 0;
+    .check-all {
+        margin-left: 10px;
+        margin-right: 110px;
+        label {
+            margin-left: 5px;
+        }
+    }
+    .product-info {
+        margin-right: 258px;
+    }
+    .price {
+        margin-right: 68px;
+    }
+    .quantity {
+        margin-right: 145px;
+    }
+}
+
+.cart-obj {
+    overflow: hidden;
+    border: 1px solid #d2d2d2;
+    background-color: #fcfcfc;
+    padding: 20px 10px;
+    margin-bottom: 20px;
+    height: 80px;
+    line-height: 80px;
+    div {
+        float: left;
+        vertical-align: top;
+    }
+    img {
+        float: left;
+    }
+    .cart-obj-invalid {
+        width: 45px;
+        font-size: 14px;
+        color: #a4a4a4;
+        margin-right: 2px;
+    }
+    .cart-obj-valid {
+        width: 45px;
+    }
+    .cart-obj-pic {
+        border: 1px solid #dcdcdc;
+        width: 86px;
+        height: 81px;
+    }
+    .cart-obj-name {
+        line-height: 20px;
+        font-size: 14px;
+        width: 320px;
+        margin-left: 30px;
+        margin-right: 5px;
+    }
+    .cart-obj-price {
+        width: 80px;
+        margin-right: 73px;
+    }
+    .cart-obj-interact {
+        border: 1px solid #d2d2d2;
+        margin-top: 22px;
+        margin-right: 72px;
+        .btn {
+            width: 28px;
+            .vertical-center-font(32px);
+            color: white;
+            text-align: center;
+        }
+        .reduce-btn {
+            background-color: #cdcdcd;
+        }
+        .add-btn {
+            background-color: #84e3ba;
+        }
+        input {
+
+            float: left;
+            width: 52px;
+            text-align: center;
+            .vertical-center-font(32px);
+            font-size: 15px;
+            border: none;
+        }
+    }
+    .cart-obj-total {
+        color: #ff3e3e;
+        width: 80px;
+        margin-right: 20px;
+    }
+}
+
+.products-list-footer {
+    .vertical-center-font(50px);
+    background-color: #e5e5e5;
+    .check-all {
+        margin-left: 10px;
+        margin-right: 60px;
+        input {
+            margin-right: 5px;
+        }
+    }
+    .delete-products {
+        margin-right: 30px;
+    }
+    b {
+        color: #ff4400;
+    }
+    .check-products {
+        float: right;
+        margin-right: 50px;
+    }
+    .total {
+        float: right;
+        margin-right: 20px;
+    }
+    .settle-btn {
+        float: right;
+        width: 100px;
+        text-align: center;
+        background-color: #ff7802;
+        color: white;
+    }
+}
+
+.mask-box-container {
+    .contact-info-confirm, .contact-info-change {
+        width: 660px;
+        padding: 40px;
+        display: none;
+        .contact-header {
+            .vertical-center-font(40px);
+            .title {
+                font-size: 24px;
+                color: @orange;
+            }
+            .btn {
+                float: right;
+                color: white;
+                font-size: 18px;
+                border-radius: 4px;
+                text-align: center;
+                width: 100px;
+            }
+            .cancel-btn {
+                background-color: #ff7e7e;
+            }
+            .save-btn {
+                background-color: #8ae4bd;
+                margin-right: 20px;
+            }
+            .confirm-btn {
+                background-color: #ff7802;
+            }
+            .change-btn {
+                color: #6e6e6e;
+                margin-right: 20px;
+            }
+        }
+        .contact-info-detail {
+            font-size: 20px;
+            margin-top: 30px;
+            p {
+                color: #8e8e8e;
+                margin-bottom: 30px;
+                span {
+                    color: #8e8e8e;
+                }
+            }
+            label {
+                color: #8e8e8e;
+                display: inline-block;
+                width: 100px;
+            }
+            input {
+                font-size: 16px;
+                padding: 5px 10px;
+                border: 1px solid #d2d2d2;
+                width: 530px;
+                height: 22px;
+            }
+        }
+    }
+}
+
+.mask-box-container {
+    .contact-info-change {
+        .contact-info-detail {
+            p {
+                margin-bottom: 10px;
+            }
+        }
+    }
+}
