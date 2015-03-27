@@ -26,7 +26,7 @@ def export_xls(orders):
         sh.write(i+1, 0, o.ticketid)    
         sh.write(i+1, 1, o.receiver)
         sh.write(i+1, 2, o.phone)
-        sh.write(i+1, 3, o.contact_info)
+        sh.write(i+1, 3, o.addr)
         sh.write(i+1, 4, o.status)
         sh.write(i+1, 5, o.released_time)
         sh.write(i+1, 6, o.school_name_rd)
