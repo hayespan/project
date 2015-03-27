@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from flask import request
 import os
 from hashlib import md5
 from functools import wraps
@@ -10,11 +11,14 @@ from wtforms.validators import Required, Length, Optional, ValidationError, Rege
 from .common import jsonError
 from .errno import Errno
 
+def init_admin_csrf_token():
+    session['admin_csrf_token'] = md5(os.urandom(64)).hexdigest()
+
 def init_csrf_token():
     session['_csrf_token'] = md5(os.urandom(64)).hexdigest()
 
 class CsrfTokenForm(Form):
-    _csrf_token = StringField(_name='csrf_token', validators=[Required(), Length(min=32, max=32), ])
+    csrf_token = StringField(_name='csrf_token', validators=[Required(), Length(min=32, max=32), ])
 
 def csrf_token_required(func):
     '''check csrf token required decorator'''

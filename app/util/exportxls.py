@@ -4,7 +4,7 @@ import xlwt
 import datetime
 from hashlib import md5
 
-SAVE_PATH = os.path.dirname(os.path.abspath(__file__))+'../static/tmp/'
+SAVE_PATH = os.path.dirname(os.path.abspath(__file__))+'/../static/tmp/'
 
 def export_xls(orders):
     b = xlwt.Workbook(u'订单详情')
@@ -26,7 +26,7 @@ def export_xls(orders):
         sh.write(i+1, 0, o.ticketid)    
         sh.write(i+1, 1, o.receiver)
         sh.write(i+1, 2, o.phone)
-        sh.write(i+1, 3, o.contact_info)
+        sh.write(i+1, 3, o.addr)
         sh.write(i+1, 4, o.status)
         sh.write(i+1, 5, o.released_time)
         sh.write(i+1, 6, o.school_name_rd)
@@ -48,7 +48,7 @@ def export_xls(orders):
 
 def export_product_xls(items, pd_name):
     b = xlwt.Workbook()
-    sh = b.add_sheet(pd.name)
+    sh = b.add_sheet(pd_name)
     sh.write(0, 0, u'订单编号')
     sh.write(0, 1, u'买家姓名')
     sh.write(0, 2, u'买家电话')

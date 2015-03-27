@@ -9,11 +9,11 @@ from ..util.errno import ProductErrno
 from ..user.utils import buyer_login_required 
 from ..category.models import Cat1, Cat2
 from ..category.utils import _get_catx
+from ..product.models import Product_building, Product
 
 @productbp.route('/list', methods=['GET', ])
 @buyer_login_required(False, 'main.index')
 def get_product_list_by_catx_render():
-    return 'GET'
     u = g.buyer
     bd = u.building
     cat1_id = request.args.get('cat1', type=int)
@@ -66,8 +66,8 @@ def _get_product_list(building, cat1_id=None, cat2_id=None, page=None, per_page=
     get product list in current location, filter by catx, order by quantity and sold count
     '''
     baseq = db.session.query(Product, Product_building).\
-            join(Product_building, Product_building.product_id==Poduct.id).\
-            filter(Product_building.building_id==bd.id)
+            join(Product_building, Product_building.product_id==Product.id).\
+            filter(Product_building.building_id==building.id)
     cat1, cat2 = None, None
     if cat1_id and not cat2_id: # filter by cat1
         cat1 = Cat1.query.get(cat1_id)
@@ -94,5 +94,5 @@ def _get_product_list(building, cat1_id=None, cat2_id=None, page=None, per_page=
         return pq, current_cat1 # pagination obj
     else:
         pds = sq.all()
-        return pds, current_cat1
+        return pds, cat1
 

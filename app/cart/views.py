@@ -11,7 +11,7 @@ from ..util.common import jsonResponse, jsonError, viaMobile
 from ..util.csrf import csrf_token_required
 from ..util.errno import CartErrno
 from ..user.utils import buyer_login_required
-from ..product.models import Product
+from ..product.models import Product, Product_building
 
 # ajax
 @cartbp.route('/cnt', methods=['POST', ])
@@ -59,8 +59,11 @@ def create_cart():
                     quantity=quantity,
                     )
         db.session.add(cart)
-        db.commit()
-        return jsonResponse(cart.id)
+        db.session.commit()
+        return jsonResponse({
+            'product_id': cart.product_id,
+            'building_id': cart.building_id,
+            })
     return jsonError(CartErrno.INVALID_ARGUMENT)
     
 # ajax
@@ -102,6 +105,7 @@ def increase_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -128,6 +132,7 @@ def decrease_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -154,6 +159,7 @@ def set_cart_quantity():
     u = g.buyer
     form = SetCartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info.get('building_id'), Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
