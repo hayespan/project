@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from flask import request, g, abort, render_template
+from flask import request, g, abort, render_template, session
 from . import productbp
 from .models import Product
-from .forms import CatxPageForm
+from .forms import *
 from .. import db
 from ..util.common import jsonError, jsonResponse, viaMobile     
 from ..util.errno import ProductErrno
@@ -33,8 +33,8 @@ def get_product_list_by_catx_ajax():
     bd = u.building
     form = CatxPageForm()
     if form.validate_on_submit():
-        cat1_id = form.cat1_id.data or None
-        cat2_id = form.cat2_id.data or None
+        cat1_id = form.cat1_id.data
+        cat2_id = form.cat2_id.data
         try:
             pds, current_cat1 = _get_product_list(bd, cat1_id, cat2_id)
         except:
@@ -96,3 +96,42 @@ def _get_product_list(building, cat1_id=None, cat2_id=None, page=None, per_page=
         pds = sq.all()
         return pds, cat1
 
+# ajax
+@productbp.route('/hot', methods=['POST', ])
+def get_hot_product_list():
+    form = GetHotProductList()
+    if form.validate_on_submit():
+        delta = form.delta.data or 10
+        uid = session.get('buyerid')
+        user = User.query.filter_by(id=uid).first() if uid else None
+        if user:
+            hot_products = db.session.query(Product, Product_building.sold_cnt_rd, Product_building.quantity).\
+                    join(Product_building, Product_building.product_id==Product.id).\
+                    filter(Product_building.building_id==session['buyer_location_info'][1][0]).\
+                    order_by(db.desc(db.case([
+                        (Product_building.quantity!=0, Product_building.sold_cnt_rd),
+                        (Product_building.quantity==0, -1)]))).\
+                    limit(delta).\
+                    all()
+        else:
+            hot_products = db.session.query(
+                    Product, db.func.sum(Product_building.sold_cnt_rd).label('tot_sold_cnt'), db.func.sum(Product_building.quantity)).\
+                    join(Product_building, Product_building.product_id==Product.id).\
+                    group_by(Product.id).\
+                    order_by(db.desc('tot_sold_cnt')).\
+                    limit(delta).\
+                    all()
+        res = []
+        for i in hot_products:
+            data = dict()
+            pd, sold_cnt, qty = i[0], i[1], i[2]
+            data['id'] = pd.id
+            data['name'] = pd.name
+            data['description'] = pd.description
+            data['filename'] = pd.pic.filename
+            data['price'] = pd.price
+            data['quantity'] = qty 
+            data['sold_cnt'] = sold_cnt
+            res.append(data)
+        return jsonResponse(res) 
+    return jsonError(ProductErrno.INVALID_ARGUMENT)
