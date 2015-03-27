@@ -13,7 +13,7 @@ class CreateCartForm(Form):
 class CartForm(Form):
     product_id = IntegerField(validators=[Required(), ])
 
-class SetCartForm():
+class SetCartForm(Form):
     product_id = IntegerField(validators=[Required(), ])
     quantity = IntegerField(validators=[Required(), ])
     def validate_quantity(form, field):

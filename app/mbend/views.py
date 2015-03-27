@@ -71,7 +71,7 @@ def order_page():
         data['released_time'] = i.released_time
         td =  datetime.timedelta(hours=i.timedelta)
         data['timedelta'] = td
-        data['delivery_timestamp'] = int(time.mktime(time.strptime(str(i.released_time+td), '%Y-%m-%d %H:%M:%S.%f')))
+        data['delivery_timestamp'] = int(time.mktime(time.strptime(str(i.released_time+td), '%Y-%m-%d %H:%M:%S')))
         data['timeout'] = i.released_time+td<=datetime.datetime.now()
         data['password'] = i.password
         data['status'] = i.status

@@ -13,6 +13,9 @@ from ..util.common import jsonResponse, jsonError, viaMobile
 from ..util.errno import OrderErrno, CartErrno
 from ..util.csrf import csrf_token_required
 from ..user.utils import buyer_login_required
+from ..cart.models import Cart
+from ..product.models import Product_building, Product, Snapshot
+from ..location.models import Building, School
 
 # ajax
 @orderbp.route('/create', methods=['POST', ])
@@ -28,13 +31,14 @@ def create_order():
             if not i.is_valid:
                 return jsonError(CartErrno.CART_INVALID)
         pbs = [Product_building.query.filter_by(product_id=i.product_id, building_id=u.location_info['building_id']).first() for i in carts]
-        if None in pbs: # check whether all product is accessible
+        if None in pbs: # check whether all product are accessible
             return jsonError(CartErrno.CART_INVALID)
         for i in range(len(pbs)): # check whether some products have been updated
             pd = pbs[i].product
-            if pd.snapshots.filter(released_time>carts[i].last_viewed_time).count():
+            if pd.snapshots.filter(Snapshot.released_time>carts[i].last_viewed_time).count():
                 return jsonError(OrderErrno.PRODUCT_REFRESH)
         timedelta = max([i.timedelta for i in pbs]) # get max delivery time
+        bd = Building.query.get(u.location_info['building_id'])
         order = Order(
                 user_id=u.id,
                 building_id=u.location_info['building_id'],
@@ -42,12 +46,14 @@ def create_order():
                 receiver=form.name.data,
                 phone=form.phone.data,
                 timedelta=timedelta,
-                school_name_rd=u.location_info['school_name'],
-                building_name_rd=u.location_info['building_name'],
+                school_name_rd=bd.school.name,
+                building_name_rd=bd.name,
+                sender_name_rd=bd.admin.name,
+                sender_contact_info_rd=bd.admin.contact_info,
                 )
-        db.session.add(order)
         # get most recent snapshot for association and calculate total price
         tot_price = 0
+        od_sn_list = []
         for i in range(len(pbs)):
             pd = pbs[i].product
             sn = pd.snapshots.order_by(Snapshot.released_time.desc()).limit(1).first()
@@ -56,12 +62,14 @@ def create_order():
                     snapshot=sn,
                     quantity=carts[i].quantity,
                     )
-            db.session.add(od_sn)
-            tot_price += carts[i].quantity*i.price
+            od_sn_list.append(od_sn)
+            tot_price += carts[i].quantity*sn.price
         order.tot_price_rd = tot_price           
         db.session.add(order)
+        for i in od_sn_list:
+            db.session.add(i)
         # finally clear all items in cart
-        u.carts.filter(Cart.product_id.in_(product_ids)).delete()
+        u.carts.filter(Cart.product_id.in_(product_ids)).delete(synchronize_session=False)
         db.session.commit()
         return jsonResponse(None)
     return jsonError(OrderErrno.INVALID_ARGUMENT)

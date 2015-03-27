@@ -105,6 +105,7 @@ def increase_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -131,6 +132,7 @@ def decrease_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -157,6 +159,7 @@ def set_cart_quantity():
     u = g.buyer
     form = SetCartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info.get('building_id'), Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
