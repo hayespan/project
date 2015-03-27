@@ -1222,6 +1222,7 @@ def export_product():
                 join(Snapshot, Order_snapshot.snapshot_id==Snapshot.id).\
                 filter(Snapshot.product_id==pd.id).\
                 order_by(Order.id).all()
+        print items
         fn = export_product_xls(items, pd.name)
         return jsonResponse(url_for('static', filename='tmp/'+fn)) 
     return jsonError(AdminErrno.INVALID_ARGUMENT)

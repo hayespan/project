@@ -64,15 +64,15 @@ def export_product_xls(items, pd_name):
     sh.write(0, 12, u'商品单价')
     sh.write(0, 13, u'购买数量')
     for i in range(len(items)):
-        order = items[0]
-        od_sn = items[1]
-        sn = items[2]
+        order = items[i][0]
+        od_sn = items[i][1]
+        sn = items[i][2]
         sh.write(i+1, 0, order.ticketid)
         sh.write(i+1, 1, order.receiver)
         sh.write(i+1, 2, order.phone)
         sh.write(i+1, 3, order.addr)
         sh.write(i+1, 4, order.status)
-        sh.write(i+1, 5, order.released_time)
+        sh.write(i+1, 5, str(order.released_time))
         sh.write(i+1, 6, order.sender_name_rd)
         sh.write(i+1, 7, order.sender_contact_info_rd)
         sh.write(i+1, 8, order.school_name_rd)
