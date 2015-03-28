@@ -50,6 +50,7 @@ def create_order():
                 building_name_rd=bd.name,
                 sender_name_rd=bd.admin.name,
                 sender_contact_info_rd=bd.admin.contact_info,
+                tot_price_rd=0,
                 )
         session['buyer_contact_info'] = [form.name.data, form.phone.data, form.addr.data]
         # get most recent snapshot for association and calculate total price
@@ -57,7 +58,7 @@ def create_order():
         od_sn_list = []
         for i in range(len(pbs)):
             pd = pbs[i].product
-            sn = pd.snapshots.order_by(Snapshot.released_time.desc()).limit(1).first()
+            sn = pd.snapshots.order_by(Snapshot.released_time.desc()).first()
             od_sn = Order_snapshot(
                     order=order,
                     snapshot=sn,
@@ -65,7 +66,7 @@ def create_order():
                     )
             od_sn_list.append(od_sn)
             tot_price += carts[i].quantity*sn.price
-        order.tot_price_rd = tot_price           
+        order.tot_price_rd = tot_price
         db.session.add(order)
         for i in od_sn_list:
             db.session.add(i)

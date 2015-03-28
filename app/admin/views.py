@@ -165,10 +165,12 @@ def admin_3rd_handle_order():
         if order.status != 'uncompleted':
             return jsonError(AdminErrno.ORDER_HANDLED)
         if order.password == password:
-            order.status = 'completed' if handle else 'cancelled'
+            order.status = 'completed' if handle==1 else 'cancelled'
             db.session.add(order)
+        else:
+            return jsonError(AdminErrno.WRONG_PASSWORD)
         # if complete order, fresh inventory & total sales
-        if handle:
+        if handle > 0:
             od_sns = order.order_snapshots.all()
             for od_sn in od_sns:
                 pd = od_sn.snapshot.product
@@ -1222,7 +1224,6 @@ def export_product():
                 join(Snapshot, Order_snapshot.snapshot_id==Snapshot.id).\
                 filter(Snapshot.product_id==pd.id).\
                 order_by(Order.id).all()
-        print items
         fn = export_product_xls(items, pd.name)
         return jsonResponse(url_for('static', filename='tmp/'+fn)) 
     return jsonError(AdminErrno.INVALID_ARGUMENT)
