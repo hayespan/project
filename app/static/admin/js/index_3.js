@@ -213,10 +213,9 @@ function insertIntoOrderTable(orders) {
 				var textNode = document.createTextNode(orders[k]["number"]);
 				tdsArray[orderKeys["number"]].appendChild(textNode);       //orderKeys get the index through the key
 			} else if (property == "details") {
-				for (var i = 0; i < orders[k][property].length; i++) { 
-					var ul = document.createElement("ul");
+                for (var i = 0; i < orders[k][property].length; i++) { 
+                    var ul = document.createElement("ul");
 					tdsArray[orderKeys["details"]].appendChild(ul);
-
 					for (var s_porperty in orders[k][property][i]) {
 						var li = document.createElement("li");
 						var text = "";
@@ -233,6 +232,14 @@ function insertIntoOrderTable(orders) {
 						var textNode = document.createTextNode(text);
 						li.appendChild(textNode);
 					}
+
+                    var br = null;
+                    if (i != orders[k][property].length-1) {
+                        br = document.createElement("br");
+                    }
+                    if (br != null) {
+                        ul.appendChild(br);
+                    }
 				}	
 			} else if (property == "receiver_info") {
 				var ul = document.createElement("ul");
