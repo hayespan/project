@@ -78,14 +78,16 @@ def create_cart():
 @csrf_token_required
 def get_cart_list():
     u = g.buyer
-    carts = u.carts.all()
     items = []
+    # delete carts not related to current location
+    u.carts.filter(Cart.building_id!=u.location_info['building_id']).delete()
+    carts = u.carts.all()
     for i in carts:
-        pb =  i.product.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first()
+        pb = Product_building.query.filter(Product_building.building_id==i.building_id, Product_building.product_id==i.product_id).first() 
         if not pb:
-            pb.is_valid = False
+            i.is_valid = False
         if pb.quantity == 0:
-            pb.is_valid = False
+            i.is_valid = False
         if pb.quantity<i.quantity:
             i.quantity = pb.quantity
         i.last_viewed_time = datetime.now()
