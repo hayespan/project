@@ -127,19 +127,21 @@ function refresh() {
 
 function errorCode(code) {
 	if (code == 1) {
-		alert("post的数据不符合格式");
+		alert("输入内容非法");
 	} else if (code == 2) {
-		alert("Crsf token 检验失败");
+		alert("用户已离线，请重新登陆");
 	} else if (code == -2) {
-		alert("未登录");
+		alert("请登陆");
 	} else if (code == -10) {
-		alert("非三级管理员");
+		alert("非三级管理员（楼管）");
 	} else if (code == -6) {
 		alert("管理员还没有被分配管理楼栋");
 	} else if (code == -11) {
-		alert("订单不存在，可能被级联删除了");
+		alert("订单不存在");
 	} else if (code == -12) {
-		alert("订单已经完成或取消，不能二次操作");
+		alert("订单已经完成或取消，不能重复操作");
+	} else if (code == -27) {
+		alert("交易密码错误，请重新输入（4位数字）");
 	}
 }
 
@@ -360,13 +362,13 @@ function createBtn(className) {
 	btn.setAttribute("class","btn-xs operationBtn");
 
 
-	if (className == "completeOrderBtn") {
+	if (className.indexOf("completeOrderBtn") != -1) {
 		text = document.createTextNode("完成订单");
 	} else {
 		text = document.createTextNode("取消订单");
 	}
 
-	btn.className += className;
+	btn.className += " "+className;
 	btn.appendChild(text);
 
 	btn.onclick = operationBtnFunc;
@@ -378,7 +380,7 @@ function operationBtnFunc() {
 
 	//post password to back-end
 	if (password != null && password != "") {
-		if (this.className.indexOf("finishOrderBtn") != -1)
+		if (this.className.indexOf("completeOrderBtn") != -1)
 			validation(password, this.parentNode.parentNode.firstChild.firstChild.nodeValue, 1);
 		if (this.className.indexOf("deleteOrderBtn") != -1)
 			validation(password, this.parentNode.parentNode.firstChild.firstChild.nodeValue, 0);
