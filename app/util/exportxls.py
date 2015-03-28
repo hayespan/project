@@ -6,6 +6,14 @@ from hashlib import md5
 
 SAVE_PATH = os.path.dirname(os.path.abspath(__file__))+'/../static/tmp/'
 
+def _get_status(s):
+    if s == u'uncompleted':
+        return u'未完成'
+    elif s == u'completed':
+        return u'完成'
+    else:
+        return u'取消'
+
 def export_xls(orders):
     b = xlwt.Workbook(u'订单详情')
     sh = b.add_sheet(u'订单列表')
@@ -17,8 +25,8 @@ def export_xls(orders):
     sh.write(0, 5, u'订单时间')
     sh.write(0, 6, u'商品所在学校')
     sh.write(0, 7, u'商品所在楼栋')
-    sh.write(0, 8, u'订单详情')
-    sh.write(0, 9, u'总价')
+    sh.write(0, 8, u'订单详情（商品名/单价/购买数量）')
+    sh.write(0, 9, u'总价（元）')
     sh.write(0, 10, u'送货人姓名')
     sh.write(0, 11, u'送货人联系信息')
     for i in range(len(orders)):
@@ -27,8 +35,8 @@ def export_xls(orders):
         sh.write(i+1, 1, o.receiver)
         sh.write(i+1, 2, o.phone)
         sh.write(i+1, 3, o.addr)
-        sh.write(i+1, 4, o.status)
-        sh.write(i+1, 5, o.released_time)
+        sh.write(i+1, 4, _get_status(o.status))
+        sh.write(i+1, 5, unicode(o.released_time))
         sh.write(i+1, 6, o.school_name_rd)
         sh.write(i+1, 7, o.building_name_rd)
         sh.write(i+1, 9, o.tot_price_rd)
@@ -61,8 +69,8 @@ def export_product_xls(items, pd_name):
     sh.write(0, 9, u'商品所在楼栋')
     sh.write(0, 10, u'商品名')
     sh.write(0, 11, u'商品描述')
-    sh.write(0, 12, u'商品单价')
-    sh.write(0, 13, u'购买数量')
+    sh.write(0, 12, u'商品单价（元）')
+    sh.write(0, 13, u'购买数量（份）')
     for i in range(len(items)):
         order = items[i][0]
         od_sn = items[i][1]
@@ -71,8 +79,8 @@ def export_product_xls(items, pd_name):
         sh.write(i+1, 1, order.receiver)
         sh.write(i+1, 2, order.phone)
         sh.write(i+1, 3, order.addr)
-        sh.write(i+1, 4, order.status)
-        sh.write(i+1, 5, str(order.released_time))
+        sh.write(i+1, 4, _get_status(order.status))
+        sh.write(i+1, 5, unicode(order.released_time))
         sh.write(i+1, 6, order.sender_name_rd)
         sh.write(i+1, 7, order.sender_contact_info_rd)
         sh.write(i+1, 8, order.school_name_rd)
@@ -84,4 +92,3 @@ def export_product_xls(items, pd_name):
     fn = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S_%f')+'.xls'
     b.save(SAVE_PATH+fn)
     return fn
-
