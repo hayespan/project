@@ -98,8 +98,8 @@ def _admin_level_3():
         if get_order_list:
             orders = admin_building.orders.\
                     filter(Order.released_time>=time_).\
-                    order_by(db.case([(Order.status=='uncompleted', 1), ],
-                        else_=0).desc()).all()
+                    order_by(db.case([(Order.status=='uncompleted', Order.id), ],
+                        else_=-1).desc()).all()
             for o in orders:
                 order = {
                         'number': o.ticketid,
