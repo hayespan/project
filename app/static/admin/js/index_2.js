@@ -173,7 +173,7 @@ function InsertOrdersContent(json) {
                 case 1:
                     var list = document.createElement("ul");
                     list.setAttribute("style", "list-style: none; padding: 0;");
-                    for (var info in order[i]["receiver_info"]) {
+                    for (var info in orders[i]["receiver_info"]) {
                         var li = document.createElement("li");
                         var pre;
                         if (info == "name") pre = "姓名：";
