@@ -28,3 +28,18 @@ table.scrolled thead, table.scrolled tbody tr{
 table.scrolled thead {
     width: calc( 100% - 1em );
 }
+
+.finished {
+    color: green;
+}
+
+.cancelled {
+    color: #CD853F;
+}
+
+.still {}
+
+.overtime {
+    color: red;
+}
+

@@ -127,19 +127,21 @@ function refresh() {
 
 function errorCode(code) {
 	if (code == 1) {
-		alert("post的数据不符合格式");
+		alert("输入内容非法");
 	} else if (code == 2) {
-		alert("Crsf token 检验失败");
+		alert("用户已离线，请重新登陆");
 	} else if (code == -2) {
-		alert("未登录");
+		alert("请登陆");
 	} else if (code == -10) {
-		alert("非三级管理员");
+		alert("非三级管理员（楼管）");
 	} else if (code == -6) {
 		alert("管理员还没有被分配管理楼栋");
 	} else if (code == -11) {
-		alert("订单不存在，可能被级联删除了");
+		alert("订单不存在");
 	} else if (code == -12) {
-		alert("订单已经完成或取消，不能二次操作");
+		alert("订单已经完成或取消，不能重复操作");
+	} else if (code == -27) {
+		alert("交易密码错误，请重新输入（4位数字）");
 	}
 }
 
@@ -185,7 +187,6 @@ function createKeyArray(array) {
 // insert into the orders table
 function insertIntoOrderTable(orders) {
 	var tableContainer = document.getElementById("orders_table_body");
-	
 
 	for (var k = 0; k < orders.length; k++) {
 		var tr = document.createElement("tr");
@@ -255,25 +256,49 @@ function insertIntoOrderTable(orders) {
 				}	
 			} else if (property == "status") {
 				var text = "";
-				if (orders[k][property] == "completed") {
+                var className1 = "";
+                var spanNode1 = document.createElement("span");
+				var spanNode2 = null;
+
+                if (orders[k][property] == "completed") {
 					text = "已完成";
+                    className1 = "finished";
 				} else if (orders[k][property] == "uncompleted") {
 					text = "未完成";
+                    className1 = "still";
 				} else if (orders[k][property] == "cancelled") {
 					text = "已取消";
+                    className1 = "cancelled";
 				}
+                
+                spanNode1.appendChild(document.createTextNode(text));
+                spanNode1.className = className1;
 
 				if (orders[k]["timeout"]) {
-					text += "(超时)";
+                    spanNode2 = document.createElement("span");
+					text = "超时";
+                    var className2 = "overtime";
+                    spanNode2.appendChild(document.createTextNode(text));
+                    spanNode2.className = className2;
 				}
-				var textNode = document.createTextNode(text);
-				tdsArray[orderKeys["status"]].appendChild(textNode);
-			} else if (property == "timedelta") {
+
+                if (spanNode2 != null) {
+                    var node = tdsArray[orderKeys["status"]];
+                    node.appendChild(spanNode1);
+                    node.appendChild(document.createTextNode('('));
+                    node.appendChild(spanNode2);
+                    node.appendChild(document.createTextNode(')'));
+                } else {
+				    tdsArray[orderKeys["status"]].appendChild(spanNode1);
+                }
+            }
+             else if (property == "timedelta") {
 				var text = "";
 				var currentTime = new Date();
 				var deadline = new Date((orders[k]["released_time"]+orders[k]["timedelta"])*1000);
+                var restTime = new Date(deadline-currentTime);
 
-				text = restTime>0 ? [restTime.getUTCHours(), restTime.getUTCMinutes(), restTime.getUTCSeconds()].join(":") :0;
+				text = deadline-currentTime>0 ? [restTime.getUTCHours(), restTime.getUTCMinutes(), restTime.getUTCSeconds()].join(":") :0;
 				
 				var textNode = document.createTextNode(text);
 				tdsArray[orderKeys["timedelta"]].appendChild(textNode);
@@ -284,17 +309,18 @@ function insertIntoOrderTable(orders) {
 		for (var i = 0; i < tdsArray.length; i++) {
 			tr.appendChild(tdsArray[i]);
 		}
-
-		//add operation button into the chart
-		var td = document.createElement("td");
+       
+        var td = document.createElement("td");
 		tr.appendChild(td);
+        if (orders[k]["status"] != "cancelled" && orders[k]["status"] != "completed") {
+		//add operation button into the chart:   
+		    var completeOrderBtn = createBtn("completeOrderBtn");
+		    var deleteOrderBtn = createBtn("deleteOrderBtn");
 
-		var completeOrderBtn = createBtn("completeOrderBtn");
-		var deleteOrderBtn = createBtn("deleteOrderBtn");
-
-		td.appendChild(completeOrderBtn);
-		td.appendChild(deleteOrderBtn);
-	}
+		    td.appendChild(completeOrderBtn);
+		    td.appendChild(deleteOrderBtn);
+        }
+    }
 }
 
 //insert into the item table(intervory)
@@ -336,13 +362,13 @@ function createBtn(className) {
 	btn.setAttribute("class","btn-xs operationBtn");
 
 
-	if (className == "completeOrderBtn") {
+	if (className.indexOf("completeOrderBtn") != -1) {
 		text = document.createTextNode("完成订单");
 	} else {
 		text = document.createTextNode("取消订单");
 	}
 
-	btn.className += className;
+	btn.className += " "+className;
 	btn.appendChild(text);
 
 	btn.onclick = operationBtnFunc;
@@ -354,7 +380,7 @@ function operationBtnFunc() {
 
 	//post password to back-end
 	if (password != null && password != "") {
-		if (this.className.indexOf("finishOrderBtn") != -1)
+		if (this.className.indexOf("completeOrderBtn") != -1)
 			validation(password, this.parentNode.parentNode.firstChild.firstChild.nodeValue, 1);
 		if (this.className.indexOf("deleteOrderBtn") != -1)
 			validation(password, this.parentNode.parentNode.firstChild.firstChild.nodeValue, 0);
@@ -363,15 +389,15 @@ function operationBtnFunc() {
 
 
 function validation(password, order_id, operation) {
-	var sendData = "csrf_token="+window.localStorage.getItem(token)+"&ticketid="+order_id;
+	var sendData = "csrf_token="+window.localStorage.getItem("token")+"&ticketid="+order_id;
   	//set the url
-  	var url = "/level3/handle_order";  //set the url to change the order status
+  	var url = "/admin/level3/handle_order";  //set the url to change the order status
 
   	//send different data with different operations
   	if (operation == 1) 
-  		sendData += "&handle="+"true"+"&password="+password;
+  		sendData += "&handle="+"1"+"&password="+password;
   	if (operation == 0)
-  		sendData += "&handle="+"false"+"&password="+password;
+  		sendData += "&handle="+"-1"+"&password="+password;
 
 	$.ajax({
    		type: "POST",
