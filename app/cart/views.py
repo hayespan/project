@@ -33,8 +33,9 @@ def get_cart_num():
 @csrf_token_required
 def create_cart():
     u = g.buyer
-    if u.carts.filter(Cart.building_id!=u.location_info['building_id']).count():
-        return jsonError(CartErrno.MUST_CLEAR_CART)
+    # if u.carts.filter(Cart.building_id!=u.location_info['building_id']).count():
+        # return jsonError(CartErrno.MUST_CLEAR_CART)
+    u.carts.filter(Cart.building_id!=u.location_info['building_id']).delete()
     form = CreateCartForm()
     if form.validate_on_submit():
         pd = Product.query.filter_by(id=form.product_id.data).first()
