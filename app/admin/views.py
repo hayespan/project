@@ -13,7 +13,7 @@ from .utils import admin_login_required, is_in_same_quarter, is_in_same_month, a
 from .. import db
 from ..util.common import jsonError, jsonResponse, datetime_2_unixstamp, timedelta_2_second, viaMobile
 from ..util.errno import AdminErrno
-from ..util.csrf import init_admin_csrf_token, csrf_token_required
+from ..util.csrf import init_admin_csrf_token, admin_csrf_token_required
 from ..util.exportxls import export_xls, export_product_xls
 from ..location.models import Building, School
 from ..order.models import Order, Order_snapshot
@@ -45,7 +45,7 @@ def login():
                     return jsonError(AdminErrno.PERMISSION_DENIED)
                 session['admin_id'] = admin.id
                 init_admin_csrf_token()
-                return jsonResponse({'_csrf_token': session['_csrf_token']})
+                return jsonResponse({'_csrf_token': session['admin_csrf_token']})
             return jsonError(AdminErrno.AUTHENTICATION_FAILED)
         return jsonError(AdminErrno.INVALID_ARGUMENT)
     else:
@@ -53,7 +53,7 @@ def login():
 
 @adminbp.route('/logout', methods=['POST',])
 @admin_login_required(True)
-@csrf_token_required
+@admin_csrf_token_required
 def logout():
     session.pop('admin_id', None)
     session.pop('admin_csrf_token', None)
@@ -77,7 +77,7 @@ def index():
 @adminbp.route('/level3/query', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(4)
-@csrf_token_required
+@admin_csrf_token_required
 def admin_3rd_api():
     return _admin_level_3()
 
@@ -150,7 +150,7 @@ def _admin_level_3():
 @adminbp.route('/level3/handle_order', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(4)
-@csrf_token_required
+@admin_csrf_token_required
 def admin_3rd_handle_order():
     '''handle order, complete or cancel
     '''
@@ -191,7 +191,7 @@ def admin_3rd_handle_order():
 @adminbp.route('/level2/query', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(2)
-@csrf_token_required
+@admin_csrf_token_required
 def admin_2nd_api():
     return _admin_level_2()
 
@@ -316,7 +316,7 @@ def _admin_level_2():
 @adminbp.route('/level2/modify_quantity', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(2)
-@csrf_token_required
+@admin_csrf_token_required
 def admin_2nd_modify_quantity():
     '''2nd admin modify product_building.quantity, sub/add
     '''
@@ -349,7 +349,7 @@ def admin_2nd_modify_quantity():
 @adminbp.route('/level1/total_sales', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_total_sales():
     '''APIs for 1st admin.
     school_id:
@@ -417,7 +417,7 @@ def get_total_sales():
 @adminbp.route('/level1/school/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_school_list():
     scs = []
     for i in School.query.all():
@@ -430,7 +430,7 @@ def get_school_list():
 @adminbp.route('/level1/school/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_school():
     form = CreateSchoolForm()
     if form.validate_on_submit():
@@ -449,7 +449,7 @@ def create_school():
 @adminbp.route('/level1/school/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_school():
     form = ModifySchoolForm()
     if form.validate_on_submit():
@@ -475,7 +475,7 @@ def modify_school():
 @adminbp.route('/level1/school/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_school():
     form = DeleteSchoolForm()
     if form.validate_on_submit():
@@ -487,7 +487,7 @@ def delete_school():
 @adminbp.route('/level1/building/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_building_list():
     form = GetBuildingListForm()
     if form.validate_on_submit():
@@ -507,7 +507,7 @@ def get_building_list():
 @adminbp.route('/level1/building/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_building():
     form = CreateBuildingForm()
     if form.validate_on_submit():
@@ -529,7 +529,7 @@ def create_building():
 @adminbp.route('/level1/building/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_building():
     form = ModifyBuildingForm()
     if form.validate_on_submit():
@@ -554,7 +554,7 @@ def modify_building():
 @adminbp.route('/level1/building/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_building():
     form = DeleteBuildingForm()
     if form.validate_on_submit():
@@ -567,7 +567,7 @@ def delete_building():
 @adminbp.route('/level1/admin_2nd/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_admin_2nd_list():
     ads = []
     for i in Admin.query.filter_by(privilege=2).all():
@@ -591,7 +591,7 @@ def get_admin_2nd_list():
 @adminbp.route('/level1/admin_2nd/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_admin_2nd():
     form = CreateAdmin2ndForm()
     if form.validate_on_submit():
@@ -632,7 +632,7 @@ def create_admin_2nd():
 @adminbp.route('/level1/admin_2nd/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_admin_2nd():
     form = ModifyAdmin2ndForm()
     if form.validate_on_submit():
@@ -687,7 +687,7 @@ def modify_admin_2nd():
 @adminbp.route('/level1/admin_2nd/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_admin_2nd():
     form = DeleteAdmin2ndForm()
     if form.validate_on_submit():
@@ -700,7 +700,7 @@ def delete_admin_2nd():
 @adminbp.route('/level1/admin_2nd/unbind_school', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_admin_2nd_unbind_school():
     sc_info = []
     for sc in School.query.filter_by(admin_id=None).all():
@@ -714,7 +714,7 @@ def get_admin_2nd_unbind_school():
 @adminbp.route('/level1/admin_3rd/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_admin_3rd_list():
     form = GetAdmin3rdListForm()
     if form.validate_on_submit():
@@ -758,7 +758,7 @@ def get_admin_3rd_list():
 @adminbp.route('/level1/admin_3rd/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_admin_3rd():
     form = CreateAdmin3rdForm()
     if form.validate_on_submit():
@@ -805,7 +805,7 @@ def create_admin_3rd():
 @adminbp.route('/level1/admin_3rd/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_admin_3rd():
     form = ModifyAdmin3rdForm()
     if form.validate_on_submit():
@@ -867,7 +867,7 @@ def modify_admin_3rd():
 @adminbp.route('/level1/admin_3rd/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_admin_3rd():
     form = DeleteAdmin3rdForm()
     if form.validate_on_submit():
@@ -879,7 +879,7 @@ def delete_admin_3rd():
 @adminbp.route('/level1/admin_3rd/unbind_building', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_admin_3rd_unbind_building():
     form = GetBuildingListForm()
     if form.validate_on_submit():
@@ -900,7 +900,7 @@ def get_admin_3rd_unbind_building():
 @adminbp.route('/level1/cat1/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_cat1_list():
     cat1s = []
     for i in Cat1.query.all():
@@ -913,7 +913,7 @@ def get_cat1_list():
 @adminbp.route('/level1/cat1/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_cat1():
     form = CreateCat1Form()
     if form.validate_on_submit():
@@ -932,7 +932,7 @@ def create_cat1():
 @adminbp.route('/level1/cat1/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_cat1():
     form = ModifyCat1Form()
     if form.validate_on_submit():
@@ -958,7 +958,7 @@ def modify_cat1():
 @adminbp.route('/level1/cat1/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_cat1():
     form = DeleteCat1Form()
     if form.validate_on_submit():
@@ -970,7 +970,7 @@ def delete_cat1():
 @adminbp.route('/level1/cat2/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_cat2_list():
     form = GetCat2ListForm()
     if form.validate_on_submit():
@@ -994,7 +994,7 @@ def get_cat2_list():
 @adminbp.route('/level1/cat2/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_cat2():
     form = CreateCat2Form()
     if form.validate_on_submit():
@@ -1022,7 +1022,7 @@ def create_cat2():
 @adminbp.route('/level1/cat2/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_cat2():
     form = ModifyCat2Form()
     if form.validate_on_submit():
@@ -1052,7 +1052,7 @@ def modify_cat2():
 @adminbp.route('/level1/cat2/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_cat2():
     form = DeleteCat2Form()
     if form.validate_on_submit():
@@ -1064,7 +1064,7 @@ def delete_cat2():
 @adminbp.route('/level1/product/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_product_list():
     pds = Product.query.order_by(Product.id.desc()).all() 
     pds_info = []
@@ -1108,7 +1108,7 @@ def get_product_list():
 @adminbp.route('/level1/product/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_product():
     form = CreateProductForm()
     if form.validate_on_submit():
@@ -1150,7 +1150,7 @@ def create_product():
 @adminbp.route('/level1/product/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_product():
     form = ModifyProductForm()
     if form.validate_on_submit():
@@ -1194,7 +1194,7 @@ def modify_product():
 @adminbp.route('/level1/product/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_product():
     form = DeleteProductForm()
     if form.validate_on_submit():
@@ -1211,7 +1211,7 @@ def delete_product():
 @adminbp.route('/level1/product/export', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def export_product():
     form = ExportProductForm()
     if form.validate_on_submit():
@@ -1232,7 +1232,7 @@ def export_product():
 @adminbp.route('/level1/associate/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_product_building_list():
     form = GetProductBuildingListForm()
     if form.validate_on_submit():
@@ -1262,7 +1262,7 @@ def get_product_building_list():
 @adminbp.route('/level1/associate/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_product_building():
     form = CreateProductBuildingForm()
     if form.validate_on_submit():
@@ -1297,7 +1297,7 @@ def create_product_building():
 @adminbp.route('/level1/associate/modify', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def modify_product_building():
     form = ModifyProductBuildingForm()
     if form.validate_on_submit():
@@ -1324,7 +1324,7 @@ def modify_product_building():
 @adminbp.route('/level1/associate/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_product_building():
     form = DeleteProductBuildingForm()
     if form.validate_on_submit():
@@ -1340,7 +1340,7 @@ def delete_product_building():
 @adminbp.route('/level1/promotion/get_list', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def get_promotion_list():
     pmts = Promotion.query.all()
     pmts_info = []
@@ -1355,7 +1355,7 @@ def get_promotion_list():
 @adminbp.route('/level1/promotion/create', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def create_promotion():
     form = CreatePromotionForm()
     if form.validate_on_submit():
@@ -1369,7 +1369,7 @@ def create_promotion():
 @adminbp.route('/level1/promotion/delete', methods=['POST', ])
 @admin_login_required(True)
 @admin_x_required(1)
-@csrf_token_required
+@admin_csrf_token_required
 def delete_promotion():
     form = DeletePromotionForm()
     if form.validate_on_submit():
