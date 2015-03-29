@@ -15,7 +15,7 @@ class HandleOrderForm(Form):
 
 class ModifyQuantityForm(Form):
     building_id = IntegerField(validators=[Required(), ])
-    producct_id = IntegerField(validators=[Required(), ])
+    product_id = IntegerField(validators=[Required(), ])
     quantity = IntegerField(validators=[Required(), ])
 
 class AdminLevel2Form(Form):
