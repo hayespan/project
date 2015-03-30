@@ -45,21 +45,21 @@ def product_page():
     cat2_id = request.args.get('cat2', type=int)
     if cat2_id is None:
         abort(404)
-    # try:
-    cat2 = Cat2.query.get(cat2_id)
-    if cat2 is None:
+    try:
+        cat2 = Cat2.query.get(cat2_id)
+        if cat2 is None:
+            abort(404)
+        cat1 = cat2.cat1
+        pds, current_cat1 = _get_product_list(bd, cat2_id=cat2_id)
+    except:
         abort(404)
-    cat1 = cat2.cat1
-    pds, current_cat1 = _get_product_list(bd, cat2_id=cat2_id)
-    # except:
-        # abort(404)
     return render_template('mb/product_page.html', user=u, current_cat1=cat1, current_cat2=cat2, products=pds)
 
 @mobilebp.route('/order', methods=['GET', ])
 @buyer_login_required(False, 'mbend.location_page')
 def order_page():
     u = g.buyer
-    orders = u.orders.order_by(db.case([(Order.status=='uncompleted', 1),], else_=0).desc()).all()
+    orders = u.orders.order_by(db.case([(Order.status=='uncompleted', Order.id),], else_=-1).desc()).all()
     order_data = []
     for i in orders:
         data = dict()
