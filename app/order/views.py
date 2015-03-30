@@ -76,7 +76,6 @@ def create_order():
         return jsonResponse(None)
     return jsonError(OrderErrno.INVALID_ARGUMENT)
 
-# XXX
 @orderbp.route('/', methods=['GET', ])
 @buyer_login_required(False, 'main.index')
 def order_page():
