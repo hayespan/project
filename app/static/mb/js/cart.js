@@ -17,6 +17,8 @@ $(function() {
         return str;
     };
 
+    changeBadgeStatus();
+
     $.post("/cart/", 
             {csrf_token: localStorage["_csrf_token"]},
             function(data) {
@@ -93,8 +95,8 @@ $(function() {
 
         $(".btn-decrease").on("click", function() {   
             var item = $(this).closest(".item-valid");
+            var product_id = item.attr("id");
             if (parseInt(item.find(".input-number").val()) > 1) {   
-                var product_id = item.attr("id");
                 $.post("/cart/sub", 
                         {csrf_token: localStorage["_csrf_token"], product_id: product_id},
                         function(data) {
@@ -106,6 +108,18 @@ $(function() {
                                 window.location.href = "/m/locations";
                             }
                         }, "json");
+            } else if (parseInt(item.find(".input-number").val()) == 1) {   
+                 $.post("/cart/delete", 
+                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        function(data) {
+                            if (data.code == 0) {   
+                                item.remove();
+                                calculateTotalPrice();  // 重新计算价格
+                                changeBtnStatus();
+                            } else if (data.code == 2) {    
+                                window.location.href = "/m/locations";
+                            }
+                }, "json");
             }
         });
 
@@ -128,8 +142,23 @@ $(function() {
         });
 
         $(".input-number").change(function() {
-            if ($(this).val() == "" || $(this).val() == "0" || isNaN($(this).val())) {
+            if ($(this).val() == "" || isNaN($(this).val())) {
                 $(this).val($(this).attr("default")); // 输入非法时恢复默认数字
+            } else if (parseInt($(this).val()) <= 0) {    
+                var item = $(this).closest(".item-valid");
+                var product_id = item.attr("id");
+                $.post("/cart/delete", 
+                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        function(data) {
+                            if (data.code == 0) {   
+                                item.remove();
+                                calculateTotalPrice();  // 重新计算价格
+                                changeBtnStatus();
+                            } else if (data.code == 2) {    
+                                window.location.href = "/m/locations";
+                            }
+                        }, "json");
+                return;
             }
             var item = $(this).closest(".item-valid");
             var product_id = item.attr("id");
@@ -149,7 +178,7 @@ $(function() {
 
     function changeBtnStatus() {    
         $(".input-number").each(function() {
-            if ($(this).val() <= 1) {   
+            if ($(this).val() < 1) {   
                 $(this).prev().addClass("btn-disabled");
                 $(this).next().removeClass("btn-disabled");
             } else if ($(this).val() >= 9999) { 
@@ -184,6 +213,19 @@ $(function() {
         $(".total-price").find(".goods-count").html(goods_count);
     }
 
+    function changeBadgeStatus() {
+        $.post("/cart/cnt",
+            {csrf_token: localStorage["_csrf_token"]},
+            function(data) {    
+                if (data.code == 0) {   
+                    if (data.data > 0) {    // 为0则不显示气泡
+                        $(".badge").html(data.data).show();
+                    }
+                }
+            }, "json");
+    }
+
+
     // 清除选中项目
     $("#delete-items").on("click", function() {   
         $(".item-valid").each(function() {
@@ -197,6 +239,7 @@ $(function() {
                                 obj.remove();
                                 calculateTotalPrice();  // 重新计算价格
                                 changeBtnStatus();
+                                changeBadgeStatus();
                             } else if (data.code == 2) {    
                                 window.location.href = "/m/locations";
                             }
@@ -214,6 +257,7 @@ $(function() {
                     function(data) {
                         if (data.code == 0) {   
                             obj.remove();
+                            changeBadgeStatus();
                         } else if (data.code == 2) {    
                             window.location.href = "/m/locations";
                         }
@@ -221,9 +265,26 @@ $(function() {
         });
     });
 
+    function getContactInfo() { 
+        $.post("/user/contact_info",
+            {csrf_token: localStorage["_csrf_token"]},
+            function(data) {    
+                if (data.code == 0) {   
+                    $("#name").val(data.data.name);
+                    $("#phone").val(data.data.phone);
+                    $("#addr").val(data.data.addr);
+                } else if (data.code == 2) {    
+                    window.location.href = "/m/locations";
+                }
+            }, "json");
+
+    }
+
+
     $(".pay-btn").on("click", function() {    
         if ($(this).hasClass("pay-btn-active")) {   
             $(".modal-set-info").show();
+            getContactInfo();
         }
     });
 
@@ -258,7 +319,7 @@ $(function() {
                     if (data.code == 0) {   
                         window.location.href = "/m/order";
                     } else if (data.code < 0) { 
-                        location.reload();
+                        window.location.reload();
                     } else if (data.code == 2) {    
                         window.location.href = "/m/locations";
                     }

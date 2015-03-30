@@ -4,6 +4,8 @@ $(function() {
         window.location.href = "/m/locations";
     }
 
+    changeBadgeStatus();
+
     $("#all-order-btn").click(function() {
         $(".list-top-item").removeClass("list-top-item-active");
         $(this).addClass("list-top-item-active");
@@ -24,5 +26,17 @@ $(function() {
         $(".coming-order").hide();
         $(".finish-order").show();
     });
+
+    function changeBadgeStatus() {
+        $.post("/cart/cnt",
+            {csrf_token: localStorage["_csrf_token"]},
+            function(data) {    
+                if (data.code == 0) {   
+                    if (data.data > 0) {    // 为0则不显示气泡
+                        $(".badge").html(data.data).show();
+                    }
+                }
+            }, "json");
+    }
 
 });
