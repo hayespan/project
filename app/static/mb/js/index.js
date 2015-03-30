@@ -29,5 +29,15 @@ $(function() {
         $(this).find(".arrow").toggleClass("arrow-fold");
     });
 
+    $.post("/cart/cnt",
+        {csrf_token: localStorage["_csrf_token"]},
+        function(data) {    
+            if (data.code == 0) {   
+                if (data.data > 0) {    // 为0则不显示气泡
+                    $(".badge").html(data.data).show();
+                }
+            }
+        }, "json");
+
 
 });
