@@ -1,6 +1,6 @@
 $(function() { 
     // 需要初始化才能访问
-    if (localStorage["_csrf_token"] == undefined) { 
+    if (localStorage["csrf_token"] == undefined) { 
         window.location.href = "/m/locations";
     }
 
@@ -29,7 +29,7 @@ $(function() {
 
     function changeBadgeStatus() {
         $.post("/cart/cnt",
-            {csrf_token: localStorage["_csrf_token"]},
+            {csrf_token: localStorage["csrf_token"]},
             function(data) {    
                 if (data.code == 0) {   
                     if (data.data > 0) {    // 为0则不显示气泡

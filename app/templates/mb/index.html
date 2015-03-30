@@ -23,8 +23,14 @@
 </div>
 
 <div class="position">
+    {% if user == None %}
     <span class="float-left">当前未设置位置</span>
     <a href="/m/locations" class="float-right">选择位置</a>
+    {% else %}
+    <span class="float-left">{{ user.location_info['school_name'] }}-{{ user.location_info['building_name'] }}</span>
+    <a href="/m/locations" class="float-right">重新选择位置</a>
+    {% endif %}
+    
 </div>
 
 <div class="list-link">

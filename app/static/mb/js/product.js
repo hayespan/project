@@ -1,6 +1,6 @@
 $(function( ){  
     // 需要初始化才能访问
-    if (localStorage["_csrf_token"] == undefined) { 
+    if (localStorage["csrf_token"] == undefined) { 
         window.location.href = "/m/locations";
     }
 
@@ -43,7 +43,7 @@ $(function( ){
         var product_id = this.id;
         var $input = $(this).closest(".product-item").find(".input-number");
         $.post("/cart/insert", 
-            {csrf_token: localStorage["_csrf_token"], product_id: product_id, quantity: $input.val()},
+            {csrf_token: localStorage["csrf_token"], product_id: product_id, quantity: $input.val()},
                 function(data) {
                     if (data.code == 0) {   
                         changeBadgeStatus();
@@ -57,7 +57,7 @@ $(function( ){
 
     function changeBadgeStatus() {
         $.post("/cart/cnt",
-            {csrf_token: localStorage["_csrf_token"]},
+            {csrf_token: localStorage["csrf_token"]},
             function(data) {    
                 if (data.code == 0) {   
                     if (data.data > 0) {    // 为0则不显示气泡

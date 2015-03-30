@@ -1,7 +1,7 @@
 
 $(function() {  
     // 需要初始化才能访问
-    if (localStorage["_csrf_token"] == undefined) { 
+    if (localStorage["csrf_token"] == undefined) { 
         window.location.href = "/m/locations";
     }
 
@@ -20,7 +20,7 @@ $(function() {
     changeBadgeStatus();
 
     $.post("/cart/", 
-            {csrf_token: localStorage["_csrf_token"]},
+            {csrf_token: localStorage["csrf_token"]},
             function(data) {
                 if (data.code == 0) {
                     for (var i = 0 ; i < data.data.length ; i++) {
@@ -98,7 +98,7 @@ $(function() {
             var product_id = item.attr("id");
             if (parseInt(item.find(".input-number").val()) > 1) {   
                 $.post("/cart/sub", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id},
                         function(data) {
                             if (data.code == 0) {   
                                 item.find(".input-number").val(data.data);
@@ -110,7 +110,7 @@ $(function() {
                         }, "json");
             } else if (parseInt(item.find(".input-number").val()) == 1) {   
                  $.post("/cart/delete", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id},
                         function(data) {
                             if (data.code == 0) {   
                                 item.remove();
@@ -128,7 +128,7 @@ $(function() {
             if (parseInt(item.find(".input-number").val()) < 9999) {   
                 var product_id = item.attr("id");
                 $.post("/cart/add", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id},
                         function(data) {
                             if (data.code == 0) {   
                                 item.find(".input-number").val(data.data);
@@ -148,7 +148,7 @@ $(function() {
                 var item = $(this).closest(".item-valid");
                 var product_id = item.attr("id");
                 $.post("/cart/delete", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id},
                         function(data) {
                             if (data.code == 0) {   
                                 item.remove();
@@ -163,7 +163,7 @@ $(function() {
             var item = $(this).closest(".item-valid");
             var product_id = item.attr("id");
             $.post("/cart/set_quantity", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id, quantity: $(this).val()},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id, quantity: $(this).val()},
                         function(data) {
                             if (data.code == 0) {   
                                 item.find(".input-number").val(data.data);
@@ -215,7 +215,7 @@ $(function() {
 
     function changeBadgeStatus() {
         $.post("/cart/cnt",
-            {csrf_token: localStorage["_csrf_token"]},
+            {csrf_token: localStorage["csrf_token"]},
             function(data) {    
                 if (data.code == 0) {   
                     if (data.data > 0) {    // 为0则不显示气泡
@@ -233,7 +233,7 @@ $(function() {
                 var product_id = $(this).attr("id");
                 var obj = $(this);
                 $.post("/cart/delete", 
-                        {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                        {csrf_token: localStorage["csrf_token"], product_id: product_id},
                         function(data) {
                             if (data.code == 0) {   
                                 obj.remove();
@@ -253,7 +253,7 @@ $(function() {
             var product_id = $(this).attr("id");
             var obj = $(this);
             $.post("/cart/delete", 
-                    {csrf_token: localStorage["_csrf_token"], product_id: product_id},
+                    {csrf_token: localStorage["csrf_token"], product_id: product_id},
                     function(data) {
                         if (data.code == 0) {   
                             obj.remove();
@@ -267,7 +267,7 @@ $(function() {
 
     function getContactInfo() { 
         $.post("/user/contact_info",
-            {csrf_token: localStorage["_csrf_token"]},
+            {csrf_token: localStorage["csrf_token"]},
             function(data) {    
                 if (data.code == 0) {   
                     $("#name").val(data.data.name);
@@ -314,7 +314,7 @@ $(function() {
             }
         });
         $.post("/order/create",
-                {csrf_token: localStorage["_csrf_token"], product_ids: product_ids, name: $("#name").val(), phone: $("#phone").val(), addr: $("#addr").val()},
+                {csrf_token: localStorage["csrf_token"], product_ids: product_ids, name: $("#name").val(), phone: $("#phone").val(), addr: $("#addr").val()},
                 function(data) {
                     if (data.code == 0) {   
                         window.location.href = "/m/order";

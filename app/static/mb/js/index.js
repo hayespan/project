@@ -30,7 +30,7 @@ $(function() {
     });
 
     $.post("/cart/cnt",
-        {csrf_token: localStorage["_csrf_token"]},
+        {csrf_token: localStorage["csrf_token"]},
         function(data) {    
             if (data.code == 0) {   
                 if (data.data > 0) {    // 为0则不显示气泡

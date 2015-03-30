@@ -288,19 +288,22 @@ a, span, p {
 .order-status-lefttimetext {
     font-size: 11px;
     margin: 0;
-    padding: 3px 2px;
+    height: 25%;
 }
 .order-status-lefttime {
     margin: 0;
     padding: 1px 0;
     font-size: 18px;
     color: #FF4302;
+    line-height: 30px;
+    height: 50%;
 }
 .order-status-dynamicpw {
     margin: 0;
     color: #5A646F;
-    padding: 3px 0;
+    height: 25%;
     font-size: 12px;
+    line-height: 8px;
 }
 .order-item {
     padding: 7px 0;
@@ -443,7 +446,7 @@ a, span, p {
 }
 
 .position a {   
-    margin: 0 10px;
+    margin: 0 10px 0 0;
     color: rgb(118, 118, 118);
 }
 
