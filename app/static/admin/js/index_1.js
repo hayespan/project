@@ -1346,7 +1346,6 @@ function getYearList() {
 function initPage() {
 	getSchoolList();
     getYearList();
-    alert(formList);
     var formList = $("form[name='disableEnter']");
     for (var i = 0; i < formList.length; ++i) {
         $(formList[i]).on("keyup keypress", function(e) {
