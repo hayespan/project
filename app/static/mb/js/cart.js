@@ -220,6 +220,8 @@ $(function() {
                 if (data.code == 0) {   
                     if (data.data > 0) {    // 为0则不显示气泡
                         $(".badge").html(data.data).show();
+                    } else if (data.data == 0) {    
+                        $(".badge").hide();
                     }
                 }
             }, "json");
