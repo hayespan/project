@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 import datetime 
-from flask import jsonify, request
+from flask import jsonify, request, redirect
+from functools import wraps
 
 def jsonError(ERROR):
     return jsonify({'code': ERROR[0], 'data': ERROR[1]})
@@ -16,6 +17,17 @@ def viaMobile():
         if i in s:
             return True
     return False
+
+def PC_MB_distribute(url):
+    '''pc and mobile end distribution'''
+    def _PC_MB_distribute(func):
+        @wraps(func) 
+        def _wrap(*args, **kwargs):
+            if viaMobile():
+                return redirect(url)
+            return func(*args, **kwargs)
+        return _wrap
+    return _PC_MB_distribute
 
 def datetime_2_unixstamp(dt):
     '''datetime obj parsed to unixstamp

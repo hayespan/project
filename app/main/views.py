@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import session, render_template
+from flask import session, render_template, url_for
 
 from . import mainbp
 from .. import db
@@ -11,8 +11,10 @@ from ..pic.models import Promotion
 from ..util.common import viaMobile
 from ..category.utils import _get_catx
 from ..location.models import School, Building
+from ..util.common import PC_MB_distribute
 
 @mainbp.route('/', methods=['GET', ])
+@PC_MB_distribute('/m/')
 def index():
     uid = session.get('buyerid')
     user = User.query.filter_by(id=uid).first() if uid else None
