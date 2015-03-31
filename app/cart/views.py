@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from flask import g 
+from flask import g, render_template
 
 from . import cartbp
 from .models import Cart
@@ -11,7 +11,13 @@ from ..util.common import jsonResponse, jsonError, viaMobile
 from ..util.csrf import csrf_token_required
 from ..util.errno import CartErrno
 from ..user.utils import buyer_login_required
-from ..product.models import Product
+from ..product.models import Product, Product_building
+
+@cartbp.route('/', methods=['GET', ])
+@buyer_login_required(False, 'main.index')
+def shopping_cart():
+    u = g.buyer
+    return render_template('pc/shopping_cart_page.html', user=u)
 
 # ajax
 @cartbp.route('/cnt', methods=['POST', ])
@@ -27,8 +33,9 @@ def get_cart_num():
 @csrf_token_required
 def create_cart():
     u = g.buyer
-    if u.carts.filter(Cart.building_id!=u.location_info['building_id']).count():
-        return jsonError(CartErrno.MUST_CLEAR_CART)
+    # if u.carts.filter(Cart.building_id!=u.location_info['building_id']).count():
+        # return jsonError(CartErrno.MUST_CLEAR_CART)
+    u.carts.filter(Cart.building_id!=u.location_info['building_id']).delete()
     form = CreateCartForm()
     if form.validate_on_submit():
         pd = Product.query.filter_by(id=form.product_id.data).first()
@@ -59,8 +66,11 @@ def create_cart():
                     quantity=quantity,
                     )
         db.session.add(cart)
-        db.commit()
-        return jsonResponse(cart.id)
+        db.session.commit()
+        return jsonResponse({
+            'product_id': cart.product_id,
+            'building_id': cart.building_id,
+            })
     return jsonError(CartErrno.INVALID_ARGUMENT)
     
 # ajax
@@ -69,14 +79,16 @@ def create_cart():
 @csrf_token_required
 def get_cart_list():
     u = g.buyer
-    carts = u.carts.all()
     items = []
+    # delete carts not related to current location
+    u.carts.filter(Cart.building_id!=u.location_info['building_id']).delete()
+    carts = u.carts.all()
     for i in carts:
-        pb =  i.product.product_buildings.filter(Product_building.building_id==u.location_info['building_id']).first()
+        pb = Product_building.query.filter(Product_building.building_id==i.building_id, Product_building.product_id==i.product_id).first() 
         if not pb:
-            pb.is_valid = False
+            i.is_valid = False
         if pb.quantity == 0:
-            pb.is_valid = False
+            i.is_valid = False
         if pb.quantity<i.quantity:
             i.quantity = pb.quantity
         i.last_viewed_time = datetime.now()
@@ -102,6 +114,7 @@ def increase_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -128,6 +141,7 @@ def decrease_cart_quantity():
     u = g.buyer
     form = CartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info['building_id'], Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)
@@ -154,6 +168,7 @@ def set_cart_quantity():
     u = g.buyer
     form = SetCartForm()
     if form.validate_on_submit():
+        product_id = form.product_id.data
         cart = db.session.query(Cart).filter(Cart.user_id==u.id, Cart.building_id==u.location_info.get('building_id'), Cart.product_id==form.product_id.data).first()
         if not cart:
             return jsonError(CartErrno.CART_DOES_NOT_EXIST)

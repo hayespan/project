@@ -1,0 +1,66 @@
+{% extends "mb/layout.html" %}
+{% block title %}首页{% endblock %}
+
+
+{% block body %}
+<!-- To load the bottom-bar first -->
+<div class="bottom-bar">
+    <ul class="bottom-icon-group">
+        <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
+    </ul>
+</div><!-- bottom-bar end -->
+
+
+<div class="rb_body">
+    <div id="AdSlide" class="rb_ad_slide">
+        {% for promotion in promotions %}
+        <img src="{{ url_for('static', filename='img/'+promotion) }}" class="rb_ad_img" alt="{{ promotion }}">
+        {% endfor %}
+        <div class="rb_ad_btn"><div id="AdBtn"></div></div><!-- add active -->
+    </div>
+</div>
+
+<div class="position">
+    {% if user == None %}
+    <span class="float-left">当前未设置位置</span>
+    <a href="/m/locations" class="float-right">选择位置</a>
+    {% else %}
+    <span class="float-left">{{ user.location_info['school_name'] }}-{{ user.location_info['building_name'] }}</span>
+    <a href="/m/locations" class="float-right">重新选择位置</a>
+    {% endif %}
+    
+</div>
+
+<div class="list-link">
+    {% for cat1 in catx %}
+    <div class="list-item">
+        <div class="cat1">
+            <img src="{{ url_for('static', filename='mb/img/icon/iconfont-shopping.png') }}" class="img_left" alt="logo">
+            <div class="list-item-right">
+                <span class="arrow arrow-bottom"></span>
+                <a>{{ cat1[0].name }}</a>
+            </div>
+        </div>
+        {% for cat2 in cat1[1] %}
+        <div class="cat2">
+            <img src="{{ url_for('static', filename='mb/img/icon/iconfont-goods.png') }}" class="img_left" alt="logo">
+            <div class="list-item-right">
+                <span class="arrow arrow-right"></span>
+                <a href="/m/product/list?cat1={{ cat1[0].id }}&cat2={{ cat2.id }}">{{ cat2.name }}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div><!-- end list-link -->
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/jquery-powerSwitch-min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/index.js') }}"></script>
+{% endblock %}

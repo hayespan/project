@@ -1,0 +1,21 @@
+<ul class="hot-products-list" data-bind="foreach: products">
+    <li class="hot-product-wrapper">
+        <div class="hot-product-container">
+            <p class="product-name" data-bind="text: name"></p>
+            <img class="product-pic-url" data-bind="attr: {src: filename}">
+            <p class="product-price" data-bind="text: formattedPrice"></p>
+            <div class="interact-area">
+                <div class="insufficient-inventory" data-bind="text: isOverflow() ? '超出库存' : '&nbsp;'"></div>
+                <div class="product-count-container">
+                  <input class="product-count" data-bind="value: amount, textInput: amount, event: {blur: setAmount}" />
+                    <div class="product-plus-minus">
+                        <div class="product-plus product-operation" data-bind="click: $data.add">+</div>
+                        <div class="product-minus product-operation" data-bind="click: $data.reduce">-</div>
+                    </div>
+                </div>
+                <div class="add-products-to-cart-btn btn" data-bind="visible: quantity > 0, click: addToCart, css: {disabled: isOverflow()}">加入购物车</div>
+                <div class="disabled-btn btn" data-bind="visible: quantity < 1">已售罄</div>
+            </div>
+        </div>
+    </li>
+</ul>

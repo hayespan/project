@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import session, render_template
+from flask import session, render_template, url_for
 
 from . import mainbp
 from .. import db
@@ -11,13 +11,22 @@ from ..pic.models import Promotion
 from ..util.common import viaMobile
 from ..category.utils import _get_catx
 from ..location.models import School, Building
+from ..util.common import PC_MB_distribute
 
 @mainbp.route('/', methods=['GET', ])
+@PC_MB_distribute('/m/')
 def index():
     uid = session.get('buyerid')
     user = User.query.filter_by(id=uid).first() if uid else None
     if user:
         user.name = u'匿名用户'
+        buyer_location_info = session.get('buyer_location_info')
+        user.location_info = {
+                'school_id': buyer_location_info[0][0],
+                'school_name': buyer_location_info[0][1],
+                'building_id': buyer_location_info[1][0],
+                'building_name': buyer_location_info[1][1],
+                }
     schools = School.query.all()
     locations = [[i, i.buildings.all()] for i in schools]
     if user:
@@ -38,5 +47,5 @@ def index():
                 limit(10).\
                 all()
     promotions = [i.pic.filename for i in Promotion.query.all()]
-    return render_template('', user=user, catx=_get_catx(), hot_products=hot_products, promotions=promotions, locations=locations)
+    return render_template('pc/main_page.html', user=user, catx=_get_catx(), hot_products=hot_products, promotions=promotions, locations=locations)
 

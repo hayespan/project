@@ -49,4 +49,4 @@ class Snapshot(db.Model):
     product = db.relationship('Product', backref=db.backref('snapshots', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Snapshot %d product_id:%d name:%s released_time:%s>' % (self.id, self.product_id or -1, self.name, self.released_time)
+        return '<Snapshot %d product_id:%d name:%s released_time:%s>' % (self.id, self.product_id or -1, self.name.encode('utf-8'), self.released_time)

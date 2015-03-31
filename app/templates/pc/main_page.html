@@ -1,0 +1,62 @@
+{% extends "pc/base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pc/css/main.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='pc/css/vendors/slick.css')  }}">
+{% endblock %}
+
+{% block title %}主页{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% include "pc/_location.html" %}
+    <div class="nav-banner">
+        <div class="nav">
+            <div class="products-kind-list">
+                <div class="all-kind">全部分类</div>
+                <ul class="kinds-container">
+                    {% for cat in catx %}
+                    <li class="kind-container">
+                        <a href="/product/list?cat1={{ cat[0].id }}">
+                            <div class="kind">
+                                {{ cat[0].name }}
+                                <img class="arrow" src="{{ url_for('static', filename='pc/images/enter.png')}}">
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="banner">
+          {% for promotion in promotions %}
+          <div><img src="/static/img/{{promotion}}" alt="" /></div>
+          {% endfor %}
+        </div>
+    </div>
+    <div class="hot-products" style="display: none" data-bind="visible: true">
+        <div><img src="{{ url_for('static', filename='pc/images/hot-products.png')}}">热销商品</div>
+        {% include "pc/_products.html" %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block mask %}
+    {% include "pc/_location_select.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='pc/js/lib/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='pc/js/lib/slick.min.js') }}"></script>
+<script src="{{ url_for('static', filename='pc/js/main.js') }}"></script>
+<script>
+     $(document).ready(function(){
+         $('.banner').slick({
+             autoplay: true,
+             dots: true,
+             arrows: false
+         });
+     });
+</script>
+{% endblock %}

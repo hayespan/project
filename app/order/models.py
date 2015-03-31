@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 from datetime import datetime
 
 from .. import db
@@ -28,7 +29,7 @@ class Order(db.Model):
     building = db.relationship('Building', backref=db.backref('orders', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Order %d ticketid:%s user_id:%d building_id:%d' % (self.id, self.ticketid, self.user_id, self.building_id)
+        return '<Order %d ticketid:%s user_id:%d building_id:%d>' % (self.id, self.ticketid, self.user_id, self.building_id)
 
 class Order_snapshot(db.Model):
     __tablename__ = 'order_snapshot'
@@ -37,7 +38,7 @@ class Order_snapshot(db.Model):
     quantity = db.Column(db.Integer, nullable=False, default=1)
 
     order = db.relationship('Order', backref=db.backref('order_snapshots', lazy='dynamic'))
-    snapshot = db.relationship('Order', backref=db.backref('Order_snapshots', lazy='dynamic'))
+    snapshot = db.relationship('Snapshot', backref=db.backref('order_snapshots', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Order_snapshot %d order_id:%d snapshot_id:%d quantity:%d' % (self.id, self.order_id, self.snapshot_id, self.quantity)
+        return '<Order_snapshot order_id:%d snapshot_id:%d quantity:%d>' % (self.order_id, self.snapshot_id, self.quantity)

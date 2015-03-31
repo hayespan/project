@@ -90,8 +90,14 @@ class App(object):
                 picbp,
                 url_prefix='/pic',
                 )
-        from .main import mainbp
+        from .main import mainbp # pc-end
         self.app.register_blueprint(
                 mainbp,
+                )
+        from .mbend import mobilebp # mobile-end
+        self.app.register_blueprint(
+                mobilebp,
+                url_prefix='/m'
+                # subdomain='m',
                 )
         

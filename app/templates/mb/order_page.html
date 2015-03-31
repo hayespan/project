@@ -1,0 +1,85 @@
+{% extends "mb/layout.html" %}
+{% block title %}我的订单{% endblock %}
+
+
+{% block body %}
+<!-- To load the bottom-bar first -->
+<div class="bottom-bar">
+    <ul class="bottom-icon-group">
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
+        <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
+    </ul>
+</div><!-- bottom-bar end -->
+
+
+<div class="list-top-bar">
+    <a class="list-top-item list-top-item-active" id="all-order-btn" href="#">全部订单</a>
+    <div class="list-top-item-border"></div>
+    <a class="list-top-item" id="coming-order-btn" href="#">配送中</a>
+    <div class="list-top-item-border"></div>
+    <a class="list-top-item" id="finish-order-btn" href="#">已完成</a>
+</div><!-- list-top-bar end -->
+
+<div class="empty">Hello</div>
+
+<br>
+{%  for order in orders %}
+{% if order['status'] == 'uncompleted' %}
+<div class="order coming-order">
+    <div class="order-top">
+        <p class="order-top-date">{{ order['released_time'] }}</p>
+        <p  class="order-top-number">订单号：{{ order['ticketid'] }}</p>
+    </div>
+    <div class="order-status">
+        <div class="order-status-left">
+            <p>状 态:<span class="status-distribute">配送中</span></p>
+            <p>总 价:<span class="status-price">￥{{ "%.2f" % order['price'] }}</span></p>
+            <p>送 货 人:<span class="status-distribute"></span>{{ order['sender_name'] }} {{ order['sender_contact_info'] }}</p>
+        </div>
+        <div class="order-status-right">
+            <p class="order-status-lefttimetext"><img src="{{ url_for('static', filename='mb/img/icon/iconfont-history.png') }}">送货倒计时</p>
+            <p class="order-status-lefttime" >{{ order['timedelta'].days }}天{{ "%d" % (order['timedelta'].seconds / 3600) }}时{{ "%d" % (order['timedelta'].seconds % 3600 / 60) }}分</p>
+            <p class="order-status-dynamicpw">动态密码: {{ order['password'] }}</p>
+        </div>
+    </div>
+
+    {% for item in order['items'] %}
+    <div class="order-item">
+        <img class="order-item-img" src="{{ url_for('static', filename='img/'+item['filename']) }}">
+        <p>{{ item['name'] }}</p>
+        <p>{{ item['quantity'] }}件 ￥{{ "%.2f" % item['price'] }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% elif order['status'] == 'completed' %}
+<div class="order finish-order">
+    <div class="order-top order-top-finish">
+        <p class="order-top-date">{{ order['released_time'] }}</p>
+        <p  class="order-top-number">订单号:32354367f</p>
+    </div>
+    <div class="order-status">
+        <div class="order-status-left">
+            <p>状 态:<span class="status-complete">已完成</span></p>
+            <p>总 价:<span class="status-price">￥{{ "%.2f" % order['price'] }}</span></p>
+            <p>送 货 人:<span class="status-distribute"></span>{{ order['sender_name'] }} {{ order['sender_contact_info'] }}</p>
+        </div>
+    </div>
+    {% for item in order['items'] %}
+    <div class="order-item">
+        <img class="order-item-img" src="{{ url_for('static', filename='img/'+item['filename']) }}">
+        <p>{{ item['name'] }}</p>
+        <p>{{ item['quantity'] }}件 ￥{{ "%.2f" % item['price'] }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
+
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/order.js') }}"></script>
+{% endblock %}

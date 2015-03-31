@@ -1,0 +1,79 @@
+{% extends "mb/layout.html" %}
+{% block title %}购物车{% endblock %}
+
+
+{% block body %}
+<div class="bottom-bar">
+    <ul class="bottom-icon-group">
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
+        <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
+    </ul>
+</div><!-- bottom-bar end -->
+
+
+<div class="cart-top-bar">
+    <span id="clear-invalid">清除失效商品</span>
+    <span id="delete-items">删除商品</span>
+</div><!-- top-bar end -->
+
+
+<div class="total-bar">
+    <div class="check-all">
+        <div class="radio not-checked"></div>
+        <span>全选</span>
+    </div>
+    <div class="total-price">
+        <p>总计：<span class="text-red">￥0.00</span></p>
+        <p class="text-gray">（共<span class="goods-count">0</span>件商品）</p>
+    </div>
+    <button type="button" class="pay-btn">结算</button>
+</div><!-- total-bar end -->
+
+<div class="item-container">
+    <!-- 商品列表 -->
+</div>
+
+<!-- 填写信息窗口 -->
+<div class="modal modal-set-info">
+    <div class="mask"></div>
+    <div class="user-info-container">
+        <form class="user-info">
+            <span>订单信息确认</span>
+            <button type="button" id="order-cancel">取消</button>
+            <button type="button" id="order-save">保存</button>
+            <label>姓名</label>
+            <input id="name" require="" />
+            <label>手机号</label>
+            <input id="phone" require="" />
+            <label>地址</label>
+            <input id="addr" require="" />
+        </form>
+    </div>
+</div>
+
+<!-- 确认信息窗口 -->
+<div class="modal modal-confirm">
+    <div class="mask"></div>
+    <div class="user-info-container">
+        <form class="user-info">
+            <span>订单信息确认</span>
+            <button type="button" id="order-submit">提交</button>
+            <button type="button" id="order-modify">修改</button>
+            <label>姓名</label>
+            <input disabled="disabled" id="c-name" />
+            <label>手机号</label>
+            <input disabled="disabled" id="c-phone" />
+            <label>地址</label>
+            <input disabled="disabled" id="c-addr" />
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/cart.js') }}"></script>
+{% endblock %}

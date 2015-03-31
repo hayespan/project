@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="header">
+        <div class="container">
+            <a href="/">
+                <div class="brand">
+                    <!-- <img src="{{ url_for('static', filename='pc/images/brand.png') }}" alt="logo"> -->
+                    logo
+                </div>
+            </a>
+            <div class="state">
+                <a href="/order/"><span class="username">订单查询</span></a>
+                <!-- <span class="logout-btn btn">退出</span> -->
+                <span class="separator">|</span>
+                <a href="/cart/" class="entry-cart-btn btn"><img src="{{ url_for('static', filename='pc/images/shopping.png') }}">购物车<b class="amount">{{ 0 }}</b></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">{% block content %}{% endblock %}</div>
+
+    <div class="mask">
+        <div class="mask-box">
+            <div class="mask-box-wrapper">
+                <div class="mask-box-container">{% block mask %}{% endblock %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="notification"></div>
+
+    <div id="footer">
+        <div class="top">
+            <span class="serve-protocol">服务协议</span>
+            <span class="separator">|</span>
+            <span class="contact-support-staff">联系客服</span>
+        </div>
+        <div class="bottom">Copyright&copy;2014 Zeta.Inc All Rights Reserved</div>
+    </div>
+    <script src="//localhost:35729/livereload.js"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

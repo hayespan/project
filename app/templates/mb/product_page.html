@@ -1,0 +1,49 @@
+{% extends "mb/layout.html" %}
+{% block title %}{{ current_cat1.name }}-{{ current_cat2.name }}{% endblock %}
+
+
+{% block body %}
+<div class="bottom-bar">
+    <ul class="bottom-icon-group">
+        <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
+        <li class="bottom-icon-item "><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
+    </ul>
+</div><!-- bottom-bar end -->
+
+
+<div class="product-top-bar">
+    <a href="javascript:history.go(-1)" class="back-btn"></a>
+    <h3 class="text-center product-title">{{ current_cat1.name }} - {{ current_cat2.name }}</h3>
+</div><!-- top-bar end -->
+
+<div class="item-container">
+    <!-- 商品列表 -->
+    {% for product in products %}
+    <div class="product-item">
+            <img src="/static/img/{{ product[0].pic.filename }}" class="product-item-pic" alt="picture">
+            {% if product[1].quantity > 0 %}
+            <button type="button" id="{{ product[0].id }}" class="btn-put-in">加入购物车</button>
+            {% else %}
+            <button type="button" class="btn-sold-out">售罄</button>
+            {% endif  %}
+            <div class="product-item-detail">
+                <p>{{ product[0].name }}</p>
+                <p class="item-price">￥{{ "%.2f" % product[0].price }}</p>
+                <div class="item-count">
+                    <div class="btn-decrease">-</div>
+                    <input quantity="{{ product[1].quantity }}" value="1" type="text" maxlength="4" pattern="[0-9]" class="input-number"/>
+                    <div class="btn-increase">+</div>
+                    <span class="quantity">库存{{ product[1].quantity }}件</span>
+                </div>
+            </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='mb/js/product.js') }}"></script>
+{% endblock %}
