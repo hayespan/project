@@ -453,9 +453,11 @@ function errorCode(code) {
             break;
         case 2:
             alert("用户已离线，请重新登陆");
+            window.location.href = "/admin/login"
             break;
         case -2:
             alert("请登陆");
+            window.location.href = "/admin/login"
             break;
         case -9:
             alert("管理员暂且未被分配管理学校");

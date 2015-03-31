@@ -130,8 +130,10 @@ function errorCode(code) {
 		alert("输入内容非法");
 	} else if (code == 2) {
 		alert("用户已离线，请重新登陆");
+        window.location.href = "/admin/login"
 	} else if (code == -2) {
 		alert("请登陆");
+        window.location.href = "/admin/login"
 	} else if (code == -10) {
 		alert("非三级管理员（楼管）");
 	} else if (code == -6) {
