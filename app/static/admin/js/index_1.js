@@ -1346,6 +1346,17 @@ function getYearList() {
 function initPage() {
 	getSchoolList();
     getYearList();
+    alert(formList);
+    var formList = $("form[name='disableEnter']");
+    for (var i = 0; i < formList.length; ++i) {
+        $(formList[i]).on("keyup keypress", function(e) {
+            var code = e.keyCode || e.which; 
+            if (code  == 13) {               
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
 }
     
 function resetBuilding(schoolId, tableId) {
