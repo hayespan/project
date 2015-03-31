@@ -36,7 +36,7 @@ $(function() {
     function set_building() {
         $.post("/user/choose_location", {building_id: this.id}, function(data) {    
             if (data["code"] == 0) {    
-                localStorage["csrf_token"] = data["data"]["csrf_token"];
+                localStorage["csrf_token"] = data["data"]["_csrf_token"];
                 window.location.href="/m/"; 
             }
         }, "json");
