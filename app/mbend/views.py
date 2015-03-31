@@ -23,6 +23,13 @@ def index():
     user = User.query.filter_by(id=uid).first() if uid else None
     if user:
         user.name = u'匿名用户'
+        buyer_location_info = session.get('buyer_location_info')
+        user.location_info = {
+                'school_id': buyer_location_info[0][0],
+                'school_name': buyer_location_info[0][1],
+                'building_id': buyer_location_info[1][0],
+                'building_name': buyer_location_info[1][1],
+                }
     promotions = [i.pic.filename for i in Promotion.query.all()]
     return render_template('mb/index.html', user=user, catx=_get_catx(), promotions=promotions)
 
