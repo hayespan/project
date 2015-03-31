@@ -173,7 +173,7 @@ function InsertOrdersContent(json) {
                 case 1:
                     var list = document.createElement("ul");
                     list.setAttribute("style", "list-style: none; padding: 0;");
-                    for (var info in order[i]["receiver_info"]) {
+                    for (var info in orders[i]["receiver_info"]) {
                         var li = document.createElement("li");
                         var pre;
                         if (info == "name") pre = "姓名：";
@@ -268,7 +268,7 @@ function InsertTotalContent(json) {
                 text = document.createTextNode(sales["amount"] + "份");
                 break;
             case 1:
-                text = document.createTextNode(sales["money"] + "份");
+                text = document.createTextNode(sales["money"] + "元");
                 break;
         }
         td.appendChild(text);
@@ -291,7 +291,7 @@ function InsertEveryContent(json) {
                 text = document.createTextNode(sales["amount"] + "份");
                 break;
             case 1:
-                text = document.createTextNode(sales["money"] + "份");
+                text = document.createTextNode(sales["money"] + "元");
                 break;
         }
         td.appendChild(text);
@@ -338,7 +338,7 @@ function operationBtnFunc() {
     var amount = this.parentNode.parentNode.getElementsByTagName("input")[0].value;
 
     if (amount == "" || !isDigital(amount)) {
-        alert("Please input a valid number");
+        alert("请输入数字");
         this.parentNode.parentNode.getElementsByTagName("input")[0].value = "";
     } else {
         var url = "/admin/level2/modify_quantity";
@@ -449,21 +449,23 @@ function InsertModals(json) {
 function errorCode(code) {
     switch(code) {
         case 1:
-            alert("Invalid arguments.");
+            alert("输入内容非法");
             break;
         case 2:
-            alert("Csrf token check failed.");
+            alert("用户已离线，请重新登陆");
+            window.location.href = "/admin/login"
             break;
         case -2:
-            alert("Admin didn\'t login.");
+            alert("请登陆");
+            window.location.href = "/admin/login"
             break;
         case -9:
-            alert("This administrator has no school in charge.");
+            alert("管理员暂且未被分配管理学校");
             break;
         case -10:
-            alert("Act beyond authority.");
+            alert("非法操作");
             break;
         case -13:
-            alert("Product is not associated with request building.");
+            alert("商品在当前楼栋没有出售");
     }
 }

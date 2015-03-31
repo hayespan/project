@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from ..util.common import jsonResponse, jsonError
 from .models import School, Building
 from . import locationbp

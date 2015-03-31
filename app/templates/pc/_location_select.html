@@ -1,0 +1,21 @@
+<div class="schools-box">
+    <div class="locations-title">
+        请选择您的学校
+    </div>
+    <div class="locations-container" data-bind="foreach: schools">
+        <div class="location-container">
+            <p class="school location-name" data-bind="text: name, click: choose"></p>
+        </div>
+    </div>
+</div>
+
+<div class="buildings-box">
+    <div class="locations-title">
+        请选择您的宿舍楼
+    </div>
+    <div class="locations-container" data-bind="foreach: buildings">
+        <div class="location-container">
+            <p class="building location-name" data-bind="text: name, click: choose"></p>
+        </div>
+    </div>
+</div>

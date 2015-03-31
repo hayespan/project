@@ -9227,10 +9227,10 @@ insertStrategy = {
 
 common = {
   url: location.protocol + "//" + location.host,
-  token: null,
+  csrf_token: null,
   init: function() {
-    if (localStorage.token) {
-      this.token = localStorage.token;
+    if (localStorage.csrf_token) {
+      this.csrf_token = localStorage.csrf_token;
       return common.initHeader();
     }
   },
@@ -9241,14 +9241,11 @@ common = {
     return $mask.fadeOut();
   },
   notify: function(msg) {
+    $notification.show();
     $notification.text(msg);
-    return $notification.fadeIn(400, (function(_this) {
-      return function() {
-        return setTimeout((function() {
-          return $notification.fadeOut();
-        }), 1000);
-      };
-    })(this));
+    return setTimeout((function() {
+      return $notification.fadeOut();
+    }), 1000);
   },
   getSchools: function(callback) {
     return jquery.ajax({
@@ -9273,6 +9270,7 @@ common = {
     });
   },
   changeLocation: function(building_id, callback) {
+    console.log(building_id);
     return jquery.ajax({
       url: common.url + "/user/choose_location",
       type: 'POST',
@@ -9291,7 +9289,7 @@ common = {
       url: common.url + "/cart/insert",
       type: "POST",
       data: {
-        _csrf_token: common.token,
+        csrf_token: localStorage.csrf_token,
         product_id: id,
         quantity: amount
       },
@@ -9308,7 +9306,7 @@ common = {
       url: common.url + "/cart/cnt",
       type: "POST",
       data: {
-        _csrf_token: common.token
+        csrf_token: localStorage.csrf_token
       },
       success: function(res) {
         if (res.code === 0) {

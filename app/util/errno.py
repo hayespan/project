@@ -39,6 +39,7 @@ class AdminErrno(Errno):
     PRODUCT_DOES_NOT_EXIST = (-24, 'Product does not exist.')
     PRODUCT_BUILDING_EXISTS = (-25, 'Product has been associated with building.')
     BUILDING_EXISTS = (-26, 'Building already exists.')
+    WRONG_PASSWORD = (-27, 'Wrong password.')
 
 class FileErrno(Errno):
     pass

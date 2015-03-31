@@ -8,3 +8,5 @@ class CatxPageForm(Form):
     cat2_id = IntegerField(validators=[Optional(), ])
     # page = IntegerField(validators=[Optional(), ])
 
+class GetHotProductList(Form):
+    delta = IntegerField(validators=[Optional(), ])

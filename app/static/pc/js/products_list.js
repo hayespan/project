@@ -14704,10 +14704,10 @@ insertStrategy = {
 
 common = {
   url: location.protocol + "//" + location.host,
-  token: null,
+  csrf_token: null,
   init: function() {
-    if (localStorage.token) {
-      this.token = localStorage.token;
+    if (localStorage.csrf_token) {
+      this.csrf_token = localStorage.csrf_token;
       return common.initHeader();
     }
   },
@@ -14718,14 +14718,11 @@ common = {
     return $mask.fadeOut();
   },
   notify: function(msg) {
+    $notification.show();
     $notification.text(msg);
-    return $notification.fadeIn(400, (function(_this) {
-      return function() {
-        return setTimeout((function() {
-          return $notification.fadeOut();
-        }), 1000);
-      };
-    })(this));
+    return setTimeout((function() {
+      return $notification.fadeOut();
+    }), 1000);
   },
   getSchools: function(callback) {
     return jquery.ajax({
@@ -14750,6 +14747,7 @@ common = {
     });
   },
   changeLocation: function(building_id, callback) {
+    console.log(building_id);
     return jquery.ajax({
       url: common.url + "/user/choose_location",
       type: 'POST',
@@ -14768,7 +14766,7 @@ common = {
       url: common.url + "/cart/insert",
       type: "POST",
       data: {
-        _csrf_token: common.token,
+        csrf_token: localStorage.csrf_token,
         product_id: id,
         quantity: amount
       },
@@ -14785,7 +14783,7 @@ common = {
       url: common.url + "/cart/cnt",
       type: "POST",
       data: {
-        _csrf_token: common.token
+        csrf_token: localStorage.csrf_token
       },
       success: function(res) {
         if (res.code === 0) {
@@ -14801,13 +14799,17 @@ module.exports = common;
 
 
 },{"jquery":1}],4:[function(require,module,exports){
-var $buildingsBox, $chooseLocationBtn, $goodCounts, $hotGoodsList, $locationWord, $schoolsBox, bindBuildings, common, initAddGoodsToCartBtn, initChooseLocationBtn, initGoodCountListener, initGoodOperation, initLocations, jquery, ko, vm;
+var $buildingsBox, $cat1, $cat2, $chooseLocationBtn, $locationWord, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getData, getProducts, getUrlParameter, initCat1Btn, initCat2Btn, initChooseLocationBtn, initLocations, jquery, ko, vm;
 
 jquery = require("jquery");
 
 ko = require("knockout");
 
 common = require("./common.coffee");
+
+$cat1 = jquery(".kind");
+
+$cat2 = jquery(".cat2");
 
 $locationWord = jquery(".location-word");
 
@@ -14817,28 +14819,28 @@ $schoolsBox = jquery(".schools-box");
 
 $buildingsBox = jquery(".buildings-box");
 
-$hotGoodsList = jquery(".hot-goods-list");
-
-$goodCounts = jquery(".good-count");
+applied = false;
 
 vm = {
+  schools: ko.observableArray([]),
   buildings: ko.observableArray([]),
   location: ko.observable(''),
-  overflow: ko.observable
+  currentCat1Id: ko.observable(0)
 };
 
 window.onload = function() {
-  var intRegex;
-  intRegex = /^\d+$/;
-  vm.location($locationWord.text());
+  var cat1_id, cat2_id;
   common.init();
+  cat1_id = getUrlParameter('cat1');
+  cat2_id = getUrlParameter('cat2');
+  getProducts(getData(cat1_id, cat2_id));
+  initCat1Btn();
+  initCat2Btn();
+  vm.location($locationWord.text());
   initChooseLocationBtn();
   initLocations();
-  initAddGoodsToCartBtn(intRegex);
-  initGoodOperation(intRegex);
-  initGoodCountListener();
-  ko.applyBindings(vm);
-  if (!common.token) {
+  vm.location($locationWord.text());
+  if (!localStorage.csrf_token) {
     return $chooseLocationBtn.click();
   }
 };
@@ -14851,41 +14853,41 @@ initChooseLocationBtn = function() {
 };
 
 initLocations = function() {
-  var strategy;
-  strategy = {
-    "0": "定位成功",
-    "1": "error: 无效的参数",
-    "-1": "error: 建筑物不存在"
-  };
-  return $schoolsBox.click(function(e) {
-    var school_id, school_name;
-    console.log(e);
-    if (!e.target.classList.contains('school')) {
-      return;
-    }
-    console.log(e.target);
-    school_name = e.target.innerText;
-    school_id = e.target.dataset.sid;
-    console.log(school_id);
-    return common.getBuildings(school_id, function(res) {
-      $schoolsBox.hide();
-      $buildingsBox.show();
-      return bindBuildings(school_name, res.data);
-    });
+  return common.getSchools(function(res) {
+    return bindSchools(res.data);
   });
+};
+
+bindSchools = function(schools) {
+  var i, len, school;
+  for (i = 0, len = schools.length; i < len; i++) {
+    school = schools[i];
+    school.choose = function() {
+      console.log(this.id);
+      console.log(this.name);
+      return common.getBuildings(this.id, (function(_this) {
+        return function(res) {
+          $schoolsBox.hide();
+          bindBuildings(_this.name, res.data);
+          return $buildingsBox.show();
+        };
+      })(this));
+    };
+  }
+  return vm.schools(schools);
 };
 
 bindBuildings = function(school_name, buildings) {
   var building, i, len;
   for (i = 0, len = buildings.length; i < len; i++) {
     building = buildings[i];
-    building.chooseBuilding = function() {
+    building.choose = function() {
       return common.changeLocation(this.id, (function(_this) {
         return function(res) {
           common.hideMask();
           $buildingsBox.hide();
           vm.location(school_name + _this.name);
-          return localStorage.token = res.data._csrf_token;
+          return localStorage.csrf_token = res.data._csrf_token;
         };
       })(this));
     };
@@ -14893,68 +14895,123 @@ bindBuildings = function(school_name, buildings) {
   return vm.buildings(buildings);
 };
 
-initAddGoodsToCartBtn = function(intRegex) {
-  return $hotGoodsList.click(function(e) {
-    var amount, good_id;
-    if (!e.target.classList.contains('add-goods-to-cart-btn')) {
-      return;
-    }
-    good_id = e.target.dataset.id;
-    amount = jquery(e.target).prev().children(":first").val();
-    if (!(intRegex.test(amount) || amount === 0)) {
-      common.notify("请输入正整数");
-      return;
-    }
-    amount = Number(amount);
-    return common.addToCart(good_id, amount, function() {
-      common.initHeader();
-    });
-  });
-};
-
-initGoodOperation = function(intRegex) {
-  return $hotGoodsList.click(function(e) {
-    var amount, counter;
-    if (!e.target.classList.contains('good-operation')) {
-      return;
-    }
-    console.log('plus');
-    counter = jquery(e.target).parent().prev();
-    amount = counter.val();
-    if (!intRegex.test(amount)) {
-      common.notify("请输入正整数");
-      return;
-    }
-    amount = Number(amount);
-    if (e.target.classList.contains('good-plus')) {
-      amount += 1;
+getData = function(cat1_id, cat2_id) {
+  var data;
+  if (cat1_id) {
+    if (cat2_id) {
+      return data = {
+        cat1_id: cat1_id,
+        cat2_id: cat2_id
+      };
     } else {
-      amount -= 1;
+      return data = {
+        cat1_id: cat1_id
+      };
     }
-    if (amount >= 0) {
-      return counter.val(amount);
+  } else if (cat2_id) {
+    return data = {
+      cat2_id: cat2_id
+    };
+  } else {
+    return data = {};
+  }
+};
+
+getProducts = function(data) {
+  return jquery.ajax({
+    url: common.url + "/product/list",
+    type: 'POST',
+    data: data,
+    success: function(res) {
+      if (res.code === 0) {
+        bindProducts(res.data.products);
+        console.log(res.data['current_cat1']);
+        if (res.data['current_cat1']) {
+          return vm.currentCat1Id(res.data['current_cat1'].id);
+        } else {
+          return vm.currentCat1Id(-1);
+        }
+      }
     }
   });
 };
 
-initGoodCountListener = function() {
-  return jquery.each($goodCounts, function(index, goodCount) {
-    var counter, inventory, quantity;
-    quantity = goodCount.dataset.quantity;
-    counter = jquery(goodCount);
-    inventory = counter.parent().prev();
-    return counter.keyup(function() {
+bindProducts = function(products) {
+  var i, len, product;
+  for (i = 0, len = products.length; i < len; i++) {
+    product = products[i];
+    product.filename = "/static/img/" + product.filename;
+    product.setAmount = function() {
       var amount;
-      amount = Number(counter.val());
-      if (isNaN(amount)) {
-        return;
-      }
-      if (amount > quantity) {
-        return inventory.text("超出库存");
+      amount = parseInt(this.amount());
+      if (amount && amount > 0) {
+        return this.amount(amount);
       } else {
-        return inventory.text("\xa0");
+        this.amount(1);
+        return common.notify("请输入正整数");
       }
-    });
+    };
+    product.formattedPrice = "￥ " + product.price;
+    product.amount = ko.observable(1);
+    product.amountIsNumber = ko.observable(true);
+    product.isOverflow = ko.pureComputed(function() {
+      return this.amount() > this.quantity;
+    }, product);
+    product.add = function() {
+      return this.amount(this.amount() + 1);
+    };
+    product.reduce = function() {
+      if (this.amount() > 1) {
+        return this.amount(this.amount() - 1);
+      }
+    };
+    product.addToCart = function() {
+      return common.addToCart(this.id, this.amount(), function() {
+        common.initHeader();
+      });
+    };
+  }
+  if (!applied) {
+    vm.products = ko.observableArray(products);
+    ko.applyBindings(vm);
+    return applied = true;
+  } else {
+    return vm.products(products);
+  }
+};
+
+getUrlParameter = function(sParam) {
+  var i, len, sPageURL, sParameterName, sURLVariable, sURLVariables;
+  sPageURL = window.location.search.substring(1);
+  sURLVariables = sPageURL.split('&');
+  for (i = 0, len = sURLVariables.length; i < len; i++) {
+    sURLVariable = sURLVariables[i];
+    sParameterName = sURLVariable.split('=');
+    if (sParameterName[0] === sParam) {
+      return sParameterName[1];
+    }
+  }
+};
+
+initCat1Btn = function() {
+  return $cat1.click(function(e) {
+    var cat1, data;
+    cat1 = e.target;
+    data = {
+      cat1_id: cat1.dataset.cat1
+    };
+    return getProducts(data);
+  });
+};
+
+initCat2Btn = function() {
+  return $cat2.click(function(e) {
+    var cat2, data;
+    cat2 = e.target;
+    data = {
+      cat2_id: cat2.dataset.cat2
+    };
+    return getProducts(data);
   });
 };
 

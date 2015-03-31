@@ -25,3 +25,15 @@ function login() {
         }
     });
 }
+
+window.onload = enableEnter();
+
+function enableEnter() {
+    var loginForm = $("form")[0];
+    $(loginForm).on("keyup keypress", function(e) {
+        var code = e.keyCode || e.which; 
+        if (code  == 13) {               
+                login();
+        }
+    });
+}

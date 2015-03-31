@@ -1,12 +1,12 @@
 {% extends "mb/layout.html" %}
-{% block title %}一级分类-二级分类{% endblock %}
+{% block title %}{{ current_cat1.name }}-{{ current_cat2.name }}{% endblock %}
 
 
 {% block body %}
 <div class="bottom-bar">
     <ul class="bottom-icon-group">
         <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
-        <li class="bottom-icon-item "><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"></a></li>
+        <li class="bottom-icon-item "><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
         <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
     </ul>
 </div><!-- bottom-bar end -->
@@ -31,15 +31,14 @@
                 <p>{{ product[0].name }}</p>
                 <p class="item-price">￥{{ "%.2f" % product[0].price }}</p>
                 <div class="item-count">
-                    <span class="float-left">数量：</span>
                     <div class="btn-decrease">-</div>
-                    <input value="1" type="text" maxlength="4" pattern="[0-9]" class="input-number"/>
+                    <input quantity="{{ product[1].quantity }}" value="1" type="text" maxlength="4" pattern="[0-9]" class="input-number"/>
                     <div class="btn-increase">+</div>
+                    <span class="quantity">库存{{ product[1].quantity }}件</span>
                 </div>
             </div>
     </div>
     {% endfor %}
-    
 </div>
 
 

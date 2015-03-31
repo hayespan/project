@@ -14683,306 +14683,6 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 })();
 
 },{}],3:[function(require,module,exports){
-var $cancelBtn, $changeBtn, $confirmBtn, $contactInfoChange, $contactInfoConfirm, $mask, $saveBtn, $settleBtn, bindCartObjs, bindContactInfo, common, deleteHandler, getCartObjs, getCheckedProductIds, getCheckedProducts, getContactInfo, initBtns, injectProperties, isCheckedAll, jquery, ko, originalContactInfo, quantityHandler, vm;
-
-jquery = require("jquery");
-
-ko = require("knockout");
-
-common = require("./common.coffee");
-
-vm = {
-  contactInfo: {
-    name: ko.observable(""),
-    phone: ko.observable(""),
-    addr: ko.observable("")
-  }
-};
-
-$settleBtn = jquery(".settle-btn");
-
-$contactInfoConfirm = jquery(".contact-info-confirm");
-
-$contactInfoChange = jquery(".contact-info-change");
-
-$confirmBtn = jquery(".confirm-btn");
-
-$changeBtn = jquery(".change-btn");
-
-$cancelBtn = jquery(".cancel-btn");
-
-$saveBtn = jquery(".save-btn");
-
-$mask = jquery('.mask');
-
-originalContactInfo = {};
-
-window.onload = function() {
-  common.init();
-  getCartObjs();
-  getContactInfo();
-  return initBtns();
-};
-
-getCartObjs = function() {
-  return jquery.ajax({
-    url: common.url + "/cart",
-    type: "POST",
-    data: {
-      _crsf_token: common.token
-    },
-    success: function(res) {
-      if (res.code === 0) {
-        return bindCartObjs(res.data);
-      }
-    }
-  });
-};
-
-getContactInfo = function() {
-  return jquery.ajax({
-    url: common.url + "/user/contact_info",
-    type: "POST",
-    data: {
-      csrf_token: common.token
-    },
-    success: function(res) {
-      originalContactInfo = res.data;
-      if (res.code === 0) {
-        return bindContactInfo(res.data);
-      }
-    }
-  });
-};
-
-initBtns = function() {
-  var settleStrategy;
-  $mask.click(function(e) {
-    var d;
-    d = e.target;
-    while (d !== null && d.className !== 'mask-box-container') {
-      d = d.parentNode;
-    }
-    if (!(d !== null && d.className === 'mask-box-container')) {
-      $contactInfoChange.hide();
-      $contactInfoConfirm.hide();
-      return common.hideMask();
-    }
-  });
-  $settleBtn.click(function() {
-    if (vm.checkedProductsLength() < 1) {
-      return common.notify('请选择商品');
-    } else {
-      common.showMask();
-      return $contactInfoConfirm.show();
-    }
-  });
-  $cancelBtn.click(function() {
-    vm.contactInfo.name(originalContactInfo.name);
-    vm.contactInfo.phone(originalContactInfo.phone);
-    vm.contactInfo.addr(originalContactInfo.addr);
-    $contactInfoChange.hide();
-    return $contactInfoConfirm.show();
-  });
-  $saveBtn.click(function() {
-    originalContactInfo.name = vm.contactInfo.name();
-    originalContactInfo.phone = vm.contactInfo.phone();
-    originalContactInfo.addr = vm.contactInfo.addr();
-    $contactInfoChange.hide();
-    return $contactInfoConfirm.show();
-  });
-  $changeBtn.click(function() {
-    $contactInfoConfirm.hide();
-    return $contactInfoChange.show();
-  });
-  settleStrategy = {
-    "0": "成功下单",
-    "1": "error: 无效的参数",
-    "-2": "error: 存在无效商品，请刷新页面后再试"
-  };
-  return $confirmBtn.click(function() {
-    if (vm.checkedProductsLength() < 1) {
-      return common.notify('请选择商品');
-    } else {
-      return jquery.ajax({
-        url: common.url + "/order/create",
-        type: "POST",
-        data: {
-          _csrf_token: common.token,
-          product_ids: getCheckedProductIds(),
-          name: vm.contactInfo.name(),
-          phone: vm.contactInfo.phone(),
-          addr: vm.contactInfo.addr()
-        },
-        success: (function(_this) {
-          return function(res) {
-            return common.notify(settleStrategy[res.code]);
-          };
-        })(this)
-      });
-    }
-  });
-};
-
-bindCartObjs = function(objs) {
-  var i, len, obj;
-  for (i = 0, len = objs.length; i < len; i++) {
-    obj = objs[i];
-    obj['is_checked'] = ko.observable(false);
-    obj['quantity'] = ko.observable(obj.quantity);
-    injectProperties(obj);
-  }
-  vm.cartObjs = ko.observableArray(objs);
-  return ko.applyBindings(vm);
-};
-
-injectProperties = function(obj) {
-  obj.validStatus = function() {
-    var ref;
-    return (ref = this.is_valid) != null ? ref : {
-      '': 'unvalid'
-    };
-  };
-  obj.removeSelf = function() {
-    return this.deleteHandler('/cart/delete');
-  };
-  obj.add = function() {
-    return this.quantityHandler('/cart/add');
-  };
-  obj.reduce = function() {
-    return this.quantityHandler('/cart/sub');
-  };
-  obj.quantityHandler = quantityHandler;
-  obj.deleteHandler = deleteHandler;
-  obj.totalPrice = ko.pureComputed(function() {
-    return this.quantity() * this.price;
-  }, obj);
-  return obj.formattedPrice = ko.pureComputed(function() {
-    return "￥" + this.totalPrice();
-  }, obj);
-};
-
-deleteHandler = function(suffix) {
-  return jquery.ajax({
-    url: common.url + suffix,
-    type: "POST",
-    data: {
-      _crsf_token: common.token,
-      product_id: this.product_id
-    },
-    success: (function(_this) {
-      return function(res) {
-        return vm.cartObjs.remove(_this);
-      };
-    })(this)
-  });
-};
-
-quantityHandler = function(suffix) {
-  return jquery.ajax({
-    url: common.url + suffix,
-    type: "POST",
-    data: {
-      _csrf_token: common.token,
-      product_id: this.product_id
-    },
-    success: (function(_this) {
-      return function(res) {
-        if (res.code === 0) {
-          return _this.quantity(res.data);
-        }
-      };
-    })(this)
-  });
-};
-
-bindContactInfo = function(info) {
-  var i, len, prop, props, results;
-  props = ['name', 'phone', 'addr'];
-  results = [];
-  for (i = 0, len = props.length; i < len; i++) {
-    prop = props[i];
-    results.push(vm.contactInfo[prop](info[prop]));
-  }
-  return results;
-};
-
-getCheckedProducts = function() {
-  return vm.cartObjs().filter(function(cart_obj) {
-    if (cart_obj.is_checked() && cart_obj.is_valid) {
-      return cart_obj;
-    }
-  });
-};
-
-getCheckedProductIds = function() {
-  var productIdsArray;
-  productIdsArray = getCheckedProducts().map(function(valid_cart_obj) {
-    return valid_cart_obj.product_id;
-  });
-  return productIdsArray.join(',');
-};
-
-vm.deleteCheckedProducts = function() {
-  var checked_cart_obj, i, len, ref, results;
-  ref = getCheckedProducts();
-  results = [];
-  for (i = 0, len = ref.length; i < len; i++) {
-    checked_cart_obj = ref[i];
-    results.push(checked_cart_obj.removeSelf());
-  }
-  return results;
-};
-
-isCheckedAll = false;
-
-vm.checkAllProducts = function() {
-  var cart_obj, i, len, ref, results;
-  isCheckedAll = !isCheckedAll;
-  ref = vm.cartObjs();
-  results = [];
-  for (i = 0, len = ref.length; i < len; i++) {
-    cart_obj = ref[i];
-    results.push(cart_obj.is_checked(isCheckedAll));
-  }
-  return results;
-};
-
-vm.deleteInvalidProducts = function() {
-  var cart_obj, i, len, ref, results;
-  ref = vm.cartObjs();
-  results = [];
-  for (i = 0, len = ref.length; i < len; i++) {
-    cart_obj = ref[i];
-    if (cart_obj.is_valid) {
-      results.push(cart_obj.removeSelf());
-    }
-  }
-  return results;
-};
-
-vm.checkedProductsLength = ko.pureComputed(function() {
-  return getCheckedProducts().length;
-});
-
-vm.checkedProductsTotal = ko.pureComputed(function() {
-  var checkedProduct, i, len, ref, total;
-  total = 0;
-  ref = getCheckedProducts();
-  for (i = 0, len = ref.length; i < len; i++) {
-    checkedProduct = ref[i];
-    total += checkedProduct.totalPrice();
-  }
-  return "￥" + total;
-});
-
-vm.cartObjsLength = ko.pureComputed(function() {
-  return vm.cartObjs().length;
-});
-
-
-
-},{"./common.coffee":4,"jquery":1,"knockout":2}],4:[function(require,module,exports){
 var $cartQuantity, $mask, $notification, common, insertStrategy, jquery;
 
 jquery = require("jquery");
@@ -15004,10 +14704,10 @@ insertStrategy = {
 
 common = {
   url: location.protocol + "//" + location.host,
-  token: null,
+  csrf_token: null,
   init: function() {
-    if (localStorage.token) {
-      this.token = localStorage.token;
+    if (localStorage.csrf_token) {
+      this.csrf_token = localStorage.csrf_token;
       return common.initHeader();
     }
   },
@@ -15018,14 +14718,11 @@ common = {
     return $mask.fadeOut();
   },
   notify: function(msg) {
+    $notification.show();
     $notification.text(msg);
-    return $notification.fadeIn(400, (function(_this) {
-      return function() {
-        return setTimeout((function() {
-          return $notification.fadeOut();
-        }), 1000);
-      };
-    })(this));
+    return setTimeout((function() {
+      return $notification.fadeOut();
+    }), 1000);
   },
   getSchools: function(callback) {
     return jquery.ajax({
@@ -15050,6 +14747,7 @@ common = {
     });
   },
   changeLocation: function(building_id, callback) {
+    console.log(building_id);
     return jquery.ajax({
       url: common.url + "/user/choose_location",
       type: 'POST',
@@ -15068,7 +14766,7 @@ common = {
       url: common.url + "/cart/insert",
       type: "POST",
       data: {
-        _csrf_token: common.token,
+        csrf_token: localStorage.csrf_token,
         product_id: id,
         quantity: amount
       },
@@ -15085,7 +14783,7 @@ common = {
       url: common.url + "/cart/cnt",
       type: "POST",
       data: {
-        _csrf_token: common.token
+        csrf_token: localStorage.csrf_token
       },
       success: function(res) {
         if (res.code === 0) {
@@ -15100,4 +14798,151 @@ module.exports = common;
 
 
 
-},{"jquery":1}]},{},[3]);
+},{"jquery":1}],4:[function(require,module,exports){
+var $buildingsBox, $chooseLocationBtn, $hotProductsList, $locationWord, $productCounts, $schoolsBox, bindBuildings, bindProducts, bindSchools, common, getProducts, initChooseLocationBtn, initLocation, jquery, ko, vm;
+
+jquery = require("jquery");
+
+ko = require("knockout");
+
+common = require("./common.coffee");
+
+$locationWord = jquery(".location-word");
+
+$chooseLocationBtn = jquery(".choose-location-btn");
+
+$schoolsBox = jquery(".schools-box");
+
+$buildingsBox = jquery(".buildings-box");
+
+$hotProductsList = jquery(".hot-products-list");
+
+$productCounts = jquery(".product-count");
+
+vm = {
+  schools: ko.observableArray([]),
+  buildings: ko.observableArray([]),
+  location: ko.observable('')
+};
+
+window.onload = function() {
+  var intRegex;
+  intRegex = /^\d+$/;
+  vm.location($locationWord.text());
+  common.init();
+  getProducts();
+  initChooseLocationBtn();
+  initLocation();
+  if (!common.csrf_token) {
+    return $chooseLocationBtn.click();
+  }
+};
+
+initChooseLocationBtn = function() {
+  return $chooseLocationBtn.click(function() {
+    common.showMask();
+    return $schoolsBox.show();
+  });
+};
+
+initLocation = function() {
+  return common.getSchools(function(res) {
+    return bindSchools(res.data);
+  });
+};
+
+bindSchools = function(schools) {
+  var i, len, school;
+  for (i = 0, len = schools.length; i < len; i++) {
+    school = schools[i];
+    school.choose = function() {
+      return common.getBuildings(this.id, (function(_this) {
+        return function(res) {
+          $schoolsBox.hide();
+          bindBuildings(_this.name, res.data);
+          return $buildingsBox.show();
+        };
+      })(this));
+    };
+  }
+  return vm.schools(schools);
+};
+
+bindBuildings = function(school_name, buildings) {
+  var building, i, len, strategy;
+  strategy = {
+    "0": "定位成功",
+    "1": "error: 无效的参数",
+    "-1": "error: 建筑物不存在"
+  };
+  for (i = 0, len = buildings.length; i < len; i++) {
+    building = buildings[i];
+    building.choose = function() {
+      return common.changeLocation(this.id, (function(_this) {
+        return function(res) {
+          common.hideMask();
+          $buildingsBox.hide();
+          vm.location(school_name + _this.name);
+          localStorage.csrf_token = res.data._csrf_token;
+          return common.notify(strategy[res.code]);
+        };
+      })(this));
+    };
+  }
+  return vm.buildings(buildings);
+};
+
+getProducts = function() {
+  return jquery.ajax({
+    url: common.url + "/product/hot",
+    type: 'POST',
+    success: function(res) {
+      if (res.code === 0) {
+        return bindProducts(res.data);
+      }
+    }
+  });
+};
+
+bindProducts = function(products) {
+  var i, len, product;
+  for (i = 0, len = products.length; i < len; i++) {
+    product = products[i];
+    product.filename = "/static/img/" + product.filename;
+    product.setAmount = function() {
+      var amount;
+      amount = parseInt(this.amount());
+      if (amount && amount > 0) {
+        return this.amount(amount);
+      } else {
+        this.amount(1);
+        return common.notify("请输入正整数");
+      }
+    };
+    product.formattedPrice = "￥ " + product.price;
+    product.amount = ko.observable(1);
+    product.amountIsNumber = ko.observable(true);
+    product.isOverflow = ko.pureComputed(function() {
+      return this.amount() > this.quantity;
+    }, product);
+    product.add = function() {
+      return this.amount(this.amount() + 1);
+    };
+    product.reduce = function() {
+      if (this.amount() > 1) {
+        return this.amount(this.amount() - 1);
+      }
+    };
+    product.addToCart = function() {
+      return common.addToCart(this.id, this.amount(), function() {
+        common.initHeader();
+      });
+    };
+  }
+  vm.products = ko.observableArray(products);
+  return ko.applyBindings(vm);
+};
+
+
+
+},{"./common.coffee":3,"jquery":1,"knockout":2}]},{},[4]);

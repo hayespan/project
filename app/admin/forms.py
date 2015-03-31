@@ -9,9 +9,9 @@ class LoginForm(Form):
     password = PasswordField(validators=[Required(), ])
 
 class HandleOrderForm(Form):
-    ticketid = StringField(validators=[Required(), Length(1, 21), ])
-    password = PasswordField(validators=[Required(), ])
-    handle = BooleanField(validators=[Required(), ])
+    ticketid = StringField(validators=[Required(), Length(20, 20), ])
+    password = StringField(validators=[Required(), Length(4, 4), ])
+    handle = IntegerField(validators=[Required(), ])
 
 class ModifyQuantityForm(Form):
     building_id = IntegerField(validators=[Required(), ])

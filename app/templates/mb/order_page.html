@@ -7,7 +7,7 @@
 <div class="bottom-bar">
     <ul class="bottom-icon-group">
         <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-1" href="/m/"></a></li>
-        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"></a></li>
+        <li class="bottom-icon-item"><a class="bottom-icon" id="bottom-icon-2" href="/m/cart"><span class="badge"></span></a></li>
         <li class="bottom-icon-item active"><a class="bottom-icon" id="bottom-icon-3" href="/m/order"></a></li>
     </ul>
 </div><!-- bottom-bar end -->
@@ -39,7 +39,7 @@
         </div>
         <div class="order-status-right">
             <p class="order-status-lefttimetext"><img src="{{ url_for('static', filename='mb/img/icon/iconfont-history.png') }}">送货倒计时</p>
-            <p class="order-status-lefttime" >{{ order['timedelta'] }}</p>
+            <p class="order-status-lefttime" >{{ order['timedelta'].days }}天{{ "%d" % (order['timedelta'].seconds / 3600) }}时{{ "%d" % (order['timedelta'].seconds % 3600 / 60) }}分</p>
             <p class="order-status-dynamicpw">动态密码: {{ order['password'] }}</p>
         </div>
     </div>

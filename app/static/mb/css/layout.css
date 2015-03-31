@@ -71,6 +71,7 @@ a, span, p {
 }
 
 .bottom-icon {  
+    position: relative;
     display: block;
     width: 50px;
     height: 50px;
@@ -102,6 +103,23 @@ a, span, p {
 
 .active > #bottom-icon-3 {    
     background-image: url(/static/mb/img/icon/order_active.png);
+}
+
+.badge {    
+  position: absolute;
+  display: block;
+  color: white;
+  background-color: red;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  left: 30px;
+  top: 0px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  display: none;
 }
 
 /* * for chooseschool.html
@@ -154,7 +172,7 @@ a, span, p {
     height: 32px;
     float: left;
     position: absolute;
-    left: 15px;
+    left: 14px;
     top: 6px;
     background-image: url(/static/mb/img/icon/iconfont-left.png);
 }
@@ -270,19 +288,22 @@ a, span, p {
 .order-status-lefttimetext {
     font-size: 11px;
     margin: 0;
-    padding: 3px 2px;
+    height: 25%;
 }
 .order-status-lefttime {
     margin: 0;
     padding: 1px 0;
     font-size: 18px;
     color: #FF4302;
+    line-height: 30px;
+    height: 50%;
 }
 .order-status-dynamicpw {
     margin: 0;
     color: #5A646F;
-    padding: 3px 0;
+    height: 25%;
     font-size: 12px;
+    line-height: 8px;
 }
 .order-item {
     padding: 7px 0;
@@ -414,6 +435,23 @@ a, span, p {
 .cat2 { 
     margin-left: 45px;
     display: none;
+}
+
+.position { 
+    margin-bottom: 5px;
+    background: white;
+    height: 20px;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.position a {   
+    margin: 0 10px 0 0;
+    color: rgb(118, 118, 118);
+}
+
+.position span {   
+    margin-left: 15px;
 }
 
 /* for cart.html */
@@ -597,6 +635,7 @@ a, span, p {
     font-size: 27px;
     float: left;
     text-align: center;
+    line-height: 33px;
 }
 
 .btn-disabled { 
@@ -621,7 +660,7 @@ a, span, p {
 
 .user-info-container {    
     width: 80%;
-    height: 250px;
+    height: 255px;
     background: white;
     border-radius: 5px;
     position: fixed;
@@ -736,3 +775,12 @@ a, span, p {
     background-color: rgb(250, 159, 80);
     z-index: 10;
 }
+
+.quantity { 
+    float: left;
+    color: rgb(118, 118, 118);
+    font-size: 12px;
+    margin: 4px 0 4px 10px
+}
+
+
