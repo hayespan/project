@@ -8,6 +8,7 @@ $locationWord = jquery(".location-word")
 $chooseLocationBtn = jquery(".choose-location-btn")
 $schoolsBox = jquery(".schools-box")
 $buildingsBox = jquery(".buildings-box")
+$mask = jquery(".mask")
 
 applied = false
 
@@ -101,6 +102,11 @@ getProducts = (data) ->
 
 bindProducts = (products) ->
     for product in products
+        product.isMouseOver = ko.observable false
+        product.showDescription = ->
+            @isMouseOver true
+        product.hideDescription = ->
+            @isMouseOver false
         product.filename = "/static/img/" + product.filename
         product.setAmount = ->
             amount = parseInt(@amount())

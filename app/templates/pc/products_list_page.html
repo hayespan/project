@@ -16,7 +16,7 @@
                 {% for cat in catx %}
                 <li class="kind-container" data-bind="css: {cat1Chosen: currentCat1Id() == {{cat[0].id}}}">
                     <div class="kind" data-cat1="{{cat[0].id}}" >
-                        {{ cat[0].name }}
+                        <span class="kind-name" data-cat1="{{cat[0].id}}">{{ cat[0].name }}</span>
                     </div>
                     <div class="cat2s">
                         <ul>

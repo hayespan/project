@@ -80,6 +80,11 @@ getProducts = ->
 
 bindProducts = (products) ->
     for product in products
+        product.isMouseOver = ko.observable false
+        product.showDescription = ->
+            @isMouseOver true
+        product.hideDescription = ->
+            @isMouseOver false
         product.filename = "/static/img/" + product.filename
         product.setAmount = ->
             amount = parseInt(@amount())

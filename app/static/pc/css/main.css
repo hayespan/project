@@ -14,6 +14,7 @@
   margin: 0;
   padding: 0;
   color: #575757;
+  word-break: break-all;
 }
 ul {
   list-style: none;
@@ -146,6 +147,10 @@ a {
 .location-style span.choose-location-btn {
   color: #fa9f50;
 }
+.product-style .placeholder {
+  margin-left: 10px;
+  color: #838383;
+}
 .product-style .hot-products-list {
   overflow: hidden;
 }
@@ -170,7 +175,21 @@ a {
   overflow: hidden;
   white-space: nowrap;
 }
-.product-style .hot-product-wrapper .hot-product-container .product-pic-url {
+.product-style .hot-product-wrapper .hot-product-container .product-description {
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 4px;
+  text-indent: 1em;
+  text-align: left;
+  overflow: auto;
+  position: absolute;
+  width: 174px;
+  height: 130px;
+  background-color: black;
+  opacity: 0.6;
+  color: white;
+}
+.product-style .hot-product-wrapper .hot-product-container .product-pic {
   width: 174px;
   height: 130px;
 }
@@ -311,10 +330,6 @@ a {
   height: 40px;
   line-height: 40px;
 }
-#content .nav-banner .nav .products-kind-list .kind {
-  height: 45px;
-  line-height: 45px;
-}
 #content .nav-banner .nav .products-kind-list .all-kind {
   background-color: #fa9f50;
   font-size: 18px;
@@ -327,13 +342,22 @@ a {
   border-bottom: none;
 }
 #content .nav-banner .nav .products-kind-list .kinds-container .kind-container .kind {
+  height: 45px;
+  line-height: 45px;
   cursor: pointer;
   padding: 0 14px;
   background-color: #fafafa;
   border-bottom: 1px solid #eeeeee;
 }
+#content .nav-banner .nav .products-kind-list .kinds-container .kind-container .kind .kind-name {
+  display: inline-block;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 #content .nav-banner .nav .products-kind-list .kinds-container .kind-container .kind .arrow {
-  margin-top: 13px;
+  margin-top: 15px;
   float: right;
   height: 14px;
 }
@@ -413,6 +437,10 @@ a {
   vertical-align: bottom;
   margin-right: 5px;
 }
+#content .hot-products .placeholder {
+  margin-left: 10px;
+  color: #838383;
+}
 #content .hot-products .hot-products-list {
   overflow: hidden;
 }
@@ -437,7 +465,21 @@ a {
   overflow: hidden;
   white-space: nowrap;
 }
-#content .hot-products .hot-product-wrapper .hot-product-container .product-pic-url {
+#content .hot-products .hot-product-wrapper .hot-product-container .product-description {
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 4px;
+  text-indent: 1em;
+  text-align: left;
+  overflow: auto;
+  position: absolute;
+  width: 174px;
+  height: 130px;
+  background-color: black;
+  opacity: 0.6;
+  color: white;
+}
+#content .hot-products .hot-product-wrapper .hot-product-container .product-pic {
   width: 174px;
   height: 130px;
 }

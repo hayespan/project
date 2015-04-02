@@ -14798,7 +14798,7 @@ module.exports = common;
 
 
 },{"jquery":1}],4:[function(require,module,exports){
-var $buildingsBox, $cat1, $cat2, $chooseLocationBtn, $locationWord, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getData, getProducts, getUrlParameter, initCat1Btn, initCat2Btn, initChooseLocationBtn, initLocations, jquery, ko, vm;
+var $buildingsBox, $cat1, $cat2, $chooseLocationBtn, $locationWord, $mask, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getData, getProducts, getUrlParameter, initCat1Btn, initCat2Btn, initChooseLocationBtn, initLocations, jquery, ko, vm;
 
 jquery = require("jquery");
 
@@ -14817,6 +14817,8 @@ $chooseLocationBtn = jquery(".choose-location-btn");
 $schoolsBox = jquery(".schools-box");
 
 $buildingsBox = jquery(".buildings-box");
+
+$mask = jquery(".mask");
 
 applied = false;
 
@@ -14952,6 +14954,13 @@ bindProducts = function(products) {
   var i, len, product;
   for (i = 0, len = products.length; i < len; i++) {
     product = products[i];
+    product.isMouseOver = ko.observable(false);
+    product.showDescription = function() {
+      return this.isMouseOver(true);
+    };
+    product.hideDescription = function() {
+      return this.isMouseOver(false);
+    };
     product.filename = "/static/img/" + product.filename;
     product.setAmount = function() {
       var amount;

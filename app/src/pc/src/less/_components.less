@@ -31,9 +31,6 @@
         .all-kind {
             .vertical-center-font(40px);
         }
-        .kind {
-            .vertical-center-font(45px);
-        }
         .all-kind {
             background-color: @orange;
             font-size: 18px;
@@ -46,12 +43,16 @@
             border-bottom: none;
             .kind-container {
                 .kind {
+                    .vertical-center-font(45px);
                     cursor: pointer;
                     padding: 0 14px;
                     background-color: #fafafa;
                     border-bottom: 1px solid #eeeeee;
+                    .kind-name {
+                        .max-name-width(180px);
+                    }
                     .arrow {
-                        margin-top: 13px;
+                        margin-top: 15px;
                         float: right;
                         height: 14px;
                     }
@@ -77,6 +78,10 @@
 }
 
 .product-style {
+    .placeholder {
+        margin-left: 10px;
+        color: #838383;
+    }
     .hot-products-list {
         overflow: hidden;
     }
@@ -95,7 +100,21 @@
                 text-align: center;
                 .max-name-width(180px);
             }
-            .product-pic-url {
+            .product-description {
+                font-size: 14px;
+                box-sizing: border-box;
+                padding: 4px;
+                text-indent: 1em;
+                text-align: left;
+                overflow: auto;
+                position: absolute;
+                width: 174px;
+                height: 130px;
+                background-color: black;
+                opacity: 0.6;
+                color: white;
+            }
+            .product-pic {
                 width: 174px;
                 height: 130px;
             }

@@ -14925,6 +14925,13 @@ bindProducts = function(products) {
   var i, len, product;
   for (i = 0, len = products.length; i < len; i++) {
     product = products[i];
+    product.isMouseOver = ko.observable(false);
+    product.showDescription = function() {
+      return this.isMouseOver(true);
+    };
+    product.hideDescription = function() {
+      return this.isMouseOver(false);
+    };
     product.filename = "/static/img/" + product.filename;
     product.setAmount = function() {
       var amount;
