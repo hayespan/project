@@ -24,7 +24,7 @@ def index():
     if user:
         buyer_contact_info = session.get('buyer_contact_info')
         if buyer_contact_info:
-            user.name = buyer_contact_info['name']
+            user.name = buyer_contact_info[0]
         else:
             user.name = u'匿名用户'
         buyer_location_info = session.get('buyer_location_info')
