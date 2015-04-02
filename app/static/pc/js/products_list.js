@@ -14863,8 +14863,6 @@ bindSchools = function(schools) {
   for (i = 0, len = schools.length; i < len; i++) {
     school = schools[i];
     school.choose = function() {
-      console.log(this.id);
-      console.log(this.name);
       return common.getBuildings(this.id, (function(_this) {
         return function(res) {
           $schoolsBox.hide();
@@ -14884,6 +14882,7 @@ bindBuildings = function(school_name, buildings) {
     building.choose = function() {
       return common.changeLocation(this.id, (function(_this) {
         return function(res) {
+          common.initHeader();
           common.hideMask();
           $buildingsBox.hide();
           vm.location(school_name + _this.name);
@@ -14925,7 +14924,6 @@ getProducts = function(data) {
     success: function(res) {
       if (res.code === 0) {
         bindProducts(res.data.products);
-        console.log(res.data['current_cat1']);
         if (res.data['current_cat1']) {
           return vm.currentCat1Id(res.data['current_cat1'].id);
         } else {

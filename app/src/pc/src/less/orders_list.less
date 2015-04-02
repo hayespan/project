@@ -113,7 +113,7 @@
           }
         }
       }
-      .timer {
+      .order-status {
         position: absolute;
         right: 0;
         margin-top: -1px;
@@ -122,6 +122,9 @@
         border-right: 1px solid #d2d2d2;
         border-bottom: 1px solid #d2d2d2;
         text-align: center;
+        .password {
+        color: #5a646f;
+        }
 
         &:before {
           content: "";
@@ -131,17 +134,13 @@
           height: 100%;
         }
 
-        .timer-completed {
-            display: none;
-        }
-        .timer-uncompleted {
+        .order-uncompleted {
           width: 163px;
           display: inline-block;
           vertical-align: middle;
           div {
             padding: 5px 0;
           }
-
           img {
             margin-right: 5px;
             vertical-align: bottom;
@@ -151,27 +150,18 @@
             font-weight: bold;
             font-size: 20px;
           }
-          .password {
-            color: #5a646f;
-          }
         }
 
-        .order-completed {
-            width: 163px;
-            display: inline-block;
-            vertical-align: middle;
-            .received {
-                letter-spacing: 3px;
-                margin-bottom: 10px;
-                color: #505050;
-                font-size: 20px;
-            }
-            .password {
-                color: #5a646f;
-            }
-        }
-        .order-uncompleted {
-            display: none;
+        .order-completed, .order-cancelled {
+          width: 163px;
+          display: inline-block;
+          vertical-align: middle;
+          .received, .abolished {
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #505050;
+            font-size: 20px;
+          }
         }
       }
     }

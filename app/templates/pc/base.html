@@ -16,10 +16,10 @@
                 </div>
             </a>
             <div class="state">
-                <a href="/order/"><span class="username">订单查询</span></a>
+                <a href="/order/"><span class="username">{% if user == None %} 订单查询 {% else %} {{user.name}} {% endif %}</span></a>
                 <!-- <span class="logout-btn btn">退出</span> -->
                 <span class="separator">|</span>
-                <a href="/cart/" class="entry-cart-btn btn"><img src="{{ url_for('static', filename='pc/images/shopping.png') }}">购物车<b class="amount">{{ 0 }}</b></a>
+                <a href="/cart/" class="entry-cart-btn btn"><img src="{{ url_for('static', filename='pc/images/shopping.png') }}">购物车<b class="amount"></b></a>
             </div>
         </div>
     </div>

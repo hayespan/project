@@ -8,13 +8,14 @@ $buildingsBox = jquery(".buildings-box")
 $hotProductsList = jquery(".hot-products-list")
 $productCounts = jquery(".product-count")
 
+applied = false
+
 vm =
     schools: ko.observableArray([])
     buildings: ko.observableArray([])
     location: ko.observable('')
 
 window.onload = ->
-    intRegex = /^\d+$/
     vm.location($locationWord.text())
     common.init()
     getProducts()
@@ -49,10 +50,12 @@ bindBuildings = (school_name, buildings) ->
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>
+                common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
                 vm.location(school_name + @name)
                 localStorage.csrf_token = res.data._csrf_token
+                getProducts()
                 common.notify(strategy[res.code])
     vm.buildings(buildings)
 
@@ -66,7 +69,7 @@ getProducts = ->
 
 bindProducts = (products) ->
     for product in products
-        product.filename = "/static/img/" + product.filename 
+        product.filename = "/static/img/" + product.filename
         product.setAmount = ->
             amount = parseInt(@amount())
             if amount and amount > 0
@@ -90,6 +93,9 @@ bindProducts = (products) ->
                 common.initHeader()
                 return
 
-    vm.products = ko.observableArray products
-    ko.applyBindings vm
-
+    unless applied
+        vm.products = ko.observableArray products
+        ko.applyBindings vm
+        applied = true
+    else
+        vm.products products

@@ -413,7 +413,7 @@ a {
   width: 80px;
   color: #ff3e3e;
 }
-#content .container .order-container .timer {
+#content .container .order-container .order-status {
   position: absolute;
   right: 0;
   margin-top: -1px;
@@ -423,50 +423,45 @@ a {
   border-bottom: 1px solid #d2d2d2;
   text-align: center;
 }
-#content .container .order-container .timer:before {
+#content .container .order-container .order-status .password {
+  color: #5a646f;
+}
+#content .container .order-container .order-status:before {
   content: "";
   font-size: 0;
   display: inline-block;
   vertical-align: middle;
   height: 100%;
 }
-#content .container .order-container .timer .timer-completed {
-  display: none;
-}
-#content .container .order-container .timer .timer-uncompleted {
+#content .container .order-container .order-status .order-uncompleted {
   width: 163px;
   display: inline-block;
   vertical-align: middle;
 }
-#content .container .order-container .timer .timer-uncompleted div {
+#content .container .order-container .order-status .order-uncompleted div {
   padding: 5px 0;
 }
-#content .container .order-container .timer .timer-uncompleted img {
+#content .container .order-container .order-status .order-uncompleted img {
   margin-right: 5px;
   vertical-align: bottom;
 }
-#content .container .order-container .timer .timer-uncompleted .counter {
+#content .container .order-container .order-status .order-uncompleted .counter {
   color: #ff4302;
   font-weight: bold;
   font-size: 20px;
 }
-#content .container .order-container .timer .timer-uncompleted .password {
-  color: #5a646f;
-}
-#content .container .order-container .timer .order-completed {
+#content .container .order-container .order-status .order-completed,
+#content .container .order-container .order-status .order-cancelled {
   width: 163px;
   display: inline-block;
   vertical-align: middle;
 }
-#content .container .order-container .timer .order-completed .received {
+#content .container .order-container .order-status .order-completed .received,
+#content .container .order-container .order-status .order-cancelled .received,
+#content .container .order-container .order-status .order-completed .abolished,
+#content .container .order-container .order-status .order-cancelled .abolished {
   letter-spacing: 3px;
   margin-bottom: 10px;
   color: #505050;
   font-size: 20px;
-}
-#content .container .order-container .timer .order-completed .password {
-  color: #5a646f;
-}
-#content .container .order-container .timer .order-uncompleted {
-  display: none;
 }

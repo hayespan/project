@@ -14799,7 +14799,7 @@ module.exports = common;
 
 
 },{"jquery":1}],4:[function(require,module,exports){
-var $buildingsBox, $chooseLocationBtn, $hotProductsList, $locationWord, $productCounts, $schoolsBox, bindBuildings, bindProducts, bindSchools, common, getProducts, initChooseLocationBtn, initLocation, jquery, ko, vm;
+var $buildingsBox, $chooseLocationBtn, $hotProductsList, $locationWord, $productCounts, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getProducts, initChooseLocationBtn, initLocation, jquery, ko, vm;
 
 jquery = require("jquery");
 
@@ -14819,6 +14819,8 @@ $hotProductsList = jquery(".hot-products-list");
 
 $productCounts = jquery(".product-count");
 
+applied = false;
+
 vm = {
   schools: ko.observableArray([]),
   buildings: ko.observableArray([]),
@@ -14826,8 +14828,6 @@ vm = {
 };
 
 window.onload = function() {
-  var intRegex;
-  intRegex = /^\d+$/;
   vm.location($locationWord.text());
   common.init();
   getProducts();
@@ -14880,10 +14880,12 @@ bindBuildings = function(school_name, buildings) {
     building.choose = function() {
       return common.changeLocation(this.id, (function(_this) {
         return function(res) {
+          common.initHeader();
           common.hideMask();
           $buildingsBox.hide();
           vm.location(school_name + _this.name);
           localStorage.csrf_token = res.data._csrf_token;
+          getProducts();
           return common.notify(strategy[res.code]);
         };
       })(this));
@@ -14939,8 +14941,13 @@ bindProducts = function(products) {
       });
     };
   }
-  vm.products = ko.observableArray(products);
-  return ko.applyBindings(vm);
+  if (!applied) {
+    vm.products = ko.observableArray(products);
+    ko.applyBindings(vm);
+    return applied = true;
+  } else {
+    return vm.products(products);
+  }
 };
 
 

@@ -100,6 +100,7 @@ initBtns = ->
                     phone: vm.contactInfo.phone()
                     addr: vm.contactInfo.addr()
                 success: (res) =>
+                    console.log res
                     common.notify(settleStrategy[res.code])
                     $contactInfoConfirm.hide()
                     window.location.reload()
@@ -150,10 +151,13 @@ deleteHandler = (suffix) ->
         url: common.url + suffix
         type: "POST"
         data:
-            _crsf_token: localStorage.csrf_token
+            csrf_token: localStorage.csrf_token
             product_id: @product_id
         success: (res) =>
-            vm.cartObjs.remove @
+            console.log res
+            if res.code == 0
+                vm.cartObjs.remove @
+                common.initHeader()
 
 quantityHandler = (suffix)->
     jquery.ajax
@@ -182,13 +186,12 @@ getCheckedProductIds = ->
 vm.deleteCheckedProducts = ->
     checked_cart_obj.removeSelf() for checked_cart_obj in getCheckedProducts()
 
-
 vm.checkAllProducts = ->
     vm.is_all_checked(!vm.is_all_checked())
     cart_obj.is_checked(vm.is_all_checked()) for cart_obj in vm.cartObjs()
 
 vm.deleteInvalidProducts = ->
-    cart_obj.removeSelf() for cart_obj in vm.cartObjs() when cart_obj.is_valid
+    cart_obj.removeSelf() for cart_obj in vm.cartObjs() when not cart_obj.is_valid
 
 vm.checkedProductsLength = ko.pureComputed ->
     getCheckedProducts().length

@@ -43,8 +43,6 @@ initLocations = ->
 bindSchools = (schools) ->
     for school in schools
         school.choose = ->
-            console.log @id
-            console.log @name
             common.getBuildings @id, (res) =>
                 $schoolsBox.hide()
                 bindBuildings @name, res.data
@@ -56,6 +54,7 @@ bindBuildings = (school_name, buildings) ->
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>
+                common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
                 vm.location school_name + @name
@@ -85,7 +84,6 @@ getProducts = (data) ->
         success: (res) ->
             if res.code is 0
                 bindProducts res.data.products
-                console.log res.data['current_cat1']
                 if res.data['current_cat1']
                     vm.currentCat1Id res.data['current_cat1'].id
                 else

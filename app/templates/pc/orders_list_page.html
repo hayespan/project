@@ -26,6 +26,7 @@
       <span class="status">状态</span>
     </div>
     {% for order in orders %}
+    {% if order.status == 'uncompleted' %}
       <div class="order-container">
         <div class="order-header {{order.status}}">
           <span class="order-time">{{order.released_time_str}}</span>
@@ -42,22 +43,73 @@
               <span class="sum">￥{{ item.price * item.quantity }}</span>
             </div>
           {% endfor %}
-          <div class="timer">
-            <div class="timer-{{order.status}}">
+          <div class="order-status">
+            <div class="order-uncompleted">
+              <div class="timer-{{order.status}}">
               <div class="countdown">
                 <img src="{{ url_for('static', filename='pc/images/time.png') }}">
-                <span class="text"> 送货倒计时 </span>
+                  <span class="timer-label"> 送货倒计时 </span>
               </div>
               <div class="counter" data-release={{order.released_time}} data-timedelta="{{order.timedelta}}"></div>
               <div class="password">动态密码：{{order.password}}</div>
+              </div>
             </div>
-            <div class="order-{{order.status}}">
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% if order.status == 'completed' %}
+      <div class="order-container">
+        <div class="order-header completed">
+          <span class="order-time">{{order.released_time_str}}</span>
+          <span class="order-id">订单号： {{order.ticketid}}</span>
+          <span class="post-man-info">送货人：李四 {{order.sender_contact_info}}</span>
+        </div>
+        <div class="item-list">
+          {% for item in order['items'] %}
+            <div class="item-container">
+              <img src="/static/img/{{ item.filename }}">
+              <span class="products-name">{{item.name}}</span>
+              <span class="product-price">{{item.price}}</span>
+              <span class="products-quantity">{{item.quantity}}</span>
+              <span class="sum">￥{{ item.price * item.quantity }}</span>
+            </div>
+          {% endfor %}
+          <div class="order-status">
+            <div class="order-completed">
               <div class="received">已送达</div>
               <div class="password">动态密码：{{order.password}}</div>
             </div>
           </div>
         </div>
       </div>
+    {% endif %}
+    {% if order.status == 'cancelled' %}
+      <div class="order-container">
+        <div class="order-header cancelled">
+          <span class="order-time">{{order.released_time_str}}</span>
+          <span class="order-id">订单号： {{order.ticketid}}</span>
+          <span class="post-man-info">送货人：李四 {{order.sender_contact_info}}</span>
+        </div>
+        <div class="item-list">
+          {% for item in order['items'] %}
+            <div class="item-container">
+              <img src="/static/img/{{ item.filename }}">
+              <span class="products-name">{{item.name}}</span>
+              <span class="product-price">{{item.price}}</span>
+              <span class="products-quantity">{{item.quantity}}</span>
+              <span class="sum">￥{{ item.price * item.quantity }}</span>
+            </div>
+          {% endfor %}
+          <div class="order-status">
+            <div class="order-cancelled">
+              <div class="abolished">已取消</div>
+              <div class="password">动态密码：{{order.password}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
     {% endfor %}
   </div>
 {% endblock %}

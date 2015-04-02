@@ -14818,6 +14818,7 @@ initBtns = function() {
         },
         success: (function(_this) {
           return function(res) {
+            console.log(res);
             common.notify(settleStrategy[res.code]);
             $contactInfoConfirm.hide();
             return window.location.reload();
@@ -14892,12 +14893,16 @@ deleteHandler = function(suffix) {
     url: common.url + suffix,
     type: "POST",
     data: {
-      _crsf_token: localStorage.csrf_token,
+      csrf_token: localStorage.csrf_token,
       product_id: this.product_id
     },
     success: (function(_this) {
       return function(res) {
-        return vm.cartObjs.remove(_this);
+        console.log(res);
+        if (res.code === 0) {
+          vm.cartObjs.remove(_this);
+          return common.initHeader();
+        }
       };
     })(this)
   });
@@ -14977,7 +14982,7 @@ vm.deleteInvalidProducts = function() {
   results = [];
   for (i = 0, len = ref.length; i < len; i++) {
     cart_obj = ref[i];
-    if (cart_obj.is_valid) {
+    if (!cart_obj.is_valid) {
       results.push(cart_obj.removeSelf());
     }
   }
