@@ -14798,7 +14798,7 @@ module.exports = common;
 
 
 },{"jquery":1}],4:[function(require,module,exports){
-var $buildingsBox, $chooseLocationBtn, $hotProductsList, $locationWord, $productCounts, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getProducts, initChooseLocationBtn, initLocation, jquery, ko, vm;
+var $buildingsBox, $chooseLocationBtn, $hotProductsList, $locationWord, $mask, $productCounts, $schoolsBox, applied, bindBuildings, bindProducts, bindSchools, common, getProducts, initChooseLocationBtn, initLocation, jquery, ko, vm;
 
 jquery = require("jquery");
 
@@ -14817,6 +14817,8 @@ $buildingsBox = jquery(".buildings-box");
 $hotProductsList = jquery(".hot-products-list");
 
 $productCounts = jquery(".product-count");
+
+$mask = jquery(".mask");
 
 applied = false;
 
@@ -14838,6 +14840,20 @@ window.onload = function() {
 };
 
 initChooseLocationBtn = function() {
+  if (localStorage.csrf_token) {
+    $mask.click(function(e) {
+      var d;
+      d = e.target;
+      while (d !== null && d.className !== 'mask-box-container') {
+        d = d.parentNode;
+      }
+      if (!(d !== null && d.className === 'mask-box-container')) {
+        $schoolsBox.hide();
+        $buildingsBox.hide();
+        return common.hideMask();
+      }
+    });
+  }
   return $chooseLocationBtn.click(function() {
     common.showMask();
     return $schoolsBox.show();

@@ -14845,6 +14845,20 @@ window.onload = function() {
 };
 
 initChooseLocationBtn = function() {
+  if (localStorage.csrf_token) {
+    $mask.click(function(e) {
+      var d;
+      d = e.target;
+      while (d !== null && d.className !== 'mask-box-container') {
+        d = d.parentNode;
+      }
+      if (!(d !== null && d.className === 'mask-box-container')) {
+        $schoolsBox.hide();
+        $buildingsBox.hide();
+        return common.hideMask();
+      }
+    });
+  }
   return $chooseLocationBtn.click(function() {
     common.showMask();
     return $schoolsBox.show();

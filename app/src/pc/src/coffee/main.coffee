@@ -7,6 +7,7 @@ $schoolsBox = jquery(".schools-box")
 $buildingsBox = jquery(".buildings-box")
 $hotProductsList = jquery(".hot-products-list")
 $productCounts = jquery(".product-count")
+$mask = jquery(".mask")
 
 applied = false
 
@@ -25,6 +26,16 @@ window.onload = ->
         $chooseLocationBtn.click()
 
 initChooseLocationBtn = ->
+    if localStorage.csrf_token
+        $mask.click (e)->
+            d = e.target
+            while  d != null and d.className != 'mask-box-container'
+                d = d.parentNode
+            unless d != null and d.className == 'mask-box-container'
+                $schoolsBox.hide()
+                $buildingsBox.hide()
+                common.hideMask()
+
     $chooseLocationBtn.click ->
         common.showMask()
         $schoolsBox.show()
