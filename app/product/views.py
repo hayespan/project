@@ -55,8 +55,8 @@ def get_product_list_by_catx_ajax():
         return jsonResponse({
             'products': products,
             'current_cat1': {
-                'id': current_cat1.id,
-                'name': current_cat1.name,
+                'id': current_cat1.id if current_cat1 else None,
+                'name': current_cat1.name if current_cat1 else None,
                 },
             })
     return jsonError(ProductErrno.INVALID_ARGUMENT)
