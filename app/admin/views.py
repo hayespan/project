@@ -1203,6 +1203,7 @@ def delete_product():
         if p and p.pic:
             removepic(p.pic.filename)
         p.product_buildings.delete()
+        p.carts.delete()
         db.session.delete(p)
         db.session.commit()
         return jsonResponse(None)
