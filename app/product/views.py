@@ -124,7 +124,7 @@ def get_hot_product_list():
         res = []
         for i in hot_products:
             data = dict()
-            pd, sold_cnt, qty = i[0], i[1], i[2]
+            pd, sold_cnt, qty = i[0], int(i[1]), int(i[2])
             data['id'] = pd.id
             data['name'] = pd.name
             data['description'] = pd.description
