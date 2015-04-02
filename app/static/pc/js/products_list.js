@@ -14747,7 +14747,6 @@ common = {
     });
   },
   changeLocation: function(building_id, callback) {
-    console.log(building_id);
     return jquery.ajax({
       url: common.url + "/user/choose_location",
       type: 'POST',
@@ -14825,7 +14824,8 @@ vm = {
   schools: ko.observableArray([]),
   buildings: ko.observableArray([]),
   location: ko.observable(''),
-  currentCat1Id: ko.observable(0)
+  currentCat1Id: ko.observable(0),
+  currentCat2Id: ko.observable(0)
 };
 
 window.onload = function() {
@@ -14839,7 +14839,6 @@ window.onload = function() {
   vm.location($locationWord.text());
   initChooseLocationBtn();
   initLocations();
-  vm.location($locationWord.text());
   if (!localStorage.csrf_token) {
     return $chooseLocationBtn.click();
   }
@@ -14882,6 +14881,7 @@ bindBuildings = function(school_name, buildings) {
     building.choose = function() {
       return common.changeLocation(this.id, (function(_this) {
         return function(res) {
+          getProducts(getData(vm.currentCat1Id(), vm.currentCat2Id()));
           common.initHeader();
           common.hideMask();
           $buildingsBox.hide();
@@ -14993,10 +14993,12 @@ getUrlParameter = function(sParam) {
 
 initCat1Btn = function() {
   return $cat1.click(function(e) {
-    var cat1, data;
+    var cat1, cat1_id, data;
     cat1 = e.target;
+    cat1_id = cat1.dataset.cat1;
+    vm.currentCat1Id(cat1_id);
     data = {
-      cat1_id: cat1.dataset.cat1
+      cat1_id: cat1_id
     };
     return getProducts(data);
   });
@@ -15004,10 +15006,12 @@ initCat1Btn = function() {
 
 initCat2Btn = function() {
   return $cat2.click(function(e) {
-    var cat2, data;
+    var cat2, cat2_id, data;
     cat2 = e.target;
+    cat2_id = cat2.dataset.cat2;
+    vm.currentCat2Id(cat2_id);
     data = {
-      cat2_id: cat2.dataset.cat2
+      cat2_id: cat2_id
     };
     return getProducts(data);
   });

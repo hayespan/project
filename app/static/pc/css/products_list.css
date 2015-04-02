@@ -358,11 +358,14 @@ a {
 .nav .cat2s {
   display: none;
 }
-.nav .chosen .kind {
+.nav .cat1Chosen .kind {
   color: #fa9f50;
 }
-.nav .chosen .cat2s {
+.nav .cat1Chosen .cat2s {
   display: block;
+}
+.nav .cat1Chosen .cat2s .cat2Chosen {
+  color: #fa9f50 !important;
 }
 .hot-products {
   float: left;

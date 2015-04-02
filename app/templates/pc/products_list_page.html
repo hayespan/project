@@ -14,14 +14,14 @@
             <div class="all-kind">全部分类</div>
             <ul class="kinds-container">
                 {% for cat in catx %}
-                <li class="kind-container" data-bind="css: {chosen : currentCat1Id() == {{cat[0].id}}}">
+                <li class="kind-container" data-bind="css: {cat1Chosen: currentCat1Id() == {{cat[0].id}}}">
                     <div class="kind" data-cat1="{{cat[0].id}}" >
                         {{ cat[0].name }}
                     </div>
                     <div class="cat2s">
                         <ul>
                             {% for cat2 in cat[1] %}
-                            <li class="cat2" data-cat2="{{cat2.id}}">{{ cat2.name }}</li>
+                            <li class="cat2" data-cat2="{{cat2.id}}" data-bind="css: {cat2Chosen: currentCat2Id() == {{cat2.id}}}">{{ cat2.name }}</li>
                             {% endfor %}
                         </ul>
                     </div>

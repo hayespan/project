@@ -16,6 +16,7 @@ vm =
     buildings: ko.observableArray([])
     location: ko.observable('')
     currentCat1Id: ko.observable(0)
+    currentCat2Id: ko.observable(0)
 
 window.onload = ->
     common.init()
@@ -27,7 +28,6 @@ window.onload = ->
     vm.location($locationWord.text())
     initChooseLocationBtn()
     initLocations()
-    vm.location($locationWord.text())
     unless localStorage.csrf_token
         $chooseLocationBtn.click()
 
@@ -46,7 +46,6 @@ bindSchools = (schools) ->
             common.getBuildings @id, (res) =>
                 $schoolsBox.hide()
                 bindBuildings @name, res.data
-                # vm.buildings(res.data)
                 $buildingsBox.show()
     vm.schools schools
 
@@ -54,6 +53,7 @@ bindBuildings = (school_name, buildings) ->
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>
+                getProducts getData(vm.currentCat1Id(), vm.currentCat2Id())
                 common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
@@ -107,7 +107,7 @@ bindProducts = (products) ->
             return @amount() > @quantity
         , product
         product.add = -> @amount @amount() + 1
-        product.reduce = -> 
+        product.reduce = ->
             if @amount() > 1
                 @amount @amount() - 1
         product.addToCart = ->
@@ -133,13 +133,17 @@ getUrlParameter = (sParam) ->
 initCat1Btn = ->
     $cat1.click (e) ->
         cat1 = e.target
+        cat1_id = cat1.dataset.cat1
+        vm.currentCat1Id cat1_id
         data =
-            cat1_id: cat1.dataset.cat1
+            cat1_id: cat1_id
         getProducts data
 
 initCat2Btn = ->
     $cat2.click (e) ->
         cat2 = e.target
+        cat2_id = cat2.dataset.cat2
+        vm.currentCat2Id cat2_id
         data =
-            cat2_id: cat2.dataset.cat2
+            cat2_id: cat2_id
         getProducts data

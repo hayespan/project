@@ -9270,7 +9270,6 @@ common = {
     });
   },
   changeLocation: function(building_id, callback) {
-    console.log(building_id);
     return jquery.ajax({
       url: common.url + "/user/choose_location",
       type: 'POST',
