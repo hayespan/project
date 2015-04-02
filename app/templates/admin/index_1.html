@@ -6,12 +6,49 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <link href="/static/admin/css/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/admin/css/sb-admin-2.css" rel="stylesheet">
+    
+    <!-- Custom Fonts -->
+    <link href="/static/admin/css/font-awesome.css" rel="stylesheet" type="text/css">
+
     <link rel="stylesheet" href="/static/admin/css/bootstrap-select.css">
  
 </head>
 <body>
-    <div id="page-wrapper">
-        <button type="button" class="btn btn-default" onclick="logout()">用户登出</button>
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="#">一级管理员界面</a>
+            </div>
+
+            <!-- /.navbar-header -->
+
+            <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a id="logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
         <hr>
         <ul id="myTab" class="nav nav-tabs">
             <li><a href="#sale" data-toggle="tab">销售额</a></li>

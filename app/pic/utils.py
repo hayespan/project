@@ -16,7 +16,7 @@ def savepic(file_):
     file_.save('%s/%s' % (SAVE_PATH, filename))
     f = File(filename=filename)    
     db.session.add(f)
-    db.session.commit()
+    # db.session.commit()
     return f
 
 def changepic(product_obj, file_):
@@ -33,7 +33,7 @@ def changepic(product_obj, file_):
     file_.save('%s/%s' % (SAVE_PATH, filename))
     product_obj.pic.filename = filename
     db.session.add(product_obj)
-    db.session.commit()
+    # db.session.commit()
 
 def removepic(filename):
     '''
@@ -44,7 +44,7 @@ def removepic(filename):
     except:
         pass
     File.query.filter_by(filename=filename).delete()
-    db.session.commit()
+    # db.session.commit()
 
 def copypic(product_obj):
     '''
@@ -59,6 +59,6 @@ def copypic(product_obj):
     nf.close()
     nf = File(filename=filename)
     db.session.add(nf)
-    db.session.commit()
+    # db.session.commit()
     return nf
 
