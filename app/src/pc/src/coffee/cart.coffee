@@ -130,6 +130,7 @@ injectProperties = (obj)->
             "-2": " 该商品已失效，请刷新页面后再试"
             "2": "请重新选择位置后再试"
             "3": "请重新选择位置后再试"
+
         quantity = parseInt(@quantity())
         if quantity and quantity > 0
             @quantity(quantity)
@@ -145,7 +146,8 @@ injectProperties = (obj)->
                 product_id: @product_id
                 quantity: @quantity()
             success: (res) ->
-                common.notify(strategy[res.code])
+                if res.code isnt 0
+                    common.notify(strategy[res.code])
 
     obj.validStatus = -> @is_valid ? '' : 'unvalid'
     obj.removeSelf = -> @deleteHandler('/cart/delete')
