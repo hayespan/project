@@ -18,6 +18,7 @@
                     <div class="kind" data-cat1="{{cat[0].id}}" >
                         <span class="kind-name" data-cat1="{{cat[0].id}}">{{ cat[0].name }}</span>
                     </div>
+                    {% if cat[1] %}
                     <div class="cat2s">
                         <ul>
                             {% for cat2 in cat[1] %}
@@ -25,6 +26,7 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>
