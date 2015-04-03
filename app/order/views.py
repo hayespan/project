@@ -36,7 +36,8 @@ def create_order():
             return jsonError(CartErrno.CART_INVALID)
         for i in range(len(pbs)): # check whether some products have been updated
             pd = pbs[i].product
-            if pd.snapshots.filter(Snapshot.released_time>carts[i].last_viewed_time).count():
+            if pd.snapshots.filter(Snapshot.released_time>carts[i].last_viewed_time).count() or\
+                    pbs[i].quantity < carts[i].quantity:
                 return jsonError(OrderErrno.PRODUCT_REFRESH)
         timedelta = max([i.timedelta for i in pbs]) # get max delivery time
         bd = Building.query.get(u.location_info['building_id'])

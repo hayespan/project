@@ -64,8 +64,7 @@ def logout():
 def index():
     ad = g.admin
     if ad.privilege == 4:
-        if not viaMobile():
-            return render_template('admin/index_3.html')
+        return render_template('admin/index_3.html')
     elif ad.privilege == 2:
         return render_template('admin/index_2.html')
     elif ad.privilege == 1:
