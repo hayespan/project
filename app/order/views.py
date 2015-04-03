@@ -16,6 +16,7 @@ from ..user.utils import buyer_login_required
 from ..cart.models import Cart
 from ..product.models import Product_building, Product, Snapshot
 from ..location.models import Building, School
+from ..util.common import PC_MB_distribute
 
 # ajax
 @orderbp.route('/create', methods=['POST', ])
@@ -77,6 +78,7 @@ def create_order():
     return jsonError(OrderErrno.INVALID_ARGUMENT)
 
 @orderbp.route('/', methods=['GET', ])
+@PC_MB_distribute('/m/order')
 @buyer_login_required(False, 'main.index')
 def order_page():
     u = g.buyer
