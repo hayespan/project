@@ -19,7 +19,7 @@ common =
     init: ->
         if localStorage.csrf_token
             @csrf_token = localStorage.csrf_token
-            common.initHeader()
+            @initHeader()
         # initFooter()
 
     showMask: ->
@@ -89,7 +89,8 @@ common =
             type: "POST"
             data:
                 csrf_token: localStorage.csrf_token
-            success: (res)->
+            success: (res) =>
+                console.log res
                 if res.code is 0
                     $cartQuantity.text(res.data)
                 else

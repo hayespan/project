@@ -46,7 +46,7 @@ getContactInfo = ->
         success: (res)->
             originalContactInfo = res.data
             bindContactInfo res.data if res.code is 0
-            if res.code != 0
+            if res.code != 0 and res.code != -3
                 common.tokenNotify()
 
 initBtns = ->
@@ -107,7 +107,6 @@ initBtns = ->
                     phone: vm.contactInfo.phone()
                     addr: vm.contactInfo.addr()
                 success: (res) =>
-                    console.log res
                     common.notify(settleStrategy[res.code])
                     $contactInfoConfirm.hide()
                     window.location.reload()
@@ -160,6 +159,8 @@ injectProperties = (obj)->
     obj.formattedPrice = ko.pureComputed ->
         "￥" + @totalPrice()
     , obj
+    obj.checkProduct = ->
+        vm.is_all_checked(false)
 
 deleteHandler = (suffix) ->
     strategy =

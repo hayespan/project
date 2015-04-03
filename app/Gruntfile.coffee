@@ -8,7 +8,7 @@ module.exports = (grunt) ->
         coffee: "src/pc/src/coffee/*.coffee"
         less: "src/pc/src/less/*.less"
 
-    dest = 
+    dest =
         js: "static/pc/js"
         css: "static/pc/css"
 
@@ -16,7 +16,6 @@ module.exports = (grunt) ->
         clean:
             bin:
                 src: ["static/pc/css/*.css", "static/pc/js/*.js"]
-            dist: ["static/pc/css/*.min.css", "static/pc/js/*.min.js"]
 
         watch:
             compile:
@@ -52,26 +51,26 @@ module.exports = (grunt) ->
             build:
                 files: [{
                     expand: true
-                    cwd: "static/pc/js"
+                    cwd: dest.js
                     src: ["*.js"]
                     dest: dest.js
-                    ext: ".min.js"
+                    ext: ".js"
                 }]
 
         cssmin:
             build:
                 files: [{
                     expand: true
-                    cwd: "static/pc/css"
+                    cwd: dest.css
                     src: ["*.css"]
                     dest: dest.css
-                    ext: ".min.css"
+                    ext: ".css"
                 }]
 
-        copy:
-            assets:
-                src: "static/images"
-                dest: "dist/images"
+        # copy:
+            # assets:
+                # src: "static/images"
+                # dest: "dist/images"
             # css:
             #     options:
             #         process: (content, srcpath)->
@@ -86,14 +85,14 @@ module.exports = (grunt) ->
             #     files:
             #         "dist/index.html": ["src/index.html"]
 
-        imagemin:
-            dev:
-                files: [
-                    expand: true
-                    cwd: 'notminimgs'
-                    src: ['*.{png, jpg, gif}']
-                    dest: 'static/images/'
-                ]
+        # imagemin:
+            # dev:
+                # files: [
+                    # expand: true
+                    # cwd: 'notminimgs'
+                    # src: ['*.{png, jpg, gif}']
+                    # dest: 'static/images/'
+                # ]
 
     grunt.loadNpmTasks "grunt-contrib-copy"
     grunt.loadNpmTasks "grunt-contrib-clean"
@@ -102,7 +101,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks "grunt-contrib-watch"
     grunt.loadNpmTasks "grunt-contrib-uglify"
     grunt.loadNpmTasks "grunt-contrib-cssmin"
-    grunt.loadNpmTasks "grunt-contrib-imagemin"
+    # grunt.loadNpmTasks "grunt-contrib-imagemin"
 
     grunt.registerTask "default",  ->
         grunt.task.run [
@@ -115,12 +114,9 @@ module.exports = (grunt) ->
     grunt.registerTask "build", ->
         grunt.task.run [
             "clean:bin"
-            "clean:dist"
             "browserify"
             "less"
             "uglify"
             "cssmin"
-            "copy"
         ]
 
-    grunt.registerTask "min", ["imagemin"]

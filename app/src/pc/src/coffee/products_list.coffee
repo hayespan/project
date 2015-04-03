@@ -33,12 +33,12 @@ window.onload = ->
         $chooseLocationBtn.click()
 
 initChooseLocationBtn = ->
-    if localStorage.csrf_token
-        $mask.click (e)->
-            d = e.target
-            while  d != null and d.className != 'mask-box-container'
-                d = d.parentNode
-            unless d != null and d.className == 'mask-box-container'
+    $mask.click (e)->
+        d = e.target
+        while  d != null and d.className != 'mask-box-container'
+            d = d.parentNode
+        unless d != null and d.className == 'mask-box-container'
+            if localStorage.csrf_token
                 $schoolsBox.hide()
                 $buildingsBox.hide()
                 common.hideMask()
@@ -65,7 +65,8 @@ bindBuildings = (school_name, buildings) ->
         building.choose = ->
             common.changeLocation @id, (res) =>
                 getProducts getData(vm.currentCat1Id(), vm.currentCat2Id())
-                common.initHeader()
+                if localStorage.token
+                    common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
                 vm.location school_name + @name
