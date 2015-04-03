@@ -56,8 +56,8 @@ bindSchools = (schools) ->
 bindBuildings = (school_name, buildings) ->
     strategy =
         "0": "定位成功"
-        "1": "error: 无效的参数"
-        "-1": "error: 建筑物不存在"
+        "1": "无效的参数"
+        "-1": "建筑物不存在"
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>

@@ -14735,6 +14735,8 @@ getCartObjs = function() {
     success: function(res) {
       if (res.code === 0) {
         return bindCartObjs(res.data);
+      } else {
+        return common.tokenNotify();
       }
     }
   });
@@ -14750,7 +14752,10 @@ getContactInfo = function() {
     success: function(res) {
       originalContactInfo = res.data;
       if (res.code === 0) {
-        return bindContactInfo(res.data);
+        bindContactInfo(res.data);
+      }
+      if (res.code !== 0) {
+        return common.tokenNotify();
       }
     }
   });
@@ -14799,8 +14804,11 @@ initBtns = function() {
   });
   settleStrategy = {
     "0": "成功下单",
-    "1": "error: 无效的参数",
-    "-2": "error: 存在无效商品，请刷新页面后再试"
+    "1": "信息输入不正确，请重新输入",
+    "-1": " 存在无效商品，请刷新页面后再试",
+    "-2": " 存在无效商品，请刷新页面后再试",
+    "2": "请重新选择位置后再试",
+    "3": "请重新选择位置后再试"
   };
   return $confirmBtn.click(function() {
     if (vm.checkedProductsLength() < 1) {
@@ -14844,7 +14852,14 @@ bindCartObjs = function(objs) {
 
 injectProperties = function(obj) {
   obj.setQuantity = function() {
-    var quantity;
+    var quantity, strategy;
+    strategy = {
+      "1": "无效的输入，请重新输入",
+      "-3": "该商品不存在，请刷新页面后再试",
+      "-2": " 该商品已失效，请刷新页面后再试",
+      "2": "请重新选择位置后再试",
+      "3": "请重新选择位置后再试"
+    };
     quantity = parseInt(this.quantity());
     if (quantity && quantity > 0) {
       this.quantity(quantity);
@@ -14860,6 +14875,9 @@ injectProperties = function(obj) {
         csrf_token: localStorage.csrf_token,
         product_id: this.product_id,
         quantity: this.quantity()
+      },
+      success: function(res) {
+        return common.notify(strategy[res.code]);
       }
     });
   };
@@ -14889,6 +14907,11 @@ injectProperties = function(obj) {
 };
 
 deleteHandler = function(suffix) {
+  var strategy;
+  strategy = {
+    "2": "请重新选择位置后再试",
+    "3": "请重新选择位置后再试"
+  };
   return jquery.ajax({
     url: common.url + suffix,
     type: "POST",
@@ -14898,10 +14921,11 @@ deleteHandler = function(suffix) {
     },
     success: (function(_this) {
       return function(res) {
-        console.log(res);
         if (res.code === 0) {
           vm.cartObjs.remove(_this);
           return common.initHeader();
+        } else {
+          return common.notify(strategy[res.code]);
         }
       };
     })(this)
@@ -14909,6 +14933,13 @@ deleteHandler = function(suffix) {
 };
 
 quantityHandler = function(suffix) {
+  var strategy;
+  strategy = {
+    "-3": "该商品不存在，请刷新页面后再试",
+    "-2": " 该商品已失效，请刷新页面后再试",
+    "2": "请重新选择位置后再试",
+    "3": "请重新选择位置后再试"
+  };
   return jquery.ajax({
     url: common.url + suffix,
     type: "POST",
@@ -14918,8 +14949,12 @@ quantityHandler = function(suffix) {
     },
     success: (function(_this) {
       return function(res) {
-        if (res.code === 0 && res.data > 0) {
-          return _this.quantity(res.data);
+        if (res.code === 0) {
+          if (res.data > 0) {
+            return _this.quantity(res.data);
+          }
+        } else {
+          return common.notify(strategy[res.code]);
         }
       };
     })(this)
@@ -15052,6 +15087,9 @@ common = {
       return $notification.fadeOut();
     }), 1000);
   },
+  tokenNotify: function() {
+    return this.notify("请重新选择位置后再试");
+  },
   getSchools: function(callback) {
     return jquery.ajax({
       url: common.url + "/location/school_list",
@@ -15059,6 +15097,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("学校不存在，请刷新后重新选择");
         }
       }
     });
@@ -15084,6 +15124,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("楼栋不存在，请刷新后重新选择");
         }
       }
     });
@@ -15101,6 +15143,8 @@ common = {
         common.notify(insertStrategy[res.code]);
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("请重新选择位置后再试");
         }
       }
     });
@@ -15115,6 +15159,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return $cartQuantity.text(res.data);
+        } else {
+          return this.notify("请重新选择位置");
         }
       }
     });

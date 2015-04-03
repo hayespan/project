@@ -21401,6 +21401,9 @@ common = {
       return $notification.fadeOut();
     }), 1000);
   },
+  tokenNotify: function() {
+    return this.notify("请重新选择位置后再试");
+  },
   getSchools: function(callback) {
     return jquery.ajax({
       url: common.url + "/location/school_list",
@@ -21408,6 +21411,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("学校不存在，请刷新后重新选择");
         }
       }
     });
@@ -21433,6 +21438,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("楼栋不存在，请刷新后重新选择");
         }
       }
     });
@@ -21450,6 +21457,8 @@ common = {
         common.notify(insertStrategy[res.code]);
         if (res.code === 0) {
           return typeof callback === "function" ? callback(res) : void 0;
+        } else {
+          return this.notify("请重新选择位置后再试");
         }
       }
     });
@@ -21464,6 +21473,8 @@ common = {
       success: function(res) {
         if (res.code === 0) {
           return $cartQuantity.text(res.data);
+        } else {
+          return this.notify("请重新选择位置");
         }
       }
     });

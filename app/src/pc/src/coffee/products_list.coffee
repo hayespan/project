@@ -99,6 +99,8 @@ getProducts = (data) ->
                     vm.currentCat1Id res.data['current_cat1'].id
                 else
                     vm.currentCat1Id -1
+            else
+                common.notify('不存在该分类')
 
 bindProducts = (products) ->
     for product in products

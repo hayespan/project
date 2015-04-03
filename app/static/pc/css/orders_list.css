@@ -336,6 +336,11 @@ a {
 #content .container .top-bar .right {
   display: none;
 }
+#content .container .placeholder {
+  font-style: 20px;
+  color: #838383;
+  line-height: 100px;
+}
 #content .container .orders-header {
   background-color: #f5f5f5;
   width: 998px;
