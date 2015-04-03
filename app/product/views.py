@@ -11,8 +11,10 @@ from ..user.utils import buyer_login_required
 from ..category.models import Cat1, Cat2
 from ..category.utils import _get_catx
 from ..product.models import Product_building, Product
+from ..util.common import PC_MB_distribute
 
 @productbp.route('/list', methods=['GET', ])
+@PC_MB_distribute('/m/product/list')
 @buyer_login_required(False, 'main.index')
 def get_product_list_by_catx_render():
     u = g.buyer
