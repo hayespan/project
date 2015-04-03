@@ -7,6 +7,9 @@ $schoolsBox = jquery(".schools-box")
 $buildingsBox = jquery(".buildings-box")
 $hotProductsList = jquery(".hot-products-list")
 $productCounts = jquery(".product-count")
+$mask = jquery(".mask")
+
+applied = false
 
 vm =
     schools: ko.observableArray([])
@@ -14,7 +17,6 @@ vm =
     location: ko.observable('')
 
 window.onload = ->
-    intRegex = /^\d+$/
     vm.location($locationWord.text())
     common.init()
     getProducts()
@@ -24,6 +26,16 @@ window.onload = ->
         $chooseLocationBtn.click()
 
 initChooseLocationBtn = ->
+    $mask.click (e)->
+        d = e.target
+        while  d != null and d.className != 'mask-box-container'
+            d = d.parentNode
+        unless d != null and d.className == 'mask-box-container'
+            if localStorage.csrf_token
+                $schoolsBox.hide()
+                $buildingsBox.hide()
+                common.hideMask()
+
     $chooseLocationBtn.click ->
         common.showMask()
         $schoolsBox.show()
@@ -44,15 +56,18 @@ bindSchools = (schools) ->
 bindBuildings = (school_name, buildings) ->
     strategy =
         "0": "定位成功"
-        "1": "error: 无效的参数"
-        "-1": "error: 建筑物不存在"
+        "1": "无效的参数"
+        "-1": "建筑物不存在"
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>
+                if localStorage.token
+                    common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
                 vm.location(school_name + @name)
                 localStorage.csrf_token = res.data._csrf_token
+                getProducts()
                 common.notify(strategy[res.code])
     vm.buildings(buildings)
 
@@ -66,7 +81,12 @@ getProducts = ->
 
 bindProducts = (products) ->
     for product in products
-        product.filename = "/static/img/" + product.filename 
+        product.isMouseOver = ko.observable false
+        product.showDescription = ->
+            @isMouseOver true
+        product.hideDescription = ->
+            @isMouseOver false
+        product.filename = "/static/img/" + product.filename
         product.setAmount = ->
             amount = parseInt(@amount())
             if amount and amount > 0
@@ -90,6 +110,9 @@ bindProducts = (products) ->
                 common.initHeader()
                 return
 
-    vm.products = ko.observableArray products
-    ko.applyBindings vm
-
+    unless applied
+        vm.products = ko.observableArray products
+        ko.applyBindings vm
+        applied = true
+    else
+        vm.products products
