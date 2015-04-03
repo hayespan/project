@@ -1,5 +1,5 @@
 <div class="location">
     <img src="{{ url_for('static', filename='pc/images/address.png')}}" />
-    <span class="location-word" data-bind="text: location">{{ user.location }}</span>
+    <span class="location-word" data-bind="text: location">{% if user != None %} {{ user.location_info['school_name']+user.location_info['building_name'] }} {% else %} 请选择位置 {% endif %}</span>
     <span class="choose-location-btn btn">[切换学校]</span>
 </div>

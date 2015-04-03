@@ -34,6 +34,8 @@ getCartObjs = ->
         success: (res)->
             if res.code is 0
                 bindCartObjs res.data
+            else
+                common.tokenNotify()
 
 getContactInfo = ->
     jquery.ajax
@@ -44,6 +46,8 @@ getContactInfo = ->
         success: (res)->
             originalContactInfo = res.data
             bindContactInfo res.data if res.code is 0
+            if res.code != 0 and res.code != -3
+                common.tokenNotify()
 
 initBtns = ->
     $mask.click (e)->
@@ -83,8 +87,11 @@ initBtns = ->
 
     settleStrategy =
         "0": "成功下单"
-        "1": "error: 无效的参数"
-        "-2": "error: 存在无效商品，请刷新页面后再试"
+        "1": "信息输入不正确，请重新输入"
+        "-1": " 存在无效商品，请刷新页面后再试"
+        "-2": " 存在无效商品，请刷新页面后再试"
+        "2": "请重新选择位置后再试"
+        "3": "请重新选择位置后再试"
 
     $confirmBtn.click ->
         if vm.checkedProductsLength() < 1
@@ -117,6 +124,12 @@ bindCartObjs = (objs)->
 
 injectProperties = (obj)->
     obj.setQuantity = ->
+        strategy =
+            "1": "无效的输入，请重新输入"
+            "-3": "该商品不存在，请刷新页面后再试"
+            "-2": " 该商品已失效，请刷新页面后再试"
+            "2": "请重新选择位置后再试"
+            "3": "请重新选择位置后再试"
         quantity = parseInt(@quantity())
         if quantity and quantity > 0
             @quantity(quantity)
@@ -131,6 +144,8 @@ injectProperties = (obj)->
                 csrf_token: localStorage.csrf_token
                 product_id: @product_id
                 quantity: @quantity()
+            success: (res) ->
+                common.notify(strategy[res.code])
 
     obj.validStatus = -> @is_valid ? '' : 'unvalid'
     obj.removeSelf = -> @deleteHandler('/cart/delete')
@@ -144,26 +159,45 @@ injectProperties = (obj)->
     obj.formattedPrice = ko.pureComputed ->
         "￥" + @totalPrice()
     , obj
+    obj.checkProduct = ->
+        vm.is_all_checked(false)
 
 deleteHandler = (suffix) ->
-    jquery.ajax
-        url: common.url + suffix
-        type: "POST"
-        data:
-            _crsf_token: localStorage.csrf_token
-            product_id: @product_id
-        success: (res) =>
-            vm.cartObjs.remove @
-
-quantityHandler = (suffix)->
+    strategy =
+        "2": "请重新选择位置后再试"
+        "3": "请重新选择位置后再试"
     jquery.ajax
         url: common.url + suffix
         type: "POST"
         data:
             csrf_token: localStorage.csrf_token
             product_id: @product_id
-        success: (res)=>
-            @quantity(res.data) if res.code is 0 and res.data > 0
+        success: (res) =>
+            if res.code is 0
+                vm.cartObjs.remove @
+                common.initHeader()
+            else
+                common.notify(strategy[res.code])
+
+
+quantityHandler = (suffix)->
+    strategy =
+        "-3": "该商品不存在，请刷新页面后再试"
+        "-2": " 该商品已失效，请刷新页面后再试"
+        "2": "请重新选择位置后再试"
+        "3": "请重新选择位置后再试"
+    jquery.ajax
+        url: common.url + suffix
+        type: "POST"
+        data:
+            csrf_token: localStorage.csrf_token
+            product_id: @product_id
+        success: (res) =>
+            if res.code is 0
+                @quantity(res.data) if res.data > 0
+            else
+                common.notify(strategy[res.code])
+
 
 bindContactInfo = (info)->
     props = ['name', 'phone', 'addr']
@@ -182,13 +216,12 @@ getCheckedProductIds = ->
 vm.deleteCheckedProducts = ->
     checked_cart_obj.removeSelf() for checked_cart_obj in getCheckedProducts()
 
-
 vm.checkAllProducts = ->
     vm.is_all_checked(!vm.is_all_checked())
     cart_obj.is_checked(vm.is_all_checked()) for cart_obj in vm.cartObjs()
 
 vm.deleteInvalidProducts = ->
-    cart_obj.removeSelf() for cart_obj in vm.cartObjs() when cart_obj.is_valid
+    cart_obj.removeSelf() for cart_obj in vm.cartObjs() when not cart_obj.is_valid
 
 vm.checkedProductsLength = ko.pureComputed ->
     getCheckedProducts().length

@@ -31,7 +31,7 @@
             <ul class="cart-objs" data-bind="foreach: cartObjs">
                 <li class="cart-obj">
                     <div class="cart-obj-invalid" data-bind="ifnot: is_valid">已失效</div>
-                    <div class="cart-obj-valid" data-bind="if: is_valid"><input data-bind="checked: is_checked" type="checkbox"></div>
+                    <div class="cart-obj-valid" data-bind="if: is_valid"><input data-bind="checked: is_checked, event: {change: checkProduct}" type="checkbox"></div>
                     <img class="cart-obj-pic" data-bind="attr: {src: filename}">
                     <div class="cart-obj-name" data-bind="text: name"></div>
                     <div class="cart-obj-price" data-bind="text: price"></div>
