@@ -1043,10 +1043,16 @@ function deleteBuildingProduct(t) {
 
 function createProductBuilding(f) {
   	var token = window.localStorage.getItem("token");
-	var quantity = f.word[0].value;
-	var timedelta = f.word[1].value;
+    var quantity = f.word[0].value;
 	var product_id = $(f).siblings().eq(0).find('td').eq(1).attr('id');
-    var data = "product_id=" + product_id + "&timedelta="+timedelta;
+    var data = "product_id=" + product_id;
+    var timedelta = f.word[1].value;
+     if (timedelta != undefined) {
+       data = data + "&timedelta=" + timedelta;
+    }
+    if (quantity != undefined) {
+        data = data +"&quantity=" + quantity;
+    }
     if ($(f).find("select[name='buildingList']").eq(0).find('option:selected').val() == -1) {
         var school_id = $(f).find("select[name='schoolList']").eq(0).find('option:selected').attr('class');
         if (school_id != undefined) {
@@ -1057,9 +1063,6 @@ function createProductBuilding(f) {
         data = data + "&building_id=" + building_id;
     }
 	var url = "/admin/level1/associate/create";
-  	if (quantity != null) {
-  		data = data +"&quantity="+quantity;
-  	}
 	$.ajax({
   		url: url,
   		type: 'POST',
