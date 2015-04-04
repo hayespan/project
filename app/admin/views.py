@@ -1301,7 +1301,7 @@ def create_product_building():
             db.session.add(pd_bd)
         db.session.commit()
         return jsonResponse({
-            'product_id': pd_bd.product_id,
+            'product_id': p.id,
             'cnt': len(bds),
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
