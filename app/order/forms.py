@@ -21,8 +21,8 @@ class CreateOrderForm(Form):
         else:
             raise ValidationError('Product ids format error.')
     def validate_phone(form, field):
-        if not (re.match(mobile_p, field.data).group() or\
-                re.match(telephone_p, field.data).group()):
+        if not (re.match(mobile_p, field.data) or\
+                re.match(telephone_p, field.data)):
             raise ValidationError('Not a telephone or mobile phone number.')
 
 

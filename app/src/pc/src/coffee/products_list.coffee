@@ -8,6 +8,7 @@ $locationWord = jquery(".location-word")
 $chooseLocationBtn = jquery(".choose-location-btn")
 $schoolsBox = jquery(".schools-box")
 $buildingsBox = jquery(".buildings-box")
+$mask = jquery(".mask")
 
 applied = false
 
@@ -16,6 +17,7 @@ vm =
     buildings: ko.observableArray([])
     location: ko.observable('')
     currentCat1Id: ko.observable(0)
+    currentCat2Id: ko.observable(0)
 
 window.onload = ->
     common.init()
@@ -27,11 +29,20 @@ window.onload = ->
     vm.location($locationWord.text())
     initChooseLocationBtn()
     initLocations()
-    vm.location($locationWord.text())
     unless localStorage.csrf_token
         $chooseLocationBtn.click()
 
 initChooseLocationBtn = ->
+    $mask.click (e)->
+        d = e.target
+        while  d != null and d.className != 'mask-box-container'
+            d = d.parentNode
+        unless d != null and d.className == 'mask-box-container'
+            if localStorage.csrf_token
+                $schoolsBox.hide()
+                $buildingsBox.hide()
+                common.hideMask()
+
     $chooseLocationBtn.click ->
         common.showMask()
         $schoolsBox.show()
@@ -43,12 +54,9 @@ initLocations = ->
 bindSchools = (schools) ->
     for school in schools
         school.choose = ->
-            console.log @id
-            console.log @name
             common.getBuildings @id, (res) =>
                 $schoolsBox.hide()
                 bindBuildings @name, res.data
-                # vm.buildings(res.data)
                 $buildingsBox.show()
     vm.schools schools
 
@@ -56,6 +64,9 @@ bindBuildings = (school_name, buildings) ->
     for building in buildings
         building.choose = ->
             common.changeLocation @id, (res) =>
+                getProducts getData(vm.currentCat1Id(), vm.currentCat2Id())
+                if localStorage.token
+                    common.initHeader()
                 common.hideMask()
                 $buildingsBox.hide()
                 vm.location school_name + @name
@@ -85,14 +96,20 @@ getProducts = (data) ->
         success: (res) ->
             if res.code is 0
                 bindProducts res.data.products
-                console.log res.data['current_cat1']
                 if res.data['current_cat1']
                     vm.currentCat1Id res.data['current_cat1'].id
                 else
                     vm.currentCat1Id -1
+            else
+                common.notify('不存在该分类')
 
 bindProducts = (products) ->
     for product in products
+        product.isMouseOver = ko.observable false
+        product.showDescription = ->
+            @isMouseOver true
+        product.hideDescription = ->
+            @isMouseOver false
         product.filename = "/static/img/" + product.filename
         product.setAmount = ->
             amount = parseInt(@amount())
@@ -109,7 +126,7 @@ bindProducts = (products) ->
             return @amount() > @quantity
         , product
         product.add = -> @amount @amount() + 1
-        product.reduce = -> 
+        product.reduce = ->
             if @amount() > 1
                 @amount @amount() - 1
         product.addToCart = ->
@@ -135,13 +152,17 @@ getUrlParameter = (sParam) ->
 initCat1Btn = ->
     $cat1.click (e) ->
         cat1 = e.target
+        cat1_id = cat1.dataset.cat1
+        vm.currentCat1Id cat1_id
         data =
-            cat1_id: cat1.dataset.cat1
+            cat1_id: cat1_id
         getProducts data
 
 initCat2Btn = ->
     $cat2.click (e) ->
         cat2 = e.target
+        cat2_id = cat2.dataset.cat2
+        vm.currentCat2Id cat2_id
         data =
-            cat2_id: cat2.dataset.cat2
+            cat2_id: cat2_id
         getProducts data

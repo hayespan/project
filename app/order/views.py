@@ -16,6 +16,7 @@ from ..user.utils import buyer_login_required
 from ..cart.models import Cart
 from ..product.models import Product_building, Product, Snapshot
 from ..location.models import Building, School
+from ..util.common import PC_MB_distribute
 
 # ajax
 @orderbp.route('/create', methods=['POST', ])
@@ -35,7 +36,8 @@ def create_order():
             return jsonError(CartErrno.CART_INVALID)
         for i in range(len(pbs)): # check whether some products have been updated
             pd = pbs[i].product
-            if pd.snapshots.filter(Snapshot.released_time>carts[i].last_viewed_time).count():
+            if pd.snapshots.filter(Snapshot.released_time>carts[i].last_viewed_time).count() or\
+                    pbs[i].quantity < carts[i].quantity:
                 return jsonError(OrderErrno.PRODUCT_REFRESH)
         timedelta = max([i.timedelta for i in pbs]) # get max delivery time
         bd = Building.query.get(u.location_info['building_id'])
@@ -77,6 +79,7 @@ def create_order():
     return jsonError(OrderErrno.INVALID_ARGUMENT)
 
 @orderbp.route('/', methods=['GET', ])
+@PC_MB_distribute('/m/order')
 @buyer_login_required(False, 'main.index')
 def order_page():
     u = g.buyer

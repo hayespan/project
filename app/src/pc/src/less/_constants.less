@@ -28,6 +28,7 @@
     margin: 0;
     padding: 0;
     color: @root-font-color;
+    word-break: break-all;
 }
 
 ul {list-style: none;}
@@ -106,9 +107,14 @@ a {text-decoration: none;}
         float: right;
         color: #515151;
         font-size: 14px;
+        img {height: 15px; margin-right: 5px; position: relative; top: 2px;}
         .logout-btn {margin-left: 20px; color: #999999;}
+        .entry-order-btn {
+            img {
+                margin-right: 0;
+            }
+        }
         .entry-cart-btn {
-            img {height: 15px; margin-right: 5px;}
             .amount {color: #fe8923}
         }
     }

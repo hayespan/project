@@ -1,8 +1,10 @@
+<div class="placeholder" data-bind="visible: products().length < 1">暂时没有商品, 您可以去其它地方看看</div>
 <ul class="hot-products-list" data-bind="foreach: products">
     <li class="hot-product-wrapper">
         <div class="hot-product-container">
             <p class="product-name" data-bind="text: name"></p>
-            <img class="product-pic-url" data-bind="attr: {src: filename}">
+            <div class="product-description" data-bind="text: description, visible: isMouseOver(), event: {mouseover: showDescription, mouseleave: hideDescription}"></div>
+            <img class="product-pic" data-bind="attr: {src: filename}, event: {mouseover: showDescription, mouseleave: hideDescription}">
             <p class="product-price" data-bind="text: formattedPrice"></p>
             <div class="interact-area">
                 <div class="insufficient-inventory" data-bind="text: isOverflow() ? '超出库存' : '&nbsp;'"></div>
