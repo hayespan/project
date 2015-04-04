@@ -741,14 +741,14 @@ a, span, p {
 }
 
 .btn-put-in, .btn-sold-out {   
-    width: 90px;
+    width: 100px;
     height: 30px;
     border-radius: 5px;
     border: none;
     font-size: 14px;
     color: white;
     position: absolute;
-    left: 25px;
+    left: 20px;
     bottom: 7px;
 }
 
