@@ -231,17 +231,18 @@ a, span, p {
 }
 .order-top-date {
     padding-top: 4px;
-    font-size: 14px;
-    padding-left: 13px;
-    padding-right: 20px;
+    font-size: 12px;
+    padding-left: 5px;
     display: inline-block;
     margin: 0;
 }
 .order-top-number {
     padding-top: 4px;
-    font-size: 14px;
+    font-size: 12px;
     display: inline-block;
     margin: 0;
+    float: right;
+    padding-right: 5px;
 }
 .order-status {
     padding: 0 13px;
@@ -251,7 +252,7 @@ a, span, p {
 .order-status-left {
     width: 55%;
     display: inline-block;
-    padding-top: 10px;
+    padding-top: 5px;
 }
 .order-status-left p {
     margin: 0;
@@ -421,10 +422,8 @@ a, span, p {
     display:block;
     border-bottom:solid 1px #ddd;
     transition:all 1s cubic-bezier(0.175, 0.885, 0.32, 1) 0s;
-}
-
-.list-link a { 
     color:#333;
+    line-height: 18px;
 }
 
 .list-link a:hover {
@@ -501,7 +500,7 @@ a, span, p {
 }
 
 .text-red { 
-    color: rgb(255, 55, 55);
+    color: rgb(255, 55, 55) !important;
 }
 
 .not-checked {  
@@ -663,7 +662,7 @@ a, span, p {
     height: 255px;
     background: white;
     border-radius: 5px;
-    position: fixed;
+    position: absolute;
     top: 100px;
     margin: 0 10%;
     z-index: 10001;
@@ -742,14 +741,14 @@ a, span, p {
 }
 
 .btn-put-in, .btn-sold-out {   
-    width: 90px;
+    width: 100px;
     height: 30px;
     border-radius: 5px;
     border: none;
-    font-size: 15px;
+    font-size: 14px;
     color: white;
     position: absolute;
-    left: 25px;
+    left: 20px;
     bottom: 7px;
 }
 
