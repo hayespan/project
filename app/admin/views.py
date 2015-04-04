@@ -1267,30 +1267,42 @@ def create_product_building():
     form = CreateProductBuildingForm()
     if form.validate_on_submit():
         p_id = form.product_id.data
+        sc_id = form.school_id.data
         b_id = form.building_id.data
-        qty = form.quantity.data
-        td = form.timedelta.data
+        qty = form.quantity.data or 999
+        td = form.timedelta.data or 0.5
         p = Product.query.get(p_id)
         if not p:
             return jsonError(AdminErrno.PRODUCT_DOES_NOT_EXIST)
-        bd = Building.query.get(b_id)
-        if not bd:
-            return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
-        if Product_building.query.filter(Product_building.product_id==p_id, Product_building.building_id==b_id).count():
-            return jsonError(AdminErrno.PRODUCT_BUILDING_EXISTS)
-        pd_bd = Product_building(
-                product=p,
-                building=bd,
-                quantity=qty,
-                timedelta=td,
-                )
-        db.session.add(pd_bd)
+        if sc_id and not b_id:
+            sc = School.query.get(sc_id)
+            if not sc:
+                return jsonError(AdminErrno.SCHOOL_DOES_NOT_EXIST)
+            bds = sc.buildings.all()
+        elif b_id:
+            bd = Building.query.get(b_id)
+            if not bd:
+                return jsonError(AdminErrno.BUILDING_DOES_NOT_EXIST)
+            bds = [bd, ]
+        else:
+            bds = Building.query.all()
+        for i in bds:
+            pd_bd = Product_building.query.filter(Product_building.product_id==p_id, Product_building.building_id==i.id).first()
+            if pd_bd:
+                pd_bd.quantity = qty
+                pd_bd.timedelta = td
+            else:
+                pd_bd = Product_building(
+                        product=p,
+                        building=i,
+                        quantity=qty,
+                        timedelta=td,
+                        )
+            db.session.add(pd_bd)
         db.session.commit()
         return jsonResponse({
-            'product_id': pd_bd.product_id,
-            'building_id': pd_bd.building_id,
-            'quantity': pd_bd.quantity,
-            'timedelta': pd_bd.timedelta,
+            'product_id': p.id,
+            'cnt': len(bds),
             })
     return jsonError(AdminErrno.INVALID_ARGUMENT)
 
