@@ -147,9 +147,10 @@ class GetProductBuildingListForm(Form):
 
 class CreateProductBuildingForm(Form):
     product_id = IntegerField(validators=[Required(), ])
-    building_id = IntegerField(validators=[Required(), ])
+    school_id = IntegerField(validators=[Optional(), ])
+    building_id = IntegerField(validators=[Optional(), ])
     quantity = IntegerField(validators=[Optional(), ])
-    timedelta = DecimalField(validators=[Required(), ])
+    timedelta = DecimalField(validators=[Optional(), ])
 
 class ModifyProductBuildingForm(Form):
     product_id = IntegerField(validators=[Required(), ])
