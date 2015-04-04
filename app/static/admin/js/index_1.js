@@ -3,84 +3,106 @@ window.onload = initPage();
 function errorCode(code) {
 	switch (code) {
 	    case 1:
-	    	alert("Invalid arguments");
+			// alert("Invalid arguments");
+	    	alert("无效参数");
 	    	break;
 	    case 2:
- 			alert("Csrf token check failed");
+             // alert("Csrf token check failed");
+ 			alert("会话已过期，请重新登陆");
+            window.location.href = "/admin/login";
  			break;
 		case -2:
-			alert("Admin didn't login.");
+			// alert("Admin didn't login.");
+			alert("管理员未登陆");
+            window.location.href = "/admin/login";
 			break; // 未登录
 		case -3:
-			alert("Building does not exist.");
+			// alert("Building does not exist.");
+			alert("楼栋不存在");
 			break;
 		case -7:
-			alert("Admin account does not exist.");
+			// alert("Admin account does not exist.");
+			alert("管理员账号不存在");
 			break;
 		case -10:
-			alert("Act beyond authority."); // 非一级管理员
+			// alert("Act beyond authority."); // 非一级管理员
+			alert("越权操作"); // 非一级管理员
 			break;
         case -13:
-            alert("Product is not associated with request building.");
+            // alert("Product is not associated with request building.");
+            alert("商品没有在当前楼栋售卖");
             break;
 		case -14:
-			alert("School does not exist.");
+			// alert("School does not exist.");
+			alert("学校不存在");
 			break;
 		case -15:
-			alert("School already exists.");
+			// alert("School already exists.");
+			alert("学校已存在");
 			break;
 		case -16:
-			alert("Category #1 already exists.");
+			// alert("Category #1 already exists.");
+			alert("一级分类已存在");
 			break;
 		case -17:
-			alert("Category #1 does not exist.");
+			// alert("Category #1 does not exist.");
+			alert("一级分类不存在");
 			break;
 		case -18:
-			alert("Admin already exists.");
+			// alert("Admin already exists.");
+			alert("管理员已存在");
 			break;
 		case -19:
-			alert("School already has an admin.");
+			// alert("School already has an admin.");
+			alert("学校已经被管理员绑定");
 			break;
 		case -20:
-		 	alert("Username is already used.");
+			 // alert("Username is already used.");
+		 	alert("帐号名已存在");
 		 	break;
 		case -21:
-			alert("Building already has an admin.");
+			// alert("Building already has an admin.");
+			alert("楼栋已经被管理员绑定");
 			break;
         case -22:
-            alert("Category #2 already exists.");
+            // alert("Category #2 already exists.");
+            alert("二级分类已经存在");
             break;
 		case -23:
-		 	alert("Category #2 does not exist.");
+			 // alert("Category #2 does not exist.");
+		 	alert("二级分类不存在");
 		 	break;
 		case -24:
-		 	alert("Product does not exist.");
+			 // alert("Product does not exist.");
+		 	alert("商品不存在");
 		 	break;
         case -25: 
-            alert("Product has been associated with building.");
+            // alert("Product has been associated with building.");
+            alert("商品已经在该楼栋售卖中");
             break;
         case -26:
-            alert("Building already exists.");
+            // alert("Building already exists.");
+            alert("楼栋已存在");
             break;
 	}
 }
 
 function logout() {
 	var token = window.localStorage.getItem("token");
-		$.ajax({
-   			type: "POST",
-   			url: "/admin/logout",
-   			data: "csrf_token=" + token,
-   			success: function(msg){
-      	    	code = msg.code;
-      			if (code == 0) {
-                    window.location.href="/admin/login";
-                    window.localStorage.removeItem("token");
-    			} else {
-    				errorCode(code);
-    			}
-   			}
-		});
+    $.ajax({
+        type: "POST",
+        url: "/admin/logout",
+        data: "csrf_token=" + token,
+        success: function(msg){
+            code = msg.code;
+            if (code == 0) {
+                window.location.href="/admin/login";
+                window.localStorage.removeItem("token");
+            } else {
+                errorCode(code);
+            }
+        }
+    });
 }
 
 function showSales() {
@@ -1355,9 +1377,13 @@ function getYearList() {
 function initPage() {
 	getSchoolList();
     getYearList();
+<<<<<<< HEAD
     $("#logout").click(function(){
         logout();
     }); 
+=======
+    $("#logout").click(logout); 
+>>>>>>> 9766e6776f935357b8293fd37dee302e7b58d519
     var formList = $("form[name='disableEnter']");
     for (var i = 0; i < formList.length; ++i) {
         $(formList[i]).on("keyup keypress", function(e) {

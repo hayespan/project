@@ -11,8 +11,10 @@ from ..user.utils import buyer_login_required
 from ..category.models import Cat1, Cat2
 from ..category.utils import _get_catx
 from ..product.models import Product_building, Product
+from ..util.common import PC_MB_distribute
 
 @productbp.route('/list', methods=['GET', ])
+@PC_MB_distribute('/m/product/list')
 @buyer_login_required(False, 'main.index')
 def get_product_list_by_catx_render():
     u = g.buyer
@@ -55,8 +57,8 @@ def get_product_list_by_catx_ajax():
         return jsonResponse({
             'products': products,
             'current_cat1': {
-                'id': current_cat1.id,
-                'name': current_cat1.name,
+                'id': current_cat1.id if current_cat1 else None,
+                'name': current_cat1.name if current_cat1 else None,
                 },
             })
     return jsonError(ProductErrno.INVALID_ARGUMENT)
@@ -124,7 +126,7 @@ def get_hot_product_list():
         res = []
         for i in hot_products:
             data = dict()
-            pd, sold_cnt, qty = i[0], i[1], i[2]
+            pd, sold_cnt, qty = i[0], int(i[1]), int(i[2])
             data['id'] = pd.id
             data['name'] = pd.name
             data['description'] = pd.description

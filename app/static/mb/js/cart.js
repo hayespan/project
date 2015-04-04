@@ -116,6 +116,7 @@ $(function() {
                                 item.remove();
                                 calculateTotalPrice();  // 重新计算价格
                                 changeBtnStatus();
+                                changeBadgeStatus();
                             } else if (data.code == 2) {    
                                 window.location.href = "/m/locations";
                             }
@@ -220,6 +221,8 @@ $(function() {
                 if (data.code == 0) {   
                     if (data.data > 0) {    // 为0则不显示气泡
                         $(".badge").html(data.data).show();
+                    } else if (data.data == 0) {    
+                        $(".badge").hide();
                     }
                 }
             }, "json");
@@ -280,6 +283,21 @@ $(function() {
 
     }
 
+    // 号码是否合法
+    $("#phone").on("change", function() {   
+        phone = $(this).val();
+        var reg_mobile = '^(0?(13[0-9]|15[012356789]|18[0236789]|14[57])[0-9]{8})$';
+        var re1 = new RegExp(reg_mobile);
+        var reg_tel =  '^((?:\d{2,5}-)?\d{7,8}(?:-\d{1,})?)$'
+        var re2 = new RegExp(reg_tel);
+        if (re1.test(phone) || re2.test(phone)) {   
+            $(".phonelable").html("联系电话");
+            $(".phonelable").removeClass("text-red");
+        } else {    
+            $(".phonelable").html("联系电话（号码不合法）");
+            $(".phonelable").addClass("text-red");
+        }
+    });
 
     $(".pay-btn").on("click", function() {    
         if ($(this).hasClass("pay-btn-active")) {   

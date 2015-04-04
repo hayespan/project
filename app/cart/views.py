@@ -12,8 +12,10 @@ from ..util.csrf import csrf_token_required
 from ..util.errno import CartErrno
 from ..user.utils import buyer_login_required
 from ..product.models import Product, Product_building
+from ..util.common import PC_MB_distribute
 
 @cartbp.route('/', methods=['GET', ])
+@PC_MB_distribute('/m/cart')
 @buyer_login_required(False, 'main.index')
 def shopping_cart():
     u = g.buyer
