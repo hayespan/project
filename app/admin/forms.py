@@ -119,7 +119,7 @@ class ModifyCat2Form(CreateCat1Form):
     name = StringField(validators=[Required(), Length(1, 32), ])
 
 class DeleteCat2Form(Form):
-    cat1_id = IntegerField(validators=[Required(), ])
+    cat2_id = IntegerField(validators=[Required(), ])
 
 class CreateProductForm(Form):
     name = StringField(validators=[Required(), Length(1, 50), ])
