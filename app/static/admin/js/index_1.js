@@ -768,6 +768,7 @@ function getCat2List(cat1_id, cat2) {
 	    				addToCat2Table(data[i].id, data[i].name, cat1_id);
 	    			}
 	    		} else {
+                    clearList2nd(cat2);
 					for (var i = 0; i < data.length; ++i) {
 						addToCat2List(data[i].id, data[i].name, cat2);
 					}
@@ -921,7 +922,7 @@ function addToProductTable(id, name, description, img_uri, price, cat1Id, cat1Na
 		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteProduct(this)"/>' + "\n"
 		+'<input type="button" value="取消" class="btn btn-default" onclick="resetProduct()"/>' + "\n"
 　　    +'<input type="button" value="导出" class="btn btn-default" onclick="exportProduct(this)"/>'
-		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control" onchange="checkSchool2nd(this)"><option value=-1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
+		+'</td></tr></tbody></table><form class="form-inline"><div class="form-group" style="float:left"><select name="schoolList" class="form-control" onchange="checkSchool2nd(this)"><option value=-1>学校</option></select>\n<select name="buildingList" class="form-control"><option value=-1>楼栋</option></select>\n<input type="text" class="form-control" name="word" placeholder="存货量"/>\n'
         +'<input type="text" class="form-control" name="word" placeholder="送货时间"/>\n<input type="button" value="添加" class="btn btn-default" onclick="createProductBuilding(this.form)"/></div></form></div><div class="third" style="float:left; margin: 50px 0 0 0">'
         +'<table name="'+id+'" class="table table-striped scrolled" >'
         +'<thead><tr><th>学校</th><th>楼栋</th><th>存货量</th><th>送货时间</th><th>操作</th></tr></thead><tbody></tbody></table></div></div>');
@@ -1023,9 +1024,17 @@ function createProductBuilding(f) {
 	var quantity = f.word[0].value;
 	var timedelta = f.word[1].value;
 	var product_id = $(f).siblings().eq(0).find('td').eq(1).attr('id');
-	var building_id = $(f).find("select[name='buildingList']").eq(0).find('option:selected').attr('class');
-	var url = "/admin/level1/associate/create"
-    var data = "product_id=" + product_id+"&building_id="+building_id+"&timedelta="+timedelta;
+    var data = "product_id=" + product_id + "&timedelta="+timedelta;
+    if ($(f).find("select[name='buildingList']").eq(0).find('option:selected').val() == -1) {
+        var school_id = $(f).find("select[name='schoolList']").eq(0).find('option:selected').attr('class');
+        if (school_id != undefined) {
+            data = data + "&school_id=" + school_id;
+        }
+    } else {
+        var building_id = $(f).find("select[name='buildingList']").eq(0).find('option:selected').attr('class');
+        data = data + "&building_id=" + building_id;
+    }
+	var url = "/admin/level1/associate/create";
   	if (quantity != null) {
   		data = data +"&quantity="+quantity;
   	}
@@ -1346,7 +1355,9 @@ function getYearList() {
 function initPage() {
 	getSchoolList();
     getYearList();
-    $("#login").click = logout; 
+    $("#logout").click(function(){
+        logout();
+    }); 
     var formList = $("form[name='disableEnter']");
     for (var i = 0; i < formList.length; ++i) {
         $(formList[i]).on("keyup keypress", function(e) {
