@@ -10,10 +10,13 @@ def jsonError(ERROR):
 def jsonResponse(data):
     return jsonify({'code': 0, 'data': data})
 
+USERAGENT = ('micromessenger', 'Mobile', 'iPhone', 'Windows Phone', 'UCWEB', 'Fennec', 'Opera Mobi', 'BlackBerry', )
+
 def viaMobile():
     s = request.headers.get('User-Agent')
-    kw = ['micromessenger', 'Mobile', 'iPhone', 'Windows Phone', 'UCWEB', 'Fennec', 'Opera Mobi', 'BlackBerry', ]
-    for i in kw:
+    if s is None:
+        return False
+    for i in USERAGENT:
         if i in s:
             return True
     return False
